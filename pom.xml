@@ -8,7 +8,7 @@
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-core</artifactId>
-  <version>SNAPSHOT</version>
+  <version>1.0</version>
   <name>reverb-core</name>
   <description>A regular-expression based Open IE relation extractor.</description>
   <inceptionYear>2010</inceptionYear>
@@ -31,6 +31,10 @@
   </properties>
   <repositories>
     <repository>
+      <id>knowitall-public</id>
+      <url>http://knowitall.cs.washington.edu/maven2</url>
+    </repository>
+    <repository>
       <id>opennlp.sf.net</id>
       <url>http://opennlp.sourceforge.net/maven2</url>
     </repository>
@@ -39,7 +43,7 @@
     <dependency>
       <groupId>edu.washington.cs.knowitall</groupId>
       <artifactId>commonlib</artifactId>
-      <version>SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     <!-- Common -->
     <dependency>
