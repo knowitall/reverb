@@ -1,7 +1,8 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.washington.cs.knowitall</groupId>
-  <artifactId>reverb</artifactId>
+  <artifactId>reverb-core</artifactId>
+  <name>reverb-core</name>
   <version>SNAPSHOT</version>
   <parent>
     <groupId>edu.washington.cs.knowitall</groupId>
@@ -15,11 +16,6 @@
   </properties>
 
   <repositories>
-      <repository>
-          <id>knowitall</id>
-          <url>http://knowitall.cs.washington.edu/maven2</url>
-      </repository>
-
       <repository>
         <id>opennlp.sf.net</id>
         <url>http://opennlp.sourceforge.net/maven2</url>
