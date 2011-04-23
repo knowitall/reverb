@@ -1,0 +1,89 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.washington.cs.knowitall</groupId>
+  <artifactId>reverb</artifactId>
+  <version>SNAPSHOT</version>
+  <parent>
+    <groupId>edu.washington.cs.knowitall</groupId>
+    <artifactId>knowitall</artifactId>
+    <version>SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+      <repository>
+          <id>knowitall</id>
+          <url>http://knowitall.cs.washington.edu/maven2</url>
+      </repository>
+
+      <repository>
+        <id>opennlp.sf.net</id>
+        <url>http://opennlp.sourceforge.net/maven2</url>
+      </repository>
+  </repositories>
+
+  <dependencies>
+      <dependency>
+        <groupId>edu.washington.cs.knowitall</groupId>
+        <artifactId>commonlib</artifactId>
+        <version>SNAPSHOT</version>
+      </dependency>
+
+      <!-- Common -->
+      <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>r09</version>
+      </dependency>
+
+      <dependency>
+          <groupId>commons-lang</groupId>
+          <artifactId>commons-lang</artifactId>
+          <version>2.5</version>
+      </dependency>
+
+      <!-- Learning -->
+      <dependency>
+          <groupId>edu.waikato</groupId>
+          <artifactId>weka</artifactId>
+          <version>3.6.4</version>
+      </dependency>
+
+      <!-- NLP -->
+      <dependency>
+          <groupId>opennlp</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5.0</version>
+      </dependency>
+
+      <!-- Lucene -->
+      <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-core</artifactId>
+          <version>3.0.3</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-core</artifactId>
+          <version>0.20.2</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-remote</artifactId>
+          <version>3.0.3</version>
+      </dependency>
+
+      <!-- Test -->
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.8.2</version>
+      </dependency>
+  </dependencies>
+</project>

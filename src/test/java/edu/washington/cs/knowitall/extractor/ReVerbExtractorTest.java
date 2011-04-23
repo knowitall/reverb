@@ -1,0 +1,262 @@
+package edu.washington.cs.knowitall.extractor;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.common.collect.Iterables;
+
+import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
+import edu.washington.cs.knowitall.nlp.ChunkedSentence;
+import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
+
+public class ReVerbExtractorTest {
+
+    private static ReVerbExtractor reverb;
+    private static HashSet<String> expected, got;
+
+    @Before
+    public void setUp() throws Exception {
+        if (reverb == null) {
+            reverb = new ReVerbExtractor();
+        }
+        expected = new HashSet<String>();
+    }
+
+    private static List<ChunkedBinaryExtraction> extract(ChunkedSentence sent) throws Exception {
+        ArrayList<ChunkedBinaryExtraction> results = new ArrayList<ChunkedBinaryExtraction>();
+        Iterables.addAll(results, reverb.extract(sent));
+        return results;
+    }
+
+    private static HashSet<String> extractRels(String ts, String ps, String cs) throws Exception {
+        List<ChunkedBinaryExtraction> extrs = extract(asSentence(ts, ps, cs));
+        HashSet<String> results = new HashSet<String>();
+        for (ChunkedBinaryExtraction extr : extrs) {
+            results.add(extr.getRelation().toString());
+        }
+        return results;
+    }
+
+    private static HashSet<String> extractTriples(String ts, String ps, String cs) throws Exception {
+        List<ChunkedBinaryExtraction> extrs = extract(asSentence(ts, ps, cs));
+        HashSet<String> results = new HashSet<String>();
+        for (ChunkedBinaryExtraction extr : extrs) {
+            results.add("("+ extr.getArgument1() + ", " + extr.getRelation() + ", " + extr.getArgument2() + ")");
+        }
+        return results;
+    }
+
+    public static ChunkedSentence asSentence(String tokensStr, String posTagsStr, String npChunkTagsStr) throws Exception {
+        String[] tokens = tokensStr.split(" ");
+        String[] posTags = posTagsStr.split(" ");
+        String[] npChunkTags = npChunkTagsStr.split(" ");
+        return new ChunkedSentence(tokens, posTags, npChunkTags);
+    }
+
+    @Test
+    public void testExtract1() throws Exception {
+        got = extractRels(
+                "He brought forward the idea of independence from Britain .",
+                "PRP VBD RB DT NN IN NN IN NNP .",
+                "B-NP O O B-NP B-NP O B-NP O B-NP O"
+        );
+        expected.add("brought forward the idea of");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract2() throws Exception {
+        got = extractRels(
+                "Five years ago , I was working for just over minimum wage creating PDF forms for a small company .",
+                "CD NNS RB , PRP VBD VBG IN RB IN JJ NN VBG NNP NNS IN DT JJ NN .",
+                "B-NP I-NP O O B-NP O O O O O B-NP I-NP O B-NP I-NP O B-NP I-NP I-NP O"
+        );
+        expected.add("was working for just over");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract3() throws Exception {
+        got = extractRels(
+                "They simply open a web browser and listen as their screen reader reads the newspaper to them , " +
+                "and they do it when they want to and as soon as the content is published .",
+                "PRP RB VB DT NN NN CC VB IN PRP$ NN NN VBZ DT NN TO PRP , CC PRP VBP PRP WRB PRP VBP TO CC RB " +
+                "RB IN DT NN VBZ VBN .",
+                "B-NP O O B-NP I-NP I-NP O O O B-NP I-NP I-NP O B-NP I-NP O B-NP O O B-NP O B-NP O B-NP O O O O O O B-NP " +
+                "I-NP O O O"
+        );
+        expected.add("simply open");
+        expected.add("listen as");
+        expected.add("reads the newspaper to");
+        expected.add("do");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract4() throws Exception {
+        got = extractRels(
+                "This chassis supports up to six fans , has a complete black interior , and has plenty of higher end features packed into a small case .",
+                "DT NN VBZ RP TO CD NNS , VBZ DT JJ JJ NN , CC VBZ RB IN JJR NN NNS VBN IN DT JJ NN .",
+                "B-NP I-NP O O O B-NP I-NP O O B-NP I-NP I-NP I-NP O O O O O B-NP I-NP I-NP O O B-NP I-NP I-NP O"
+        );
+        expected.add("supports up to");
+        expected.add("has plenty of");
+        expected.add("has");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract5() throws Exception {
+        got = extractRels(
+                "The key schedule for decryption is similar - the subkeys are in reverse order compared to encryption .",
+                "DT JJ NN IN NN VBZ JJ : DT NNS VBP IN NN NN VBN TO NN .",
+                "B-NP I-NP I-NP O B-NP O O O B-NP I-NP O O B-NP I-NP O O B-NP O"
+        );
+        expected.add("are in");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract6() throws Exception {
+        got = extractRels(
+                "In over-the-counter trading yesterday , Benjamin Franklin rose 25 cents to $ 4.25 .",
+                "IN JJ NN NN , NNP NNP VBD CD NNS TO $ CD .",
+                "O B-NP I-NP B-NP O B-NP I-NP O B-NP I-NP O B-NP I-NP O"
+        );
+        expected.add("rose 25 cents to");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract7() throws Exception {
+        got = extractTriples(
+                "Preliminary research at Jiwa found that the temple was built between the fifth and sixth centuries .",
+                "JJ NN IN NNP VBD IN DT NN VBD VBN IN DT JJ CC JJ NNS .", 
+                "B-NP I-NP O B-NP O O B-NP I-NP O O O B-NP I-NP I-NP I-NP I-NP O"
+        );
+        expected.add("(the temple, was built between, the fifth and sixth centuries)");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract8() throws Exception {
+        got = extractRels(
+                "Property Capital Trust dropped its plan to liquidate because it was n't able to realize the value it had expected .",
+                "NNP NNP NNP VBD PRP$ NN TO VB IN PRP VBD RB JJ TO VB DT NN PRP VBD VBN .",
+        "B-NP I-NP I-NP O B-NP I-NP O O O B-NP O O O O O B-NP I-NP B-NP O O O");
+        expected.add("was n't able to realize");
+        expected.add("dropped");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract9() throws Exception {
+        got = extractRels(
+                "Remote servers can serve up files via SMB.",
+                "VB NNS MD VB RP NNS IN NNP",
+                "B-NP I-NP O O O B-NP O B-NP"
+        );
+        expected.add("can serve up");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract10() throws Exception {
+        got = extractRels(
+                "Spaghetti Westerns were a name given to low-budget Western films , which were made by Italian movie companies in the 1960s .", 
+                "NNP NNP VBD DT NN VBN TO JJ JJ NNS , WDT VBD VBN IN JJ NN NNS IN DT NNS .", 
+                "B-NP I-NP B-VP B-NP I-NP B-VP B-PP B-NP I-NP I-NP O B-NP B-VP I-VP B-PP B-NP I-NP I-NP B-PP B-NP I-NP O"
+        );
+        expected.add("were made by");
+        expected.add("were a name given to");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract11() throws Exception {
+        got = extractRels(
+                "XDH gene mutation is the underlying cause of classical xanthinuria .", 
+                "NNP NN NN VBZ DT VBG NN IN JJ NN .", 
+                "B-NP I-NP I-NP B-VP B-NP I-NP I-NP B-PP B-NP I-NP O"     
+        );
+        expected.add("is the underlying cause of");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract12() throws Exception {
+        got = extractRels(
+                "He is the author of FooBar and is the capital of Spain .",
+                "PRP VBZ DT NN IN NNP CC VBZ DT NN IN NNP .",
+                "B-NP O O B-NP I-NP I-NP O O B-NP I-NP I-NP I-NP O"
+        );
+        expected.add("is the author of");
+        expected.add("is the capital of");
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract13() throws Exception {
+        got = extractRels(
+                "There are five types of food .",
+                "EX VBP CD NNS IN NN .",
+                "B-NP O B-NP I-NP I-NP I-NP O"
+        );
+        assertEquals(expected, got);
+    }
+
+    @Test
+    public void testExtract14() throws Exception {
+        got = extractTriples(
+                "Fluoropolymer resin , which was discovered by Plunkett , is a type of resin .",
+                "NNP NN , WDT VBD VBN IN NNP , VBZ DT NN IN NN .",
+                "B-NP I-NP O B-NP O O O B-NP O O B-NP I-NP I-NP I-NP O"
+        );
+        String extr = "(Fluoropolymer resin, was discovered by, Plunkett)";
+        assertTrue(got.contains(extr));
+    }
+    
+    @Test
+    public void testExtractOneChar() throws Exception {
+        // This is a real example from Wikipedia text.
+        got = extractTriples(
+            ". ^ a b c d e f g h i j k l m Clinton , Bill .",
+            ". IN DT NN NN VBN NN NN NN NN IN NNS VBP JJ NN NNP , NNP .",
+            "O B-PP B-NP I-NP I-NP I-NP I-NP I-NP I-NP I-NP B-PP B-NP B-VP B-NP I-NP I-NP O B-NP O"
+        );
+        assertEquals(0, got.size());
+    }
+    
+    
+    @Test
+    public void testRelPronounError() throws Exception {
+        /*
+         * Relations should not contain pronouns.
+         */
+        got = extractTriples(
+            "I picked it up at noon .",
+            "PRP VBD PRP RP IN NN .",
+            "B-NP O B-NP O O B-NP O"
+        );
+        assertFalse(got.contains("(I, picked it up at, noon)"));
+    }
+    
+    @Test
+    public void testReflexivePronounArg1() throws Exception {
+        got = extractTriples(
+            "Edison himself invented the phonograph .",
+            "NNP PRP VBD DT NN .",
+            "B-NP B-NP O B-NP I-NP O"
+        );
+        assertFalse(got.contains("(himself, invented, the phonograph)"));
+        assertTrue(got.contains("(Edison, invented, the phonograph)"));
+    }
+
+
+}

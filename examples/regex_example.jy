@@ -1,0 +1,60 @@
+# This file shows how to use the regular expression module
+# that comes with reverb. This module allows you to match regular expressions
+# over different layers of a sentence (e.g. word layer, pos-tag layer, np-chunk
+# layer). See the API documentation in edu.washington.cs.knowitall.sequence
+# for more information.
+
+# A chunker class for performing basic NLP annotation on a sentence.
+from edu.washington.cs.knowitall.nlp import OpenNlpSentenceChunker
+
+# Used to represent compiled regular expressions over tag sequences.
+# Analogous to java.util.regex.Pattern.
+from edu.washington.cs.knowitall.sequence import LayeredTokenPattern
+
+# Analogous to java.util.regex.Matcher.
+from edu.washington.cs.knowitall.sequence import LayeredTokenMatcher
+
+# Use OpenNlpChunker to chunk the sentences. This represents the
+# sentence in three "layers":
+#   - The tokens (tok)
+#   - The part-of-speech tags (pos)
+#   - The noun-phrase chunks (np)
+sent_strs = [
+    "She is the master maker of muppets.",
+    "He is the criminal king of crunk.",
+    "She is the quiet queen of quilting.",
+    "Joe is the jovial jack of jalapenos."
+]
+chunker = OpenNlpSentenceChunker()
+sents = [ chunker.chunkSentence(sent_str) for sent_str in sent_strs ]
+
+# Patterns are expressed as regular expressions over 
+# the elements of the different layers. The pattern below
+# matches the word "is", followed by a noun phrase, followed
+# by the word "of" followed by a plural noun. 
+pattern_str = 'is_tok (B-NP_np I-NP_np*) of_tok (NNS_pos)'
+pattern = LayeredTokenPattern(pattern_str)
+
+for sent in sents:
+
+    print 'tok: %s' % sent.getTokensAsString()
+    print 'pos: %s' % sent.getPosTagsAsString()
+    print 'np: %s' % sent.getNpChunkTagsAsString()
+
+    # The matcher object returned is very similar to the 
+    # java.util.regex.Matcher. See the API documentation for 
+    # more information.
+    matcher = pattern.matcher(sent)
+
+    if matcher.find():
+        print 'Match'
+        start1, end1 = matcher.start(1), matcher.end(1)
+        start2, end2 = matcher.start(2), matcher.end(2)
+        group1 = sent.getTokensAsString(start1, end1 - start1)
+        group2 = sent.getTokensAsString(start2, end2 - start2)
+        print '(%s, %s)' % (group1, group2)
+    else:
+        print 'No match'
+
+    print '-' * 80
+
