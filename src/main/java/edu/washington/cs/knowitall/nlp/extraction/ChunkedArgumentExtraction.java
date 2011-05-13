@@ -11,7 +11,7 @@ import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 public class ChunkedArgumentExtraction extends ChunkedExtraction {
 
     private ChunkedExtraction relation;
-
+    private double confidence = .5;
     /**
      * Constructs a new <code>NpChunkArgumentExtraction</code> from <code>sent</code> for <code>relation</code>. 
      * @param sent the source sentence.
@@ -21,6 +21,12 @@ public class ChunkedArgumentExtraction extends ChunkedExtraction {
     public ChunkedArgumentExtraction(ChunkedSentence sent, Range range, ChunkedExtraction relation) {
         super(sent, range);
         this.relation = relation;
+    }
+    
+    public ChunkedArgumentExtraction(ChunkedSentence sent, Range range, ChunkedExtraction relation, double confidence) {
+        super(sent, range);
+        this.relation = relation;
+        this.confidence = confidence;
     }
     
     public ChunkedArgumentExtraction(ChunkedSentence sent, Range range, ChunkedExtraction relation, String string) {
@@ -33,5 +39,9 @@ public class ChunkedArgumentExtraction extends ChunkedExtraction {
      */
     public ChunkedExtraction getRelation() {
         return relation;
+    }
+    
+    public double getConfidence() {
+    	return confidence;
     }
 }
