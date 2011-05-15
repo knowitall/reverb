@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import edu.washington.cs.knowitall.argumentidentifier.ArgLearner.Mode;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
+import edu.washington.cs.knowitall.commonlib.ResourceUtils;
 
 import weka.classifiers.trees.REPTree;
 import weka.core.Instances;
@@ -19,7 +21,7 @@ import weka.core.Instances;
  *
  */
 public class ArgLocationClassifier {
-    private final String arg1_closest_file = "data/argtraining/arg1location-training.arff";
+    private final String arg1_closest_file = "arg1location-training.arff";
     
     private REPTree classifier = new REPTree();
 	private Arg1LocationFeatureGenerator featuregenerator;
@@ -102,20 +104,14 @@ public class ArgLocationClassifier {
     }
 	
 	private void setupClassifier(String trainingdata){
-		File file=new File(trainingdata);
-    	boolean exists = file.isFile();
     	Reader trainreader = null;
-    	if(!exists){
-    		trainreader = new StringReader(trainingdata);
-    	}
-    	else{
-    		try {
-				trainreader = new FileReader(file);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
-    	}
+        try {
+            trainreader = new InputStreamReader(ResourceUtils.loadResource(trainingdata, this.getClass()));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
 		try {
 			Instances traininginstances = new Instances(trainreader);
 			traininginstances.setClassIndex(traininginstances.numAttributes() - 1);

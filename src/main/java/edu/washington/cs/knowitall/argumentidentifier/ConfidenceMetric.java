@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,6 +22,7 @@ import weka.core.Instances;
 import com.google.common.base.Predicate;
 
 import edu.washington.cs.knowitall.commonlib.Range;
+import edu.washington.cs.knowitall.commonlib.ResourceUtils;
 import edu.washington.cs.knowitall.extractor.ExtractorException;
 import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
 import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
@@ -41,7 +43,7 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
  */
 
 public class ConfidenceMetric {
-	private static String TRAINING_DATA = "data/argtraining/confidence-training.arff";
+	private static String TRAINING_DATA = "confidence-training.arff";
 	
     private Logistic classifier = new Logistic();
 	private PatternExtractor pattern_extractor;
@@ -49,19 +51,14 @@ public class ConfidenceMetric {
 	
 	public ConfidenceMetric(){
 		this.pattern_extractor = new PatternExtractor();
-    	File file=new File(TRAINING_DATA);
-    	boolean exists = file.isFile();
-    	Reader trainreader = null;
-    	if(!exists){
-    		trainreader = new StringReader(TRAINING_DATA);
-    	}
-    	else{
-    		try {
-				trainreader = new FileReader(file);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
+        Reader trainreader;
+        try {
+            trainreader = new InputStreamReader(ResourceUtils.loadResource(TRAINING_DATA, this.getClass()));
+        }
+    	catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+            return;
     	}
     	try {
 			Instances traininginstances = new Instances(trainreader);

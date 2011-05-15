@@ -18,6 +18,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
 import edu.washington.cs.knowitall.argumentidentifier.ArgLearner.Mode;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
+import edu.washington.cs.knowitall.commonlib.ResourceUtils;
 
 /**
  * ArgSubstructureClassifier uses a CRF to classify the left bound 
@@ -28,8 +29,8 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 public class ArgSubstructureClassifier {
     private Mode mode;
 
-	private static final String ARG1_FILE = "data/argtraining/arg1substructure-model";
-	private static final String ARG2_FILE = "data/argtraining/arg2substructure-model";
+	private static final String ARG1_FILE = "arg1substructure-model";
+	private static final String ARG2_FILE = "arg2substructure-model";
 	
 	private CRF crf = null;
 	private Pipe crf_pipe = null;
@@ -168,7 +169,7 @@ public class ArgSubstructureClassifier {
 	
 	private void setupClassifier(String trainingdata){
     	try {
-			crf_input = new ObjectInputStream(new FileInputStream(trainingdata));
+			crf_input = new ObjectInputStream(ResourceUtils.loadResource(trainingdata, this.getClass()));
 			crf = (CRF) crf_input.readObject();
 			crf_input.close();
 		} catch (FileNotFoundException e1) {
