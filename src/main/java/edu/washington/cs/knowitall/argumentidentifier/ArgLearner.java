@@ -19,6 +19,8 @@ public class ArgLearner extends Extractor<ChunkedExtraction, ChunkedArgumentExtr
 	public enum Mode {LEFT, RIGHT};
     private Mode mode;
 
+    private PatternExtractor patternextractor;
+    
     public ArgLocationClassifier arg1rightboundclassifier;
     public ArgLocationClassifier arg2leftboundclassifier;
     
@@ -27,6 +29,7 @@ public class ArgLearner extends Extractor<ChunkedExtraction, ChunkedArgumentExtr
 
 	public ArgLearner(Mode mode) {
         this.mode = mode;
+        patternextractor = new PatternExtractor();
 	    
 	    if(mode==Mode.LEFT){
 		    ArgSubstructureFeatureGenerator featuregeneratorsub = new ArgSubstructureFeatureGenerator(mode);
@@ -53,10 +56,58 @@ public class ArgLearner extends Extractor<ChunkedExtraction, ChunkedArgumentExtr
 			arg = getArg2(predicate);
 		}
 		if(arg!=null){
-			args.add(arg);
+			ArrayList<ChunkedArgumentExtraction> splitargs = splitArg(arg);
+			args.addAll(splitargs);
 		}
 		
         return args;
+	}
+	
+	/**
+	 * 
+	 */
+	private ArrayList<ChunkedArgumentExtraction> splitArg(ChunkedArgumentExtraction arg){
+		ArrayList<ChunkedArgumentExtraction> args = new ArrayList<ChunkedArgumentExtraction>();
+		if(patternextractor.matchesListStrict(arg)){
+			int start = arg.getStart();
+			int length = 0;
+			for(int i = arg.getStart(); i < arg.getStart()+arg.getLength(); i++){
+				if((arg.getSentence().getToken(i).equals(",") && (i >= arg.getSentence().getLength() ||
+						(!arg.getSentence().getToken(i+1).equals("and") &&
+						!arg.getSentence().getToken(i+1).equals("or"))))|| 
+						arg.getSentence().getToken(i).equals("and") || 
+						arg.getSentence().getToken(i).equals("or")){
+					args.add(new ChunkedArgumentExtraction(arg.getSentence(), new Range(start, length), arg.getRelation()));
+					start = i+1;
+					length = 0;
+				}
+				else if(!arg.getSentence().getToken(i).equals(",")){
+					length++;
+				}
+			}
+			args.add(new ChunkedArgumentExtraction(arg.getSentence(), new Range(start, length), arg.getRelation()));
+			
+		}
+		else if(patternextractor.matchesAppositiveStrict(arg)){
+			int start = arg.getStart();
+			int length = 0;
+			for(int i = arg.getStart(); i < arg.getStart()+arg.getLength(); i++){
+				if(arg.getSentence().getToken(i).equals(",")){
+					args.add(new ChunkedArgumentExtraction(arg.getSentence(), new Range(start, length), arg.getRelation()));
+					start = i+1;
+					length = 0;
+				}
+				else{
+					length++;
+				}
+			}
+			args.add(new ChunkedArgumentExtraction(arg.getSentence(), new Range(start, length), arg.getRelation()));
+			
+		}
+		else{
+			args.add(arg);
+		}
+		return args;
 	}
 	
 	/**

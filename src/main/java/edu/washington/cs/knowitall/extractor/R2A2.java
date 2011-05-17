@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 
 import edu.washington.cs.knowitall.argumentidentifier.ArgLearner;
+import edu.washington.cs.knowitall.argumentidentifier.ConfidenceMetric;
 import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument1Mappers;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument2Mappers;
@@ -47,7 +48,7 @@ public class R2A2 extends ReVerbRelationExtractor {
         System.err.println("Done.");
         
         System.err.print("Initializing confidence function...");
-        ReVerbConfFunction scoreFunc = new ReVerbConfFunction();
+        ConfidenceMetric scoreFunc = new ConfidenceMetric();
         System.err.println("Done.");
         
         System.err.print("Initializing NLP tools...");
@@ -64,7 +65,7 @@ public class R2A2 extends ReVerbRelationExtractor {
             
             for (ChunkedBinaryExtraction extr : extractor.extract(sent)) {
                 
-                double score = scoreFunc.getConf(extr);
+                double score = scoreFunc.getConfidence(extr);
                 
                 String arg1 = extr.getArgument1().toString();
                 String rel = extr.getRelation().toString();

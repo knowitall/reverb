@@ -62,6 +62,7 @@ public class PatternExtractor{
 		patternMapArg1.put("verb_np", "<>* "+vp2+" "+np);
 		patternMapArg1.put("double_np", "<>* "+np+" "+np);
 		patternMapArg1.put("if", "<>* <string='if'> <>");
+		patternMapArg1.put("app_strict", np_pp+" "+comma+" ("+np+" "+pp+")* "+np+" "+comma+"?");   
 		patternMapArg1.put("app_1", np+" "+comma+" ("+adjp+"? "+pp+"? "+vp+"? "+pp+"?)? "+"("+np+" "+advp+"? "+pp+"? "+comma+"? <pos='CC'>?)? "+np+" <string='.'>? "+comma+" (<pos='WDT'> | <pos='WP'> | <string='that'>)? "+advp+"? ");
 		patternMapArg1.put("app_2", np+" "+comma+" (<pos='VBN'> "+pp+"*)? "+"("+np+" "+advp+"? "+pp+"? "+comma+"? <pos='CC'>?)? "+np+" <string='.'>? "+comma+" "+advp+"? ");
 		patternMapArg1.put("app_3", np_pp+" "+comma+" "+"(("+pp+" "+np+") "+np+" "+comma+")* ("+pp+" "+np+")* "+np);    	
@@ -324,6 +325,22 @@ public class PatternExtractor{
 		}
 		return false;
     }
+
+    public boolean matchesAppositiveStrict(ChunkedExtraction extr){
+    	if (matches(extr.getSentence().getSubSequence(extr.getStart(), extr.getLength()), "app_strict", true)){
+    		return true;
+    	}
+        return false;
+    }
+    
+    public boolean matchesListStrict(ChunkedExtraction extr){
+    	if (matches(extr.getSentence().getSubSequence(extr.getStart(), extr.getLength()), "list_1", true) && 
+    			!extr.getSentence().getSubSequence(extr.getStart(), extr.getLength()).getPosTagsAsString().contains("IN")){
+    		return true;
+    	}
+        return false;
+    }
+    
     public boolean matchesList(ChunkedExtraction extr, int argend, int current){
     	while(current>-1 && (extr.getSentence().getChunkTag(current).contains("NP") ||
     						extr.getSentence().getChunkTag(current).contains("PP") ||
