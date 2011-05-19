@@ -144,13 +144,17 @@ public class ArgSubstructureClassifier {
 	
 	private double[] classifyData(String testingdata, ChunkedExtraction extr, int start){
 
+		double[] toreturn = {-1.0, -1.0};
+		if(testingdata==null || testingdata.equals("")){
+			return toreturn;
+		}
+		
 		//apply crf
 		Pair<Double, Sequence> pair = applyCRF(testingdata);
         Double conf = pair.getFirst();
 		Sequence output = pair.getSecond();
         
 		if(conf == -1.0){
-			double[] toreturn = {-1.0, -1.0};
 			return toreturn;
 		}
 
@@ -162,7 +166,8 @@ public class ArgSubstructureClassifier {
         else{
         	lastnp = readCRFOutputRight(extr, start, output);
         }
-        double[] toreturn = {(lastnp),conf};
+        toreturn[0] = lastnp;
+        toreturn[1] = conf;
         return toreturn;
 
     }
