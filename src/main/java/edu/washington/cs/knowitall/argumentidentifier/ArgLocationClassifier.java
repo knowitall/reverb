@@ -56,7 +56,7 @@ public class ArgLocationClassifier {
 	    	
 	    	//adjust the np to be the righbound
 	    	rightbound++;
-	    	while(predicate.getSentence().getChunkTag(rightbound).equals("I-NP")){
+	    	while(rightbound < predicate.getStart() && predicate.getSentence().getChunkTag(rightbound).equals("I-NP")){
 	    		rightbound++;
 	    	}
 	    	resultsclassifier[0] = rightbound;
