@@ -4,11 +4,11 @@
   <parent>
     <groupId>edu.washington.cs.knowitall</groupId>
     <artifactId>knowitall</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-core</artifactId>
-  <version>1.0.4</version>
+  <version>1.1.2</version>
   <name>reverb-core</name>
   <description>A regular-expression based Open IE relation extractor.</description>
   <inceptionYear>2010</inceptionYear>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>edu.washington.cs.knowitall</groupId>
       <artifactId>commonlib</artifactId>
-      <version>1.0.4</version>
+      <version>1.0.5</version>
     </dependency>
     <!-- Common -->
     <dependency>
