@@ -18,7 +18,6 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import weka.classifiers.Classifier;
 import weka.core.SerializationHelper;
-
 import edu.washington.cs.knowitall.extractor.HtmlSentenceExtractor;
 import edu.washington.cs.knowitall.extractor.SentenceExtractor;
 import edu.washington.cs.knowitall.extractor.mapper.BracketsRemover;
@@ -36,10 +35,7 @@ public class DefaultObjects {
 	private static final String confFunctionModelFile = "conf.weka";
 	
 	/** Default singleton objects */
-	private static SentenceDetectorME DETECTOR;
 	private static TokenizerME TOKENIZER;
-	private static POSTaggerME TAGGER;
-	private static ChunkerME CHUNKER;
 	private static BracketsRemover BRACKETS_REMOVER;
 	private static SentenceStartFilter SENTENCE_START_FILTER;
 	private static SentenceEndFilter SENTENCE_END_FILTER;
@@ -80,21 +76,15 @@ public class DefaultObjects {
 	}
 	
 	public static POSTagger getDefaultPosTagger() throws IOException {
-		if (TAGGER == null)
-			TAGGER = new POSTaggerME(new POSModel(getResourceAsStream(taggerModelFile)));
-		return TAGGER;
+		return new POSTaggerME(new POSModel(getResourceAsStream(taggerModelFile)));
 	}
 	
 	public static Chunker getDefaultChunker() throws IOException {
-		if (CHUNKER == null) 
-			CHUNKER = new ChunkerME(new ChunkerModel(getResourceAsStream(chunkerModelFile)));
-		return CHUNKER;
+		return new ChunkerME(new ChunkerModel(getResourceAsStream(chunkerModelFile)));
 	}
 
 	public static SentenceDetector getDefaultSentenceDetector() throws IOException {
-		if (DETECTOR == null)
-			DETECTOR = new SentenceDetectorME(new SentenceModel(getResourceAsStream(sentDetectorModelFile)));
-		return DETECTOR;
+		return new SentenceDetectorME(new SentenceModel(getResourceAsStream(sentDetectorModelFile)));
 	}
 	
 	public static void addDefaultSentenceFilters(SentenceExtractor extractor) {
@@ -133,5 +123,4 @@ public class DefaultObjects {
 		ChunkedSentenceReader reader = new ChunkedSentenceReader(in, getDefaultHtmlSentenceExtractor());
 		return reader;
 	}
-
 }
