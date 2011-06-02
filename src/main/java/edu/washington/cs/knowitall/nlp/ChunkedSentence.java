@@ -1,6 +1,5 @@
 package edu.washington.cs.knowitall.nlp;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableCollection;
@@ -35,6 +34,8 @@ public class ChunkedSentence extends BIOLayeredSequence {
 
     // a cache for getTokensAsString
     private String tokensAsString = null;
+    
+    protected final ImmutableList<Range> offsets;
 
     /**
      * Constructs a new instance using the given tokens, POS tags, and NP chunk 
@@ -48,8 +49,14 @@ public class ChunkedSentence extends BIOLayeredSequence {
      */
     public ChunkedSentence(String[] tokens, String[] posTags,
             String[] npChunkTags) throws SequenceException {
-        this(Arrays.asList(tokens), Arrays.asList(posTags), Arrays
-                .asList(npChunkTags));
+        this(null, ImmutableList.copyOf(tokens), ImmutableList.copyOf(posTags), ImmutableList
+                .copyOf(npChunkTags));
+    }
+    
+    public ChunkedSentence(Range[] offsets, String[] tokens, String[] posTags,
+            String[] npChunkTags) throws SequenceException {
+        this(ImmutableList.copyOf(offsets), ImmutableList.copyOf(tokens), ImmutableList.copyOf(posTags), ImmutableList
+                .copyOf(npChunkTags));
     }
 
     /**
@@ -62,9 +69,10 @@ public class ChunkedSentence extends BIOLayeredSequence {
      * @throws SequenceException if the layers are of different lengths, or if
      * unable to interpret npChunkTags
      */
-    public ChunkedSentence(ImmutableList<String> tokens, ImmutableList<String> posTags,
+    public ChunkedSentence(ImmutableList<Range> offsets, ImmutableList<String> tokens, ImmutableList<String> posTags,
             ImmutableList<String> npChunkTags) throws SequenceException {
         super(tokens.size());
+        this.offsets = offsets;
         addLayer(TOKEN_LAYER, tokens);
         addLayer(POS_LAYER, posTags);
         addSpanLayer(NP_LAYER, npChunkTags);
@@ -72,7 +80,13 @@ public class ChunkedSentence extends BIOLayeredSequence {
     
     public ChunkedSentence(List<String> tokens, List<String> posTags,
             List<String> npChunkTags) throws SequenceException {
-        this(ImmutableList.copyOf(tokens), ImmutableList.copyOf(posTags),
+        this(null, ImmutableList.copyOf(tokens), ImmutableList.copyOf(posTags),
+                ImmutableList.copyOf(npChunkTags));
+    }
+    
+    public ChunkedSentence(List<Range> offsets, List<String> tokens, List<String> posTags,
+            List<String> npChunkTags) throws SequenceException {
+        this(offsets == null ? null : ImmutableList.copyOf(offsets), ImmutableList.copyOf(tokens), ImmutableList.copyOf(posTags),
                 ImmutableList.copyOf(npChunkTags));
     }
 
@@ -87,6 +101,7 @@ public class ChunkedSentence extends BIOLayeredSequence {
     public ChunkedSentence(ChunkedSentence sent) {
         super(sent.getLength());
         try {
+            this.offsets = sent.offsets;
             addLayer(TOKEN_LAYER, sent.getTokens());
             addLayer(POS_LAYER, sent.getPosTags());
             addSpanLayer(NP_LAYER, sent.getChunkTags());
@@ -103,6 +118,10 @@ public class ChunkedSentence extends BIOLayeredSequence {
             // from an existing one.
             throw new IllegalStateException(e);
         }
+    }
+    
+    public ImmutableList<Range> getOffsets() {
+        return this.offsets;
     }
 
     /**
