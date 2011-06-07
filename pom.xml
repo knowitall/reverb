@@ -4,7 +4,7 @@
   <parent>
     <groupId>edu.washington.cs.knowitall</groupId>
     <artifactId>knowitall</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-core</artifactId>

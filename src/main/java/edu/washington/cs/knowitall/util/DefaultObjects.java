@@ -70,9 +70,7 @@ public class DefaultObjects {
 	}
 	
 	public static Tokenizer getDefaultTokenizer() throws IOException {
-		if (TOKENIZER == null)
-			TOKENIZER =  new TokenizerME(new TokenizerModel(getResourceAsStream(tokenizerModelFile)));
-		return TOKENIZER;
+		return new TokenizerME(new TokenizerModel(getResourceAsStream(tokenizerModelFile)));
 	}
 	
 	public static POSTagger getDefaultPosTagger() throws IOException {
