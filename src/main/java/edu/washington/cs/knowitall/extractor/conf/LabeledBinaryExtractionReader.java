@@ -79,7 +79,7 @@ public class LabeledBinaryExtractionReader {
 			String[] startLen = line.split(" ");
 			int start = Integer.parseInt(startLen[0]);
 			int length = Integer.parseInt(startLen[1]);
-			return Range.fromInterval(start, length);
+			return new Range(start, length);
 		}
 		
 		private String[] readNextLines() throws IOException {
