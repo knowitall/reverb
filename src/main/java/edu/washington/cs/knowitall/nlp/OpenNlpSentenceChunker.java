@@ -23,7 +23,6 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  * 
  */
 public class OpenNlpSentenceChunker implements SentenceChunker {
-
     private Chunker chunker;
     private POSTagger posTagger;
     private Tokenizer tokenizer;

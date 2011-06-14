@@ -7,6 +7,7 @@ import com.google.common.base.Predicate;
 
 import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
+import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;

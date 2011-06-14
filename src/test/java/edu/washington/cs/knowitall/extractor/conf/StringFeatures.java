@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import com.google.common.base.Predicate;
 
-import edu.washington.cs.knowitall.extractor.conf.BooleanFeatureSet;
-import edu.washington.cs.knowitall.extractor.conf.WekaDataSet;
+import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
+import edu.washington.cs.knowitall.extractor.conf.weka.WekaDataSet;
 
 public class StringFeatures {
 	

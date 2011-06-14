@@ -5,6 +5,8 @@ import java.io.IOException;
 import weka.classifiers.Classifier;
 import weka.core.SerializationHelper;
 import edu.washington.cs.knowitall.commonlib.ResourceUtils;
+import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
+import edu.washington.cs.knowitall.extractor.conf.weka.WekaClassifierConfFunction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.util.DefaultObjects;
 

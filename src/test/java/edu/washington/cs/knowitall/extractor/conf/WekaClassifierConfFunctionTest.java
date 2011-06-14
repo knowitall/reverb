@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import edu.washington.cs.knowitall.extractor.conf.BooleanFeatureSet;
-import edu.washington.cs.knowitall.extractor.conf.WekaClassifierConfFunction;
+import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
+import edu.washington.cs.knowitall.extractor.conf.weka.WekaClassifierConfFunction;
 
 import weka.classifiers.functions.Logistic;
 

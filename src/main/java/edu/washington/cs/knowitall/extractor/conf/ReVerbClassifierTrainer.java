@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
+import edu.washington.cs.knowitall.extractor.conf.weka.WekaDataSet;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import weka.classifiers.functions.Logistic;
 import weka.core.SerializationHelper;
@@ -99,8 +101,5 @@ public class ReVerbClassifierTrainer {
 			saver.setFile(new File(args[2]));
 			saver.writeBatch();
 		}
-		
-		
 	}
-
 }
