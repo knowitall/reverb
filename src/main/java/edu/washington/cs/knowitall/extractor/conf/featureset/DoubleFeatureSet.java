@@ -68,4 +68,9 @@ public class DoubleFeatureSet<T> extends FeatureSet<T> {
 	public List<Function<T, Double>> getFeatures() {
 		return features;
 	}
+
+    @Override
+    public double featurize(String featureName, T object) {
+        return this.features.get(this.featureNames.indexOf(featureName)).apply(object);
+    }
 }

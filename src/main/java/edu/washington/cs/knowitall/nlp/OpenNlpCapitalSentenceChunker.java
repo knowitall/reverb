@@ -18,7 +18,7 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  */
 public class OpenNlpCapitalSentenceChunker extends OpenNlpSentenceChunker {
 	private static final String taggerModelFile = "/en-pos-caps-maxent.bin";
-	private static final String chunkerModelFile = "/en-chunk-caps.bin";
+	private static final String chunkerModelFile = "/en-chunker-caps.bin";
 	
     /**
      * Constructs a new object using the default models.

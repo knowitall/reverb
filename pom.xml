@@ -8,7 +8,7 @@
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-core</artifactId>
-  <version>1.1.8</version>
+  <version>1.1.9</version>
   <name>reverb-core</name>
   <description>A regular-expression based Open IE relation extractor.</description>
   <inceptionYear>2010</inceptionYear>

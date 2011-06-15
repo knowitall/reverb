@@ -1,6 +1,7 @@
 package edu.washington.cs.knowitall.extractor.conf.featureset;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableList;
 
@@ -8,13 +9,12 @@ import com.google.common.collect.ImmutableList;
 public abstract class FeatureSet<T> {
 	protected final ImmutableList<String> featureNames;
 	
-	public FeatureSet(ImmutableList<String> featureNames) {
-		this.featureNames = featureNames;
+	public FeatureSet(List<String> featureNames) {
+	    // this is stupid, but Weka IMPLICITLY requires attributes to be in sorted order.
+		this.featureNames = ImmutableList.copyOf(new TreeSet<String>(featureNames));
 	}
 	
-	public FeatureSet(List<String> featureNames) {
-		this(ImmutableList.copyOf(featureNames));
-	}
+	public abstract double featurize(String featureName, T object);
 	
 	public abstract double[] featurizeToDouble(T object);
 	

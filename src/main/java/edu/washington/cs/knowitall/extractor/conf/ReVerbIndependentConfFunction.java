@@ -2,11 +2,9 @@ package edu.washington.cs.knowitall.extractor.conf;
 
 import java.io.IOException;
 
-import weka.classifiers.Classifier;
-import weka.core.SerializationHelper;
 import edu.washington.cs.knowitall.commonlib.ResourceUtils;
+import edu.washington.cs.knowitall.extractor.conf.classifier.LogisticRegression;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
-import edu.washington.cs.knowitall.extractor.conf.weka.WekaClassifierConfFunction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.util.DefaultObjects;
 
@@ -24,34 +22,26 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  * @author afader
  *
  */
-public class ReVerbConfFunction {
+public class ReVerbIndependentConfFunction {
 	
-	public final Classifier classifier;
 	private ReVerbFeatures reverbFeatures;
 	private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
-	private WekaClassifierConfFunction<ChunkedBinaryExtraction> func;
+	private final LogisticRegression<ChunkedBinaryExtraction> logreg;
 	
 	/**
 	 * Constructs a new instance of the confidence function.
 	 * @throws ConfidenceFunctionException if unable to initialize
 	 */
-	public ReVerbConfFunction() throws ConfidenceFunctionException {
+	public ReVerbIndependentConfFunction() throws ConfidenceFunctionException {
 		this(DefaultObjects.confFunctionModelFile);
 	}
 	
-	public ReVerbConfFunction(String model) {
+	public ReVerbIndependentConfFunction(String model) {
 		try {
-			try {
-				classifier = (Classifier)SerializationHelper.read(ResourceUtils.loadResource(model, this.getClass()));
-			}
-			catch (Exception e) {
-				throw new IOException(e);
-			}
-			
 			reverbFeatures = new ReVerbFeatures();
 			featureSet = reverbFeatures.getFeatureSet();
-			func = new WekaClassifierConfFunction<ChunkedBinaryExtraction>(
-				featureSet, classifier);
+			logreg = new LogisticRegression<ChunkedBinaryExtraction>(
+			        featureSet, ResourceUtils.loadResource(model, this.getClass()));
 		} catch (IOException e) {
 			throw new ConfidenceFunctionException(
 				"Unable to load classifier: " + model, e);
@@ -65,7 +55,7 @@ public class ReVerbConfFunction {
 	 */
 	public double getConf(ChunkedBinaryExtraction extr) throws ConfidenceFunctionException {
         try {
-            return func.getConf(extr);
+            return logreg.confidence(extr);
         }
         catch (Exception e) {
             throw new ConfidenceFunctionException(e);
