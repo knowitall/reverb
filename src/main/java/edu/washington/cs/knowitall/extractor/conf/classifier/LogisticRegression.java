@@ -31,7 +31,6 @@ public class LogisticRegression<E> {
             String line = scan.nextLine();
             String[] parts = line.split("(?:    \\s*)|\\t\\s*");
             
-            System.out.println(line);
             String featureName = parts[0];
             Double weight = Double.parseDouble(parts[1]);
             featureWeights.put(featureName.toLowerCase(), weight);

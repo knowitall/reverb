@@ -31,7 +31,7 @@ public class BooleanFeatureSetTest {
 		double[] gotJane = StringFeatures.featureSet.featurizeToDouble("jane");
 		assertArrayEquals(expectedJane, gotJane, 0.001);
 		
-		double[] expectedJoe = { 0.0, 1.0, 1.0 };
+		double[] expectedJoe = { 1.0, 0.0, 1.0 };
 		double[] gotJoe = StringFeatures.featureSet.featurizeToDouble("joe");
 		assertArrayEquals(expectedJoe, gotJoe, 0.001);
 	}
@@ -43,7 +43,7 @@ public class BooleanFeatureSetTest {
 		assertEquals(3, gotJane.length);
 		for (int i = 0; i < 3; i++) assertEquals(expectedJane[i], gotJane[i]);
 		
-		boolean[] expectedJoe = { false, true, true };
+		boolean[] expectedJoe = { true, false, true };
 		boolean[] gotJoe = StringFeatures.featureSet.featurizeToBool("joe");
 		assertEquals(3, gotJoe.length);
 		for (int i = 0; i < 3; i++) assertEquals(expectedJoe[i], gotJoe[i]);
