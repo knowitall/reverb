@@ -74,7 +74,7 @@ public class ArgSubstructureClassifier {
 		Instance inst = testSequence.get(0);
 		input = (Sequence) inst.getData();		
 		assert(input.size() == output.size());
-		
+
 		output = crf.transduce(input);
 		conf = crf_estimator.estimateConfidenceFor(inst, startTags, inTags);
 
@@ -184,6 +184,8 @@ public class ArgSubstructureClassifier {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		crf.getInputAlphabet().stopGrowth();
+		crf.getOutputAlphabet().stopGrowth();
         crf_pipe = crf.getInputPipe();
         crf_pipe.setTargetProcessing(false);
         crf_estimator = new ViterbiConfidenceEstimator(crf);
