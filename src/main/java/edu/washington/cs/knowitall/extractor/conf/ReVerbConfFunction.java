@@ -48,14 +48,28 @@ public class ReVerbConfFunction {
 				throw new IOException(e);
 			}
 			
-			reverbFeatures = new ReVerbFeatures();
-			featureSet = reverbFeatures.getFeatureSet();
-			func = new WekaClassifierConfFunction<ChunkedBinaryExtraction>(
-				featureSet, classifier);
+			initializeConfFunction();
+			
 		} catch (IOException e) {
 			throw new ConfidenceFunctionException(
 				"Unable to load classifier: " + model, e);
 		}
+	}
+	
+	public ReVerbConfFunction(Classifier classifier) {
+		
+		this.classifier = classifier;
+		
+		initializeConfFunction();
+	}
+	
+	/* Assumes that this.classifier is valid */
+	private void initializeConfFunction() {
+		
+		reverbFeatures = new ReVerbFeatures();
+		featureSet = reverbFeatures.getFeatureSet();
+		func = new WekaClassifierConfFunction<ChunkedBinaryExtraction>(
+			featureSet, classifier);
 	}
 	
 	/**
