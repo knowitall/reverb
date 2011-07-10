@@ -29,15 +29,41 @@ public class ReVerbClassifierTrainer {
 	private Logistic classifier;
 	private WekaDataSet<ChunkedBinaryExtraction> dataSet;
 	
+	private ReVerbClassifierTrainer() {
+		
+		ReVerbFeatures feats = new ReVerbFeatures();
+		featureSet = feats.getFeatureSet();
+	}
+	
 	/**
 	 * Constructs and trains a new Logistic classifier using the given examples.
 	 * @param examples
 	 * @throws Exception
 	 */
 	public ReVerbClassifierTrainer(Iterable<LabeledBinaryExtraction> examples) throws Exception {
-		ReVerbFeatures feats = new ReVerbFeatures();
-		featureSet = feats.getFeatureSet();
-		createDataSet(examples);
+		
+		this();
+		
+		dataSet = new WekaDataSet<ChunkedBinaryExtraction>("train", featureSet);
+		loadDataSet(examples);
+		
+		train();
+	}
+	
+	/**
+	 * Constructs and trains a new Logistic classifier using a previously existing
+	 * data set (e.g. from an existing confidence function), and additional given examples.
+	 * @param examples
+	 * @throws Exception
+	 */
+	public ReVerbClassifierTrainer(WekaDataSet<ChunkedBinaryExtraction> existingDataSet, 
+			Iterable<LabeledBinaryExtraction> examples) throws Exception {
+		
+		this();
+		
+		dataSet = existingDataSet;
+		loadDataSet(examples);
+		
 		train();
 	}
 	
@@ -55,8 +81,8 @@ public class ReVerbClassifierTrainer {
 		return classifier;
 	}
 	
-	private void createDataSet(Iterable<LabeledBinaryExtraction> examples) {
-		dataSet = new WekaDataSet<ChunkedBinaryExtraction>("train", featureSet);
+	private void loadDataSet(Iterable<LabeledBinaryExtraction> examples) {
+		
 		for (LabeledBinaryExtraction extr : examples) {
 			int label = extr.isPositive() ? 1 : 0;
 			dataSet.addInstance(extr, label);
