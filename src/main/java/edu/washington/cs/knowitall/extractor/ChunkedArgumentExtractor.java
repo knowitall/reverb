@@ -70,11 +70,10 @@ public class ChunkedArgumentExtractor extends Extractor<ChunkedExtraction, Chunk
         Collection<Range> results = new ArrayList<Range>();
         Range relRange = rel.getRange();
         for (Range range : ranges) {
-            try {
-                results.add(range.removeOverlap(relRange));
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
+        	Range result = range.removeOverlap(relRange);
+        	if (result != null) {
+	            results.add(result);
+        	}
         }
         return results;
     }
