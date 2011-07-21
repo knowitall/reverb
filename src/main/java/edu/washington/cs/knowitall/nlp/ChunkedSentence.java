@@ -2,6 +2,7 @@ package edu.washington.cs.knowitall.nlp;
 
 import java.util.List;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
@@ -312,6 +313,10 @@ public class ChunkedSentence extends BIOLayeredSequence {
      */
     public ImmutableList<String> getChunkTags(Range range) {
         return getSubSequence(NP_LAYER, range);
+    }
+    
+    public String getOffsetsAsString() {
+    	return Joiner.on(" ").join(this.offsets);
     }
 
     /**
