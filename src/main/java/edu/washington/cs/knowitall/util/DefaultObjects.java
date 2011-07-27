@@ -108,7 +108,20 @@ public class DefaultObjects {
 		}
 		return HTML_SENTENCE_EXTRACTOR;
 	}
-	
+	/**
+	 * Return the default sentence reader.
+	 * @param in
+	 * @param htmlSource - Are sentences from an html source?
+	 * @return
+	 * @throws IOException
+	 */
+	public static ChunkedSentenceReader getDefaultSentenceReader(Reader in, boolean htmlSource) throws IOException {
+		if (htmlSource) {
+			return getDefaultSentenceReaderHtml(in);
+		} else {
+			return getDefaultSentenceReader(in);
+		}
+	}
 	public static ChunkedSentenceReader getDefaultSentenceReader(Reader in) throws IOException {
 		ChunkedSentenceReader reader = new ChunkedSentenceReader(in, getDefaultSentenceExtractor());
 		return reader;

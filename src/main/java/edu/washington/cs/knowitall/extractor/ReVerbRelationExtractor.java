@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.google.common.collect.Iterables;
 
+import edu.washington.cs.knowitall.extractor.mapper.ReVerbRelationDictionaryFilter;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbRelationMappers;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.ChunkedSentenceReader;
@@ -63,10 +64,44 @@ public abstract class ReVerbRelationExtractor extends RelationFirstNpChunkExtrac
         initializeRelationExtractor();
         initializeArgumentExtractors();
     }
+    
+    
+    /**
+     * Constructs a new extractor using the default relation pattern,
+     * relation mappers, and argument mappers.
+     * @param minFreq - The minimum distinct arguments to be observed in a large collection for the relation to be deemed valid.
+	 * @param useLexSynConstraints - Use syntactic and lexical constraints that are part of Reverb?
+	 * @param mergeOverlapRels - Merge overlapping relations?
+	 * @param allowUnary - Allow relations with one argument to be output.
+     * @throws ExtractorException if unable to initialize the extractor
+     */
+    public ReVerbRelationExtractor(int minFreq, boolean useLexSynConstraints, boolean mergeOverlapRels, boolean allowUnary) throws ExtractorException {
+        initializeRelationExtractor(minFreq, useLexSynConstraints, mergeOverlapRels, allowUnary);
+        initializeArgumentExtractors();
+    }
 
     protected abstract void initializeArgumentExtractors();
 
+    /**
+     * Wrapper for default initialization of the reverb relation extractor.
+     * Use lexical and syntactic constraints, merge overlapping relations,require a minimum of 20 distinct arguments for support, and 
+     * do not allow unary relations. 
+     * @throws ExtractorException
+     */
     protected void initializeRelationExtractor() throws ExtractorException {
+        
+        initializeRelationExtractor(ReVerbRelationDictionaryFilter.defaultMinFreq, true, true, false);
+    }	
+    
+    /**
+     * Initialize relation extractor.
+     * @param minFreq - The minimum distinct arguments to be observed in a large collection for the relation to be deemed valid.
+	 * @param useLexSynConstraints - Use syntactic and lexical constraints that are part of Reverb?
+	 * @param mergeOverlapRels - Merge overlapping relations?
+	 * @param allowUnary - Allow relations with one argument to be output.
+     * @throws ExtractorException if unable to initialize the extractor
+     */
+    protected void initializeRelationExtractor(int minFreq, boolean useLexSynConstraints, boolean mergeOverlapRels, boolean allowUnary) throws ExtractorException {
         
         ExtractorUnion<ChunkedSentence, ChunkedExtraction> relExtractor = 
             new ExtractorUnion<ChunkedSentence, ChunkedExtraction>();
@@ -84,13 +119,16 @@ public abstract class ReVerbRelationExtractor extends RelationFirstNpChunkExtrac
             throw new ExtractorException(
                 "Unable to initialize long pattern extractor", e);
         }
-        
         try {
-            relExtractor.addMapper(new ReVerbRelationMappers());
-        } catch (IOException e) {
+        	relExtractor.addMapper(new ReVerbRelationMappers(minFreq, useLexSynConstraints, mergeOverlapRels));
+	    } catch (IOException e) {
             throw new ExtractorException(
                 "Unable to initialize relation mappers", e);
         }
+        
+        // Hack to allow unary relations.
+        super.setAllowUnary(allowUnary);
+        
         setRelationExtractor(relExtractor);
     }
     

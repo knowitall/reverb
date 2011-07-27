@@ -36,7 +36,10 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 public abstract class RelationFirstNpChunkExtractor 
     extends Extractor<ChunkedSentence, ChunkedBinaryExtraction> {
 
-    protected Extractor<ChunkedSentence, ChunkedExtraction> relExtr;
+	//Allow unary relations to be extracted.
+	protected boolean allowUnary = false;
+    
+	protected Extractor<ChunkedSentence, ChunkedExtraction> relExtr;
     protected Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg1Extr;
     protected Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg2Extr;
 
@@ -90,6 +93,11 @@ public abstract class RelationFirstNpChunkExtractor
         Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg2Extr) {
         this.arg2Extr = arg2Extr;
     }
+    
+    public void setAllowUnary(boolean allowUnary) {
+		this.allowUnary = allowUnary;
+	}
+
 
     @Override
     /**
@@ -117,8 +125,10 @@ public abstract class RelationFirstNpChunkExtractor
                 arg1Extr.extract(rel);
             Iterable<? extends ChunkedArgumentExtraction> arg2s = 
                 arg2Extr.extract(rel);
+            
             extrs.addAll(
-                ChunkedBinaryExtraction.productOfArgs(rel, arg1s, arg2s));
+                ChunkedBinaryExtraction.productOfArgs(rel, arg1s, arg2s, allowUnary));
+            
         }
 
         return extrs;

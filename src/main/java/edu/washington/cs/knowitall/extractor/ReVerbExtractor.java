@@ -15,6 +15,21 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
 
 public class ReVerbExtractor extends ReVerbRelationExtractor {
 
+	/**
+	 * Explicit constructor to invoke the corresponding super's constructor without arguments.
+	 */
+	public ReVerbExtractor() {
+		
+		super();
+	}
+	
+	/**
+	 * Explicit constructor to invoke the corresponding super's constructor with arguments.
+	 * @param minFreq
+	 */
+	public ReVerbExtractor(int minFreq, boolean useLexSynConstraints, boolean mergeOverlapRels, boolean allowUnary) {
+		super(minFreq, useLexSynConstraints, mergeOverlapRels, allowUnary);
+	}
     protected void initializeArgumentExtractors() {
         
         ChunkedArgumentExtractor arg1Extr = 

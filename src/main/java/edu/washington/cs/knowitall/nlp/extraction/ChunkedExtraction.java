@@ -115,9 +115,30 @@ public class ChunkedExtraction extends ChunkedSentence {
         return true;
     }
     
-    public String getText() {
+    /**public String getText() {
         if (string == null) {
             string = this.sent.getTokensAsString(this.getRange());
+        }
+        
+        return string;
+    }*/
+    
+    public String getText() {
+        if (string == null) {
+        	if(this.getRange().getLength() > 0){
+        		//System.err.println("Range: " + this.getRange().toString());
+        		
+        		string = this.sent.getTokensAsString(this.getRange());
+        		//System.err.println("string: " + string);
+        		if(string.trim().equals("")){
+        			string = "_NULL_";
+        					
+        		}
+        	}else{
+        		string = "_NULL_";
+        	}
+        }else if(string.trim().equals("")){
+        	string = "_NULL_";
         }
         
         return string;
@@ -127,4 +148,6 @@ public class ChunkedExtraction extends ChunkedSentence {
     public String toString() {
     	return this.getText();
     }
+    
+    
 }

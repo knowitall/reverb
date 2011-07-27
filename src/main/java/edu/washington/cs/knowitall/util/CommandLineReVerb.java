@@ -45,6 +45,11 @@ public class CommandLineReVerb {
 	private boolean printSents = true;
 	private boolean quiet = false;
 	private boolean filterPronouns = false;
+	private boolean mergeOverlapRels = false;
+	private boolean useSynLexConstraints = false;
+	private boolean allowUnary = false;
+	private int minFreq = 20;
+	
 	
 	private int messageEvery = 1000;
 	private int numSents = 0;
@@ -63,7 +68,10 @@ public class CommandLineReVerb {
 		options.addOption("n", "no-sents", false, "Don't print sentences");
 		options.addOption("p", "filter-pronouns", false, "Filter out arguments that contain a pronoun");
 		options.addOption("q", "quiet", false, "Quiet mode (don't print messages to standard error)");
-		
+		options.addOption("m", "minFreq", true, "Each relation must have at a minimum this many number of distinct arguments in a large corpus.");
+		options.addOption("K", "keepOverlap", false, "Do not merge overlapping relations (Default is to merge.)");
+		options.addOption("U", "allowUnary", false, "Allow relations with a single argument to be output. (Default setting is to disallow unary relations.)");
+		options.addOption("N", "noConstraints", false, "Do not enforce the syntactic and lexical constraints that are part of ReVerb.");
 		
 		CommandLineParser parser = new PosixParser();
 		
@@ -115,11 +123,16 @@ public class CommandLineReVerb {
 		printSents = !params.hasOption("no-sents");
 		filterPronouns = params.hasOption("filter-pronouns");
 		
+		minFreq = Integer.parseInt(params.getOptionValue("minFreq", "20"));
+		mergeOverlapRels = !params.hasOption("keepOverlap");
+		useSynLexConstraints = !params.hasOption("noConstraints");
+		allowUnary = params.hasOption("allowUnary");
+		
 		try {
 			
 			messageInc("Initializing extractor...");
 		
-			reverb = new ReVerbExtractor();
+			reverb = new ReVerbExtractor(minFreq, useSynLexConstraints, mergeOverlapRels, allowUnary);
 		
 			if (filterPronouns) {
 				reverb.getArgument1Extractor().addMapper(new PronounArgumentFilter());
@@ -238,14 +251,16 @@ public class CommandLineReVerb {
 	}
 	
 	private void extractFromSentReader(ChunkedSentenceReader reader) throws ExtractorException {
+		
 		for (ChunkedSentence sent : reader.getSentences()) {
 			numSents++;
 			sentInFile++;
+			
 			if (printSents) printSent(sent);
 			for (ChunkedBinaryExtraction extr : reverb.extract(sent)) {
 				numExtrs++;
-				double conf = getConf(extr);
-				printExtr(extr, conf);
+		        double conf = getConf(extr);
+		        printExtr(extr, conf);
 			}
 			if (numSents % messageEvery == 0) summary();
 		}

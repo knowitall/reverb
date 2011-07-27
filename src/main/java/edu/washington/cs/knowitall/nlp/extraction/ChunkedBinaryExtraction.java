@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.google.common.collect.Iterables;
 
+import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 
 /***
@@ -101,7 +102,6 @@ public class ChunkedBinaryExtraction extends SpanExtraction {
         String arg2Str = getArgument2().toString();
         return String.format("(%s, %s, %s)", arg1Str, relStr, arg2Str);
     }
-    
     /**
      * Given a collection of arg1s, a collection of arg2s, and a relation,
      * returns all (arg1, rel, arg2) extractions, where arg1 and arg2 range
@@ -115,12 +115,45 @@ public class ChunkedBinaryExtraction extends SpanExtraction {
             ChunkedExtraction rel, 
             Iterable<? extends ChunkedArgumentExtraction> arg1s, 
             Iterable<? extends ChunkedArgumentExtraction> arg2s) {
+    	return ChunkedBinaryExtraction.productOfArgs(rel, arg1s, arg2s, false);
+    }
+            
+    /**
+     * Given a collection of arg1s, a collection of arg2s, and a relation,
+     * returns all (arg1, rel, arg2) extractions, where arg1 and arg2 range
+     * over the given collections.
+     * @param rel
+     * @param arg1s
+     * @param arg2s
+     * @return
+     */
+    public static Collection<ChunkedBinaryExtraction> productOfArgs(
+            ChunkedExtraction rel, 
+            Iterable<? extends ChunkedArgumentExtraction> arg1s, 
+            Iterable<? extends ChunkedArgumentExtraction> arg2s, boolean allowUnaryRelations) {
         Collection<ChunkedBinaryExtraction> results = new ArrayList<ChunkedBinaryExtraction>();
+        
         for (ChunkedArgumentExtraction arg1 : arg1s) {
             for (ChunkedArgumentExtraction arg2 : arg2s) {
                 ChunkedBinaryExtraction extr = new ChunkedBinaryExtraction(rel, arg1, arg2);
                 results.add(extr);
             }
+            
+        }
+        //hack to add relations that only have one argument.
+        if(allowUnaryRelations && results.isEmpty()){
+        	for (ChunkedArgumentExtraction arg1 : arg1s) {
+        		Range dummyRange = new Range(rel.getRange().getStart()+rel.getRange().getLength()+1,0);
+        		ChunkedArgumentExtraction arg2 = new ChunkedArgumentExtraction(rel.getSentence(), dummyRange, rel);
+        		ChunkedBinaryExtraction extr = new ChunkedBinaryExtraction(rel, arg1, arg2);
+                results.add(extr);
+        	}
+        	for (ChunkedArgumentExtraction arg2 : arg2s) {
+        		Range dummyRange = new Range(rel.getRange().getStart(),0);
+        		ChunkedArgumentExtraction arg1 = new ChunkedArgumentExtraction(rel.getSentence(), dummyRange, rel);
+        		ChunkedBinaryExtraction extr = new ChunkedBinaryExtraction(rel, arg1, arg2);
+                results.add(extr);
+        	}
         }
         return results;
     }

@@ -146,7 +146,11 @@ public class SimpleLayeredSequence implements LayeredSequence {
      * @return an immutable subsequence of the layer 
      */
     public ImmutableList<String> getSubSequence(String layerName, int start, int length) {
-        return getLayer(layerName).subList(start, start+length);
+        //if(length < 0) { length = 0;}
+        //ImmutableList<String> layer = getLayer(layerName);
+        //if(layer.size() < start) { start = layer.size()-1;length = 0;}
+    	//return layer.subList(start, start+length);
+    	return getLayer(layerName).subList(start, start+length);
     }
     
     /**

@@ -24,7 +24,7 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 public class ReVerbRelationDictionaryFilter extends FilterMapper<ChunkedExtraction> {
     
     private static final String relationDictFile = "freq_rel.txt.gz";
-    private static final int defaultMinFreq = 20;
+    public static final int defaultMinFreq = 20;
     private NormalizedRelationDictionaryFilter filter;
     
     /**
