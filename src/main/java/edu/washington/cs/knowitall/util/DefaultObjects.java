@@ -28,60 +28,67 @@ import edu.washington.cs.knowitall.extractor.mapper.SentenceStartFilter;
 import edu.washington.cs.knowitall.nlp.ChunkedSentenceReader;
 
 public class DefaultObjects {
-	
+
 	public static final String tokenizerModelFile = "en-token.bin";
 	public static final String taggerModelFile = "en-pos-maxent.bin";
 	public static final String chunkerModelFile = "en-chunker.bin";
 	public static final String sentDetectorModelFile = "en-sent.bin";
 	public static final String confFunctionModelFile = "conf.weka";
-	
+
 	/** Default singleton objects */
 	private static BracketsRemover BRACKETS_REMOVER;
 	private static SentenceStartFilter SENTENCE_START_FILTER;
 	private static SentenceEndFilter SENTENCE_END_FILTER;
 	private static HtmlSentenceExtractor HTML_SENTENCE_EXTRACTOR;
-	
-	public static InputStream getResourceAsStream(String resource) throws IOException {
-		InputStream in = DefaultObjects.class.getClassLoader().getResourceAsStream(resource);
+
+	public static InputStream getResourceAsStream(String resource)
+			throws IOException {
+		InputStream in = DefaultObjects.class.getClassLoader()
+				.getResourceAsStream(resource);
 		if (in == null) {
 			throw new IOException("Couldn't load resource: " + resource);
 		} else {
 			return in;
 		}
 	}
-	
+
 	public static void initializeNlpTools() throws IOException {
 		getDefaultSentenceDetector();
 		getDefaultTokenizer();
 		getDefaultPosTagger();
 		getDefaultChunker();
 	}
-	
+
 	public static Classifier getDefaultConfClassifier() throws IOException {
 		try {
-			return (Classifier)SerializationHelper.read(getResourceAsStream(confFunctionModelFile));
-		}
-		catch (Exception e) {
+			return (Classifier) SerializationHelper
+					.read(getResourceAsStream(confFunctionModelFile));
+		} catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
-	
+
 	public static Tokenizer getDefaultTokenizer() throws IOException {
-		return new TokenizerME(new TokenizerModel(getResourceAsStream(tokenizerModelFile)));
-	}
-	
-	public static POSTagger getDefaultPosTagger() throws IOException {
-		return new POSTaggerME(new POSModel(getResourceAsStream(taggerModelFile)));
-	}
-	
-	public static Chunker getDefaultChunker() throws IOException {
-		return new ChunkerME(new ChunkerModel(getResourceAsStream(chunkerModelFile)));
+		return new TokenizerME(new TokenizerModel(
+				getResourceAsStream(tokenizerModelFile)));
 	}
 
-	public static SentenceDetector getDefaultSentenceDetector() throws IOException {
-		return new SentenceDetectorME(new SentenceModel(getResourceAsStream(sentDetectorModelFile)));
+	public static POSTagger getDefaultPosTagger() throws IOException {
+		return new POSTaggerME(new POSModel(
+				getResourceAsStream(taggerModelFile)));
 	}
-	
+
+	public static Chunker getDefaultChunker() throws IOException {
+		return new ChunkerME(new ChunkerModel(
+				getResourceAsStream(chunkerModelFile)));
+	}
+
+	public static SentenceDetector getDefaultSentenceDetector()
+			throws IOException {
+		return new SentenceDetectorME(new SentenceModel(
+				getResourceAsStream(sentDetectorModelFile)));
+	}
+
 	public static void addDefaultSentenceFilters(SentenceExtractor extractor) {
 		if (BRACKETS_REMOVER == null)
 			BRACKETS_REMOVER = new BracketsRemover();
@@ -94,14 +101,16 @@ public class DefaultObjects {
 		extractor.addMapper(SENTENCE_START_FILTER);
 		extractor.addMapper(SentenceLengthFilter.minFilter(4));
 	}
-	
-	public static SentenceExtractor getDefaultSentenceExtractor() throws IOException {
+
+	public static SentenceExtractor getDefaultSentenceExtractor()
+			throws IOException {
 		SentenceExtractor extractor = new SentenceExtractor();
 		addDefaultSentenceFilters(extractor);
 		return extractor;
 	}
-	
-	public static HtmlSentenceExtractor getDefaultHtmlSentenceExtractor() throws IOException {
+
+	public static HtmlSentenceExtractor getDefaultHtmlSentenceExtractor()
+			throws IOException {
 		if (HTML_SENTENCE_EXTRACTOR == null) {
 			HTML_SENTENCE_EXTRACTOR = new HtmlSentenceExtractor();
 			addDefaultSentenceFilters(HTML_SENTENCE_EXTRACTOR);
@@ -126,9 +135,11 @@ public class DefaultObjects {
 		ChunkedSentenceReader reader = new ChunkedSentenceReader(in, getDefaultSentenceExtractor());
 		return reader;
 	}
-	
-	public static ChunkedSentenceReader getDefaultSentenceReaderHtml(Reader in) throws IOException {
-		ChunkedSentenceReader reader = new ChunkedSentenceReader(in, getDefaultHtmlSentenceExtractor());
+
+	public static ChunkedSentenceReader getDefaultSentenceReaderHtml(Reader in)
+			throws IOException {
+		ChunkedSentenceReader reader = new ChunkedSentenceReader(in,
+				getDefaultHtmlSentenceExtractor());
 		return reader;
 	}
 }
