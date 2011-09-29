@@ -133,15 +133,15 @@ public class RelationString implements Comparable<RelationString> {
 
             m_normPred = m_normPred.toLowerCase();
             //remember the original form of the VBNs
-            Map<String,String> vbnToVbMap = createVbnMap();
+            // Map<String,String> vbnToVbMap = createVbnMap();
         
             //the order matters
             setRelationString(omitAdverbs());
             setRelationString(handleQuasiModals());
             setRelationString(omitModals());
             setRelationString(handleHave());
-            setRelationString(handleBeDo(vbnToVbMap));
-            setRelationString(handleHave());
+            // setRelationString(handleBeDo(vbnToVbMap));
+            // setRelationString(handleHave());
             postProcess();
 
             if(m_normPred.equals("be") || m_normPred.equals("do"))
@@ -331,8 +331,6 @@ public class RelationString implements Comparable<RelationString> {
         }
         return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());
     }
-
-
 
     private boolean startsWithShortenedAux(String predicate) {
 
