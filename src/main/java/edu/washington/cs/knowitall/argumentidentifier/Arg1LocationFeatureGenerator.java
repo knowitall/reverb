@@ -111,6 +111,7 @@ public class Arg1LocationFeatureGenerator {
     	return features;
 	}
 	
+	/*
 	private static String getNP(ChunkedExtraction extr, int current){
 		String np = "";
 		while(current < extr.getSentence().getLength() && extr.getSentence().getChunkTag(current).contains("NP")){
@@ -119,6 +120,7 @@ public class Arg1LocationFeatureGenerator {
 		}
 		return np;
 	}
+	*/
 	
 }
 

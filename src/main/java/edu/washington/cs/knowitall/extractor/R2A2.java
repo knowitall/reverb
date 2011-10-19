@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 
 import edu.washington.cs.knowitall.argumentidentifier.ArgLearner;
 import edu.washington.cs.knowitall.argumentidentifier.ConfidenceMetric;
-import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
-import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument1Mappers;
-import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument2Mappers;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.ChunkedSentenceReader;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;

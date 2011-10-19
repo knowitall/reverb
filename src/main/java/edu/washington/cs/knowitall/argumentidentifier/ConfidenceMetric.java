@@ -1,34 +1,16 @@
 package edu.washington.cs.knowitall.argumentidentifier;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import weka.classifiers.Evaluation;
 import weka.classifiers.functions.Logistic;
-import weka.classifiers.functions.SMO;
-import weka.classifiers.functions.supportVector.Kernel;
-import weka.classifiers.functions.supportVector.RBFKernel;
-import weka.classifiers.trees.REPTree;
 import weka.core.Instances;
-
-import com.google.common.base.Predicate;
-
 import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.commonlib.ResourceUtils;
-import edu.washington.cs.knowitall.extractor.ExtractorException;
-import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
-import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
-import edu.washington.cs.knowitall.nlp.ChunkerException;
-import edu.washington.cs.knowitall.nlp.OpenNlpSentenceChunker;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;

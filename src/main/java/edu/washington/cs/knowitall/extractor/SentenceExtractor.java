@@ -50,5 +50,4 @@ public class SentenceExtractor extends Extractor<String, String> {
     protected Collection<String> extractCandidates(String source) {
         return Arrays.asList(detector.sentDetect(source));
     }
-
 }

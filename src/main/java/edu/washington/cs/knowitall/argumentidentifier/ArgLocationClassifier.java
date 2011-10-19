@@ -1,8 +1,5 @@
 package edu.washington.cs.knowitall.argumentidentifier;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.Reader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
