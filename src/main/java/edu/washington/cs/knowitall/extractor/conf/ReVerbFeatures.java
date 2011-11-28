@@ -6,9 +6,15 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import edu.washington.cs.knowitall.commonlib.Range;
+import edu.washington.cs.knowitall.commonlib.regex.Match;
+import edu.washington.cs.knowitall.commonlib.regex.RegularExpression;
 import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
+import edu.washington.cs.knowitall.extractor.conf.featureset.ChunkFeature;
+import edu.washington.cs.knowitall.extractor.conf.featureset.PosFeature;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
+import edu.washington.cs.knowitall.nlp.ChunkedSentencePattern;
+import edu.washington.cs.knowitall.nlp.ChunkedSentenceToken;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
@@ -29,6 +35,7 @@ public class ReVerbFeatures {
 	private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
 	
 	public ReVerbFeatures() throws ConfidenceFunctionException {
+		
 		try {
 			initFeatureSet();
 		} catch (SequenceException e) {
@@ -52,37 +59,59 @@ public class ReVerbFeatures {
 	private void initFeatureMap() throws SequenceException {
 		featureMap = new HashMap<String, Predicate<ChunkedBinaryExtraction>>();
 		featureMap.put("sent starts w/arg1", startArg1());
-		featureMap.put("sent ends w/arg2", endArg2());
-		featureMap.put("prep before arg1", prepBeforeArg1());
-		featureMap.put("conj before rel", conjBeforeRel());
+		featureMap.put("sent ends w/arg2", endArg2());	
 		featureMap.put("which|who|that before rel", relPronounBeforeRel());
-		featureMap.put("verb after arg2", verbAfterArg2());	
-		featureMap.put("np after arg2", npAfterArg2());
-		featureMap.put("prep after arg2", prepAfterArg2());
-		featureMap.put("0 < len(sent) <= 10", sentLength(0, 11));
-		featureMap.put("10 < len(sent) <= 20", sentLength(11, 21));
-		featureMap.put("20 < len(sent)", sentLength(11, Integer.MAX_VALUE));
 		featureMap.put("arg2 is proper", arg2IsProper());
 		featureMap.put("arg1 is proper", arg1IsProper());
-		featureMap.put("arg2 contains pronoun", arg2Pronoun());
-		featureMap.put("arg1 contains pronoun", arg1Pronoun());
-		featureMap.put("arg2 contains pos pronoun", arg2PosPronoun());
-		featureMap.put("arg1 contains pos pronoun", arg1PosPronoun());
-		featureMap.put("rel is a single verb", relIsOneVerb());
 		featureMap.put("rel is VW+P", relIsVWP());
 		featureMap.put("rel ends with to", relEndsWithToken("to"));
 		featureMap.put("rel ends with in", relEndsWithToken("in"));
 		featureMap.put("rel ends with for", relEndsWithToken("for"));
 		featureMap.put("rel ends with of", relEndsWithToken("of"));
 		featureMap.put("rel ends with on", relEndsWithToken("on"));
-		featureMap.put("rel contains vbz", relContainsPos("VBZ"));
-		featureMap.put("rel contains vbg", relContainsPos("VBG"));
-		featureMap.put("rel contains vbd", relContainsPos("VBD"));
-		featureMap.put("rel contains vbn", relContainsPos("VBN"));
-		featureMap.put("rel contains vbp", relContainsPos("VBP"));
-		featureMap.put("rel contains vb", relContainsPos("VB"));
-		featureMap.put("np before arg1", npBeforeArg1());
 		featureMap.put("extr covers phrase", extrCoversPhrase());
+		featureMap.put("arg2 part of a list", arg2InList());
+		featureMap.put("np before arg1", ChunkFeature.rightBeforeArg1("B-NP", "I-NP"));
+		featureMap.put("rel contains vbz", PosFeature.withinRel("VBZ"));
+		featureMap.put("rel contains vbg", PosFeature.withinRel("VBG"));
+		featureMap.put("rel contains vbd", PosFeature.withinRel("VBD"));
+		featureMap.put("rel contains vbn", PosFeature.withinRel("VBN"));
+		featureMap.put("rel contains vbp", PosFeature.withinRel("VBP"));
+		featureMap.put("rel contains vb", PosFeature.withinRel("VB"));
+		featureMap.put("conj before rel", PosFeature.rightBeforeRel("CC"));
+		featureMap.put("prep before arg1", PosFeature.rightBeforeArg1("IN", "TO"));
+		featureMap.put("verb after arg2", PosFeature.rightAfterArg2(PosFeature.allVerbPosTags));	
+		featureMap.put("np after arg2", ChunkFeature.rightAfterArg2("B-NP", "I-NP"));
+		featureMap.put("prep after arg2", PosFeature.rightAfterArg2("IN", "TO"));
+		featureMap.put("arg2 contains pronoun", PosFeature.withinArg2("PRP"));
+		featureMap.put("arg1 contains pronoun", PosFeature.withinArg1("PRP"));
+		featureMap.put("arg2 contains pos pronoun", PosFeature.withinArg2("PRP$"));
+		featureMap.put("arg2 contains pos pronoun", PosFeature.withinArg2("PRP$"));
+		featureMap.put("rel is a single verb", PosFeature.relSingleVerb());
+
+		// token-level features
+		featureMap.put("if before arg1", tokenBeforeArg1("if"));
+		featureMap.put("in before arg1", tokenBeforeArg1("in"));
+		featureMap.put("that before rel", tokenBeforeRel("that"));
+		featureMap.put("to after arg2",  tokenAfterArg2("to"));
+		featureMap.put("that after arg2",  tokenAfterArg2("that"));
+		
+		// "3F" - conjunction of "Extr begins sentence", "ends sentence", and "covers phrase".
+		featureMap.put("3F", new Predicate<ChunkedBinaryExtraction>() {
+			Predicate<ChunkedBinaryExtraction> startArg1 = startArg1();
+			Predicate<ChunkedBinaryExtraction> endArg2 = endArg2();
+			Predicate<ChunkedBinaryExtraction> extrCoversPhrase = extrCoversPhrase();
+			@Override
+			public boolean apply(ChunkedBinaryExtraction arg0) {
+				return startArg1.apply(arg0) && endArg2.apply(arg0) && extrCoversPhrase.apply(arg0);
+			}
+		});
+		
+		//
+		// Add all Nested and Hypothetical features.
+		//
+		featureMap.putAll(new NestedFeatures().getFeatureMap());
+		featureMap.putAll(new HypotheticalFeatures().getFeatureMap());
 	}
 	
 	/**
@@ -93,6 +122,39 @@ public class ReVerbFeatures {
 	private String VERB = ReVerbExtractor.VERB;
 	private String WORD = ReVerbExtractor.WORD;
 	private String PREP = ReVerbExtractor.PREP;
+	
+	// Used for the list feature
+	private String list1 = "<chunk='B-NP'> <chunk='I-NP'>* (<string=','> (<chunk='B-PP'>)? <chunk='B-NP'> <chunk='I-NP'>*)+ (<string=','> | (<string=','> <pos='CC'>)) <chunk='B-NP'> <chunk='I-NP'>*";
+	private String list2 = "<chunk='B-NP'> <chunk='I-NP'>* (<string=','> <chunk='B-NP'> <chunk='I-NP'>*)+ <string=','>* <pos='CC'> <chunk='B-NP'> <chunk='I-NP'>*";
+	public RegularExpression<ChunkedSentenceToken> listPattern1 = ChunkedSentencePattern.compile(list1);
+	public RegularExpression<ChunkedSentenceToken> listPattern2 = ChunkedSentencePattern.compile(list2);
+
+	
+	private Predicate<ChunkedBinaryExtraction> arg2InList() {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			@Override
+			public boolean apply(ChunkedBinaryExtraction extr) {
+				// find all matches to the list pattern. If arg2 overlaps with the match, return true.
+				ChunkedArgumentExtraction arg2 = extr.getArgument2();
+				ChunkedSentence sentence = arg2.getSentence();
+				List<Match<ChunkedSentenceToken>> matchList = listPattern2.findAll(ChunkedSentenceToken.tokenize(sentence));
+				for (Match<ChunkedSentenceToken> match : matchList) {
+					Range matchRange = new Range(match.startIndex(), match.endIndex()-match.startIndex());
+					if (matchRange.overlapsWith(arg2.getRange())) {
+						return true;
+					}
+				}
+				matchList = listPattern1.findAll(ChunkedSentenceToken.tokenize(sentence));
+				for (Match<ChunkedSentenceToken> match : matchList) {
+					Range matchRange = new Range(match.startIndex(), match.endIndex()-match.startIndex());
+					if (matchRange.overlapsWith(arg2.getRange())) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+	}
 	
 	private Predicate<ChunkedBinaryExtraction> startArg1() {
 		return new Predicate<ChunkedBinaryExtraction>() {
@@ -108,38 +170,6 @@ public class ReVerbFeatures {
 				int arg2End = e.getArgument2().getRange().getLastIndex(); 
 				int sentEnd = e.getSentence().getLength() - 2;
 				return arg2End == sentEnd;
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> prepBeforeArg1() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedArgumentExtraction arg1 = e.getArgument1();
-		        int arg1Start = arg1.getStart();
-		        if (arg1Start > 0) {
-		            String precPosTag = e.getSentence().getPosTags().get(arg1Start-1);
-		            if (precPosTag.equals("IN") || precPosTag.equals("TO")) {
-		                return true;
-		            }
-		        } 
-		        return false;
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> conjBeforeRel() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedExtraction pred = e.getRelation();
-		        int predStart = pred.getStart();
-		        if (predStart > 0) {
-		            String precPosTag = e.getSentence().getPosTags().get(predStart-1);
-		            if (precPosTag.equals("CC")) {
-		                return true;
-		            }
-		        } 
-		        return false;
 			}
 		};
 	}
@@ -160,60 +190,7 @@ public class ReVerbFeatures {
 		};
 	}
 	
-	private Predicate<ChunkedBinaryExtraction> verbAfterArg2() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedArgumentExtraction arg2 = e.getArgument2();
-		        int pastArg2 = arg2.getStart() + arg2.getLength();
-		        if (pastArg2 < e.getSentence().getLength()) {
-		            String pastPosTag = e.getSentence().getPosTags().get(pastArg2);
-		            if (pastPosTag.equals("MD") || pastPosTag.startsWith("V")) {
-		                return true;
-		            }
-		        }
-		        return false;
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> npAfterArg2() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedArgumentExtraction arg2 = e.getArgument2();
-				int lastArg2 = arg2.getRange().getLastIndex();
-				ChunkedSentence sent = arg2.getSentence();
-				return lastArg2 + 1 < sent.getLength() && 
-					sent.getChunkTags().get(lastArg2+1).equals("B-NP");
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> prepAfterArg2() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedArgumentExtraction arg2 = e.getArgument2();
-				int lastArg2 = arg2.getRange().getLastIndex();
-				ChunkedSentence sent = arg2.getSentence();
-				if (lastArg2+1 >= sent.getLength()) return false;
-				String tag = sent.getPosTag(lastArg2+1);
-				return tag.equals("TO") || tag.equals("IN");
-			}
-		};
-	}
-
-	private Predicate<ChunkedBinaryExtraction> sentLength(int lower, int upper) {
-		final int a = lower;
-		final int b = upper;
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedSentence sent = e.getSentence();
-				int len = sent.getLength();
-				return a <= len && len < b;
-			}
-		};
-	}
-	
-	private static boolean isProperNp(ChunkedExtraction e) {
+	private boolean isProperNp(ChunkedExtraction e) {
 		for (String tag : e.getPosTags()) {
 			if (tag.equalsIgnoreCase("NNP") || tag.equalsIgnoreCase("NNPS")) {
 				return true;
@@ -223,24 +200,6 @@ public class ReVerbFeatures {
 				return false;
 			}
 			*/
-		}
-		return false;
-	}
-	
-	private static boolean containsPronoun(ChunkedExtraction e) {
-		for (String tag : e.getPosTags()) {
-			if (tag.equals("PRP")) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private static boolean containsPosPronoun(ChunkedExtraction e) {
-		for (String tag : e.getPosTags()) {
-			if (tag.equals("PRP$")) {
-				return true;
-			}
 		}
 		return false;
 	}
@@ -261,39 +220,7 @@ public class ReVerbFeatures {
 		};
 	}
 	
-	private Predicate<ChunkedBinaryExtraction> arg1Pronoun() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				return containsPronoun(e.getArgument1());
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> arg2Pronoun() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				return containsPronoun(e.getArgument2());
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> arg1PosPronoun() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				return containsPosPronoun(e.getArgument1());
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> arg2PosPronoun() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				return containsPosPronoun(e.getArgument2());
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> relIsOneVerb() {
+	public Predicate<ChunkedBinaryExtraction> relIsOneVerb() {
 		return new Predicate<ChunkedBinaryExtraction>() {
 			public boolean apply(ChunkedBinaryExtraction e) {
 				ChunkedExtraction rel = e.getRelation();
@@ -303,8 +230,12 @@ public class ReVerbFeatures {
 		};
 	}
 	
+	/**
+	 * @return
+	 * @throws SequenceException
+	 */
 	private Predicate<ChunkedBinaryExtraction> relIsVWP() throws SequenceException {
-		final String patternStr = String.format("(%s (%s+ (%s)+)?)+", VERB, WORD, PREP);
+		final String patternStr = String.format("(%s (%s+ (%s)+))+", VERB, WORD, PREP);
 		final LayeredTokenPattern pattern = new LayeredTokenPattern(patternStr);
 		return new Predicate<ChunkedBinaryExtraction>() {
 			public boolean apply(ChunkedBinaryExtraction e) {
@@ -326,35 +257,6 @@ public class ReVerbFeatures {
 			public boolean apply(ChunkedBinaryExtraction e) {
 				List<String> tokens = e.getRelation().getTokens();
 				return tokens.get(tokens.size()-1).equals(token);
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> relContainsPos(final String pos) {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				if (e.getRelation().getPosTags().contains(pos)) {
-					return true;
-				}
-				else {
-					return false;
-				}
-			}
-		};
-	}
-	
-	private Predicate<ChunkedBinaryExtraction> npBeforeArg1() {
-		return new Predicate<ChunkedBinaryExtraction>() {
-			public boolean apply(ChunkedBinaryExtraction e) {
-				ChunkedExtraction arg1 = e.getArgument1();
-				int start = arg1.getRange().getStart();
-				if (start == 0) {
-					return false;
-				} else {
-					ChunkedSentence sent = arg1.getSentence();
-					return sent.getChunkTags().get(start-1).endsWith("-NP");
-				}
-				
 			}
 		};
 	}
@@ -385,6 +287,58 @@ public class ReVerbFeatures {
 				boolean rightOk = yr == l || tokens.get(yr+1).equals(",") || tokens.get(yr+1).equals(".");
 				
 				return adj && leftOk && rightOk;
+			}
+		};
+	}
+
+	//
+	// Token-level features below this point.
+	//
+	
+	private Predicate<ChunkedBinaryExtraction> tokenBeforeArg1(final String token) {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				ChunkedArgumentExtraction arg1 = e.getArgument1();
+		        int arg1Start = arg1.getStart();
+		        if (arg1Start > 0) {
+		            String precTok = e.getSentence().getTokens().get(arg1Start-1);
+		            if (precTok.equalsIgnoreCase(token)) {
+		                return true;
+		            }
+		        } 
+		        return false;
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> tokenBeforeRel(final String token) {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				ChunkedExtraction rel = e.getRelation();
+		        int relStart = rel.getStart();
+		        if (relStart > 0) {
+		            String precTok = e.getSentence().getTokens().get(relStart-1);
+		            if (precTok.equalsIgnoreCase(token)) {
+		                return true;
+		            }
+		        } 
+		        return false;
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> tokenAfterArg2(final String token) {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				ChunkedArgumentExtraction arg2 = e.getArgument2();
+		        int arg1End = arg2.getStart() + arg2.getLength() - 1;
+		        if (arg1End + 1 < e.getSentence().getLength() - 1) {
+		            String nextTok = e.getSentence().getTokens().get(arg1End + 1);
+		            if (nextTok.equalsIgnoreCase(token)) {
+		                return true;
+		            }
+		        } 
+		        return false;
 			}
 		};
 	}
