@@ -3,6 +3,8 @@ package edu.washington.cs.knowitall.extractor.conf;
 import java.io.IOException;
 
 import weka.classifiers.Classifier;
+import weka.core.SerializationHelper;
+import edu.washington.cs.knowitall.commonlib.ResourceUtils;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.util.DefaultObjects;
 
@@ -32,15 +34,25 @@ public class ReVerbConfFunction {
 	 * @throws ConfidenceFunctionException if unable to initialize
 	 */
 	public ReVerbConfFunction() throws ConfidenceFunctionException {
+		this(DefaultObjects.confFunctionModelFile);
+	}
+	
+	public ReVerbConfFunction(String model) {
 		try {
-			classifier = DefaultObjects.getDefaultConfClassifier();
+			try {
+				classifier = (Classifier)SerializationHelper.read(ResourceUtils.loadResource(model, this.getClass()));
+			}
+			catch (Exception e) {
+				throw new IOException(e);
+			}
+			
 			reverbFeatures = new ReVerbFeatures();
 			featureSet = reverbFeatures.getFeatureSet();
 			func = new WekaClassifierConfFunction<ChunkedBinaryExtraction>(
 				featureSet, classifier);
 		} catch (IOException e) {
 			throw new ConfidenceFunctionException(
-				"Unable to load classifier", e);
+				"Unable to load classifier: " + model, e);
 		}
 	}
 	
