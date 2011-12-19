@@ -191,6 +191,10 @@ public class BIOLayeredSequence extends SimpleLayeredSequence {
      * will be replaced with a B-X tag.
      */
     public ImmutableList<String> getSubSequence(String layerName, Range r) {
+    	if (r == null) {
+    		throw new IllegalArgumentException("range cannot be null.");
+    	}
+    	
         return getSubSequence(layerName, r.getStart(), r.getLength());
     }
     
