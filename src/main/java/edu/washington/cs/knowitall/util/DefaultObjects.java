@@ -28,19 +28,17 @@ import edu.washington.cs.knowitall.nlp.ChunkedSentenceReader;
 
 public class DefaultObjects {
 	
-	private static final String tokenizerModelFile = "en-token.bin";
-	private static final String taggerModelFile = "en-pos-maxent.bin";
-	private static final String chunkerModelFile = "en-chunker.bin";
-	private static final String sentDetectorModelFile = "en-sent.bin";
-	private static final String confFunctionModelFile = "conf.weka";
+	public static final String tokenizerModelFile = "en-token.bin";
+	public static final String taggerModelFile = "en-pos-maxent.bin";
+	public static final String chunkerModelFile = "en-chunker.bin";
+	public static final String sentDetectorModelFile = "en-sent.bin";
+	public static final String confFunctionModelFile = "conf.weka";
 	
 	/** Default singleton objects */
-	private static TokenizerME TOKENIZER;
 	private static BracketsRemover BRACKETS_REMOVER;
 	private static SentenceStartFilter SENTENCE_START_FILTER;
 	private static SentenceEndFilter SENTENCE_END_FILTER;
 	private static HtmlSentenceExtractor HTML_SENTENCE_EXTRACTOR;
-	private static Classifier CONF_FUNCTION_CLASSIFIER;
 	
 	public static InputStream getResourceAsStream(String resource) throws IOException {
 		InputStream in = DefaultObjects.class.getClassLoader().getResourceAsStream(resource);
@@ -59,14 +57,12 @@ public class DefaultObjects {
 	}
 	
 	public static Classifier getDefaultConfClassifier() throws IOException {
-		if (CONF_FUNCTION_CLASSIFIER == null) {
-			try {
-				CONF_FUNCTION_CLASSIFIER = (Classifier)SerializationHelper.read(getResourceAsStream(confFunctionModelFile));
-			} catch (Exception e) {
-				throw new IOException(e);
-			}
+		try {
+			return (Classifier)SerializationHelper.read(getResourceAsStream(confFunctionModelFile));
 		}
-		return CONF_FUNCTION_CLASSIFIER;
+		catch (Exception e) {
+			throw new IOException(e);
+		}
 	}
 	
 	public static Tokenizer getDefaultTokenizer() throws IOException {
