@@ -115,12 +115,16 @@ public class ChunkedExtraction extends ChunkedSentence {
         return true;
     }
     
-    @Override
-    public String toString() {
+    public String getText() {
         if (string == null) {
             string = this.sent.getTokensAsString(this.getRange());
         }
         
         return string;
+    }
+    
+    @Override
+    public String toString() {
+    	return this.getText();
     }
 }
