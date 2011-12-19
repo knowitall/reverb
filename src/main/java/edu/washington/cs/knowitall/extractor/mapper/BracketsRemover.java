@@ -13,15 +13,21 @@ import java.util.regex.Pattern;
  */
 public class BracketsRemover extends IndependentMapper<String> {
 
-    private final String[] startBrackets = { "(", "[", "{", "<" };
-    private final String[] endBrackets = { ")", "]", "}", ">" };
+    private final String[] startBrackets;
+    private final String[] endBrackets;
     private ArrayList<Pattern> patterns;
 
     /**
      * Constructs a new <code>BracketsRemover</code> object.
      */
-    public BracketsRemover() {
+    public BracketsRemover(String[] startBrackets, String[] endBrackets) {
+    	this.startBrackets = startBrackets;
+    	this.endBrackets = endBrackets;
         initializePatterns();
+    }
+    
+    public BracketsRemover() {
+    	this(new String[] { "(", "[", "{", "<" }, new String[] { ")", "]", "}", ">" });
     }
 
     private void initializePatterns() {

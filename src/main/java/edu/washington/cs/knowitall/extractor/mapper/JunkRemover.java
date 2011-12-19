@@ -14,14 +14,19 @@ import java.util.regex.Pattern;
  */
 public class JunkRemover extends IndependentMapper<String> {
 
-    private final String junk = "()[]{}<>|\\\"";
+    private final String junk;
     private ArrayList<Pattern> patterns;
 
     /**
      * Constructs a new <code>JunkRemover</code> object.
      */
-    public JunkRemover() {
+    public JunkRemover(String junk) {
+    	this.junk = junk;
         initializePatterns();
+    }
+    
+    public JunkRemover() {
+    	this("()[]{}<>|\\\"");
     }
 
     private void initializePatterns() {
