@@ -63,6 +63,10 @@ public class ReVerbFeatures {
 		featureMap.put("20 < len(sent)", sentLength(11, Integer.MAX_VALUE));
 		featureMap.put("arg2 is proper", arg2IsProper());
 		featureMap.put("arg1 is proper", arg1IsProper());
+		featureMap.put("arg2 contains pronoun", arg2Pronoun());
+		featureMap.put("arg1 contains pronoun", arg1Pronoun());
+		featureMap.put("arg2 contains pos pronoun", arg2PosPronoun());
+		featureMap.put("arg1 contains pos pronoun", arg1PosPronoun());
 		featureMap.put("rel is a single verb", relIsOneVerb());
 		featureMap.put("rel is VW+P", relIsVWP());
 		featureMap.put("rel ends with to", relEndsWithToken("to"));
@@ -70,6 +74,12 @@ public class ReVerbFeatures {
 		featureMap.put("rel ends with for", relEndsWithToken("for"));
 		featureMap.put("rel ends with of", relEndsWithToken("of"));
 		featureMap.put("rel ends with on", relEndsWithToken("on"));
+		featureMap.put("rel contains vbz", relContainsPos("VBZ"));
+		featureMap.put("rel contains vbg", relContainsPos("VBG"));
+		featureMap.put("rel contains vbd", relContainsPos("VBD"));
+		featureMap.put("rel contains vbn", relContainsPos("VBN"));
+		featureMap.put("rel contains vbp", relContainsPos("VBP"));
+		featureMap.put("rel contains vb", relContainsPos("VB"));
 		featureMap.put("np before arg1", npBeforeArg1());
 		featureMap.put("extr covers phrase", extrCoversPhrase());
 	}
@@ -204,11 +214,34 @@ public class ReVerbFeatures {
 	
 	private static boolean isProperNp(ChunkedExtraction e) {
 		for (String tag : e.getPosTags()) {
+			if (tag.equalsIgnoreCase("NNP") || tag.equalsIgnoreCase("NNPS")) {
+				return true;
+			}
+			/*
 			if (!tag.startsWith("NNP") && !tag.equals("DT") && !tag.equals("IN")) {
 				return false;
 			}
+			*/
 		}
-		return true;
+		return false;
+	}
+	
+	private static boolean containsPronoun(ChunkedExtraction e) {
+		for (String tag : e.getPosTags()) {
+			if (tag.equals("PRP")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static boolean containsPosPronoun(ChunkedExtraction e) {
+		for (String tag : e.getPosTags()) {
+			if (tag.equals("PRP$")) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private Predicate<ChunkedBinaryExtraction> arg1IsProper() {
@@ -223,6 +256,38 @@ public class ReVerbFeatures {
 		return new Predicate<ChunkedBinaryExtraction>() {
 			public boolean apply(ChunkedBinaryExtraction e) {
 				return isProperNp(e.getArgument2());
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> arg1Pronoun() {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				return containsPronoun(e.getArgument1());
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> arg2Pronoun() {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				return containsPronoun(e.getArgument2());
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> arg1PosPronoun() {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				return containsPosPronoun(e.getArgument1());
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> arg2PosPronoun() {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				return containsPosPronoun(e.getArgument2());
 			}
 		};
 	}
@@ -260,6 +325,19 @@ public class ReVerbFeatures {
 			public boolean apply(ChunkedBinaryExtraction e) {
 				List<String> tokens = e.getRelation().getTokens();
 				return tokens.get(tokens.size()-1).equals(token);
+			}
+		};
+	}
+	
+	private Predicate<ChunkedBinaryExtraction> relContainsPos(final String pos) {
+		return new Predicate<ChunkedBinaryExtraction>() {
+			public boolean apply(ChunkedBinaryExtraction e) {
+				if (e.getRelation().getPosTags().contains(pos)) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 		};
 	}
