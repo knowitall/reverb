@@ -77,6 +77,14 @@ public class ChunkedBinaryExtraction extends SpanExtraction {
     public ChunkedArgumentExtraction getArgument2() {
         return arg2;
     }
+    
+    public Iterable<Integer> getIndices() {
+    	return Iterables.concat(this.getArgument1().getRange(), this.getRelation().getRange(), this.getArgument2().getRange());
+    }
+    
+    public Iterable<String> getTokens() {
+    	return Iterables.concat(this.getArgument1().getPosTags(), this.getRelation().getPosTags(), this.getArgument2().getPosTags());
+    }
 
     public Iterable<String> getPosTags() {
         return Iterables.concat(this.getArgument1().getPosTags(), this.getRelation().getPosTags(), this.getArgument2().getPosTags());
