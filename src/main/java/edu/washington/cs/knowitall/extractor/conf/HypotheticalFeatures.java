@@ -10,11 +10,11 @@ import com.google.common.base.Predicate;
 
 import edu.washington.cs.knowitall.extractor.conf.featureset.VerbTokenFeature;
 import edu.washington.cs.knowitall.extractor.conf.featureset.TokenFeature;
-import edu.washington.cs.knowitall.index.BasicFieldNormalizer;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
+import edu.washington.cs.knowitall.normalization.BasicFieldNormalizer;
 import edu.washington.cs.knowitall.sequence.SequenceException;
 
 /**

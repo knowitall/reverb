@@ -1,4 +1,4 @@
-package edu.washington.cs.knowitall.index;
+package edu.washington.cs.knowitall.normalization;
 
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 

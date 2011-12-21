@@ -1,6 +1,5 @@
 package edu.washington.cs.knowitall.normalization;
 
-import edu.washington.cs.knowitall.index.NormalizedField;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 import edu.washington.cs.knowitall.sequence.SequenceException;
 

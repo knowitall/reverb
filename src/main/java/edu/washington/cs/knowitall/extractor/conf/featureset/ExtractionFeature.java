@@ -3,10 +3,10 @@ package edu.washington.cs.knowitall.extractor.conf.featureset;
 import com.google.common.base.Predicate;
 
 import edu.washington.cs.knowitall.commonlib.Range;
-import edu.washington.cs.knowitall.index.BasicFieldNormalizer;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
+import edu.washington.cs.knowitall.normalization.BasicFieldNormalizer;
 
 /**
  * A parent class for any feature

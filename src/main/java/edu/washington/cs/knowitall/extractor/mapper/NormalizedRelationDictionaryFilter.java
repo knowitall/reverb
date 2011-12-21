@@ -2,9 +2,9 @@ package edu.washington.cs.knowitall.extractor.mapper;
 
 import java.util.HashSet;
 
-import edu.washington.cs.knowitall.index.NormalizedField;
-import edu.washington.cs.knowitall.index.VerbalRelationNormalizer;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
+import edu.washington.cs.knowitall.normalization.NormalizedField;
+import edu.washington.cs.knowitall.normalization.VerbalRelationNormalizer;
 
 /***
  * A class used to filter out any relations whose normalized form does not appear in 

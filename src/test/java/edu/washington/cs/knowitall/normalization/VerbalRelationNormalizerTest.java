@@ -1,4 +1,4 @@
-package edu.washington.cs.knowitall.index;
+package edu.washington.cs.knowitall.normalization;
 
 import static org.junit.Assert.*;
 
@@ -10,9 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.washington.cs.knowitall.commonlib.Range;
-import edu.washington.cs.knowitall.index.VerbalRelationNormalizer;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
+import edu.washington.cs.knowitall.normalization.NormalizedField;
+import edu.washington.cs.knowitall.normalization.VerbalRelationNormalizer;
 
 public class VerbalRelationNormalizerTest {
 	
