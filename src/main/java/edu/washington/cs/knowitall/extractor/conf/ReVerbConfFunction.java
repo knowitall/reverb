@@ -24,7 +24,7 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  * @author afader
  *
  */
-public class ReVerbConfFunction {
+public class ReVerbConfFunction implements ConfidenceFunction {
 	
 	public final Classifier classifier;
 	private ReVerbFeatures reverbFeatures;

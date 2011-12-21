@@ -14,9 +14,15 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.lang.StringUtils;
 
+import edu.washington.cs.knowitall.argumentidentifier.ConfidenceMetric;
+import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.extractor.ExtractorException;
+import edu.washington.cs.knowitall.extractor.R2A2;
 import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
+import edu.washington.cs.knowitall.extractor.ReVerbRelationExtractor;
+import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunction;
 import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunctionException;
 import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
 import edu.washington.cs.knowitall.extractor.mapper.PronounArgumentFilter;
@@ -34,26 +40,25 @@ public class CommandLineReVerb {
 	
 	private static final String NAME = "CommandLineReVerb";
 	
-	private ReVerbExtractor reverb;
-	private ReVerbConfFunction confFunc;
+	private ReVerbRelationExtractor extractor;
+	private ConfidenceFunction confFunc;
 	private BufferedReaderIterator stdinLineIterator;
 	
 	private long startAtTime;
 	private boolean dataStdin = false;
 	private boolean fileListStdin = false;
 	private boolean stripHtml = false;
-	private boolean printSents = true;
 	private boolean quiet = false;
 	private boolean filterPronouns = false;
 	private boolean mergeOverlapRels = false;
 	private boolean useSynLexConstraints = false;
 	private boolean allowUnary = false;
+	private boolean useArgLearner = false;
 	private int minFreq = 20;
 	
 	
 	private int messageEvery = 1000;
 	private int numSents = 0;
-	private int sentInFile = 0;
 	private int numExtrs = 0;
 	private int numFiles = 0;
 	private String currentFile;
@@ -65,10 +70,10 @@ public class CommandLineReVerb {
 		options.addOption("h", "help", false, "Print help and exit");
 		options.addOption("f", "files", false, "Read file list from standard input");
 		options.addOption("s", "strip-html", false, "Strip HTML before extracting");
-		options.addOption("n", "no-sents", false, "Don't print sentences");
 		options.addOption("p", "filter-pronouns", false, "Filter out arguments that contain a pronoun");
 		options.addOption("q", "quiet", false, "Quiet mode (don't print messages to standard error)");
 		options.addOption("m", "minFreq", true, "Each relation must have at a minimum this many number of distinct arguments in a large corpus.");
+		options.addOption("a", "argLearner", false, "Use ArgLearner to identify extraction arguments (experimental, slower but more accurate). If you use this setting, the minFreq, noConstraints, keepOverlap, and allowUnary values will be ignored.");
 		options.addOption("K", "keepOverlap", false, "Do not merge overlapping relations (Default is to merge.)");
 		options.addOption("U", "allowUnary", false, "Allow relations with a single argument to be output. (Default setting is to disallow unary relations.)");
 		options.addOption("N", "noConstraints", false, "Do not enforce the syntactic and lexical constraints that are part of ReVerb.");
@@ -120,7 +125,6 @@ public class CommandLineReVerb {
 		}
 		
 		stripHtml = params.hasOption("strip-html");
-		printSents = !params.hasOption("no-sents");
 		filterPronouns = params.hasOption("filter-pronouns");
 		
 		minFreq = Integer.parseInt(params.getOptionValue("minFreq", "20"));
@@ -128,21 +132,35 @@ public class CommandLineReVerb {
 		useSynLexConstraints = !params.hasOption("noConstraints");
 		allowUnary = params.hasOption("allowUnary");
 		
+		useArgLearner = params.hasOption("argLearner");
+		
 		try {
 			
-			messageInc("Initializing extractor...");
+			
 		
-			reverb = new ReVerbExtractor(minFreq, useSynLexConstraints, mergeOverlapRels, allowUnary);
+			if (useArgLearner) {
+			    messageInc("Initializing ReVerb+ArgLearner extractor...");
+                extractor = new R2A2();
+                message("Done.");
+                messageInc("Initializing confidence function...");
+                confFunc = new ConfidenceMetric();
+                message("Done.");
+			} else {
+			    messageInc("Initializing ReVerb extractor...");
+			    extractor = new ReVerbExtractor(minFreq, useSynLexConstraints, mergeOverlapRels, allowUnary);
+			    message("Done.");
+			    messageInc("Initializing confidence function...");
+	            confFunc = new ReVerbConfFunction();
+	            message("Done.");
+			}
+			
 		
 			if (filterPronouns) {
-				reverb.getArgument1Extractor().addMapper(new PronounArgumentFilter());
-				reverb.getArgument2Extractor().addMapper(new PronounArgumentFilter());
+				extractor.getArgument1Extractor().addMapper(new PronounArgumentFilter());
+				extractor.getArgument2Extractor().addMapper(new PronounArgumentFilter());
 			}
-			message("Done.");
 			
-			messageInc("Initializing confidence function...");
-			confFunc = new ReVerbConfFunction();
-			message("Done.");
+			
 			
 			messageInc("Initializing NLP tools...");
 			DefaultObjects.initializeNlpTools();
@@ -165,7 +183,6 @@ public class CommandLineReVerb {
 			extractFromStdin();
 		} else {
 			while (haveNextFile()) {
-				sentInFile = 0;
 				try {
 					extractFromNextFile();
 				} catch (ExtractorException e) {
@@ -254,10 +271,8 @@ public class CommandLineReVerb {
 		
 		for (ChunkedSentence sent : reader.getSentences()) {
 			numSents++;
-			sentInFile++;
 			
-			if (printSents) printSent(sent);
-			for (ChunkedBinaryExtraction extr : reverb.extract(sent)) {
+			for (ChunkedBinaryExtraction extr : extractor.extract(sent)) {
 				numExtrs++;
 		        double conf = getConf(extr);
 		        printExtr(extr, conf);
@@ -266,17 +281,38 @@ public class CommandLineReVerb {
 		}
 	}
 	
-	private void printSent(ChunkedSentence sent) {
-		String sentString = sent.getTokensAsString();
-        System.out.println(String.format("sentence\t%s\t%s\t%s", currentFile, numSents, sentString));
-	}
-	
 	private void printExtr(ChunkedBinaryExtraction extr, double conf) {
 		String arg1 = extr.getArgument1().toString();
         String rel = extr.getRelation().toString();
         String arg2 = extr.getArgument2().toString();
-        String extrString = String.format("%s\t%s\t%s\t%s\t%s\t%s", currentFile, numSents, arg1, rel, arg2, conf);
-        System.out.println("extraction\t" + extrString);
+        
+        ChunkedSentence sent = extr.getSentence();
+        String toks = sent.getTokensAsString();
+        String pos = sent.getPosTagsAsString();
+        String chunks = sent.getChunkTagsAsString();
+        
+        Range arg1Range = extr.getArgument1().getRange();
+        Range relRange = extr.getRelation().getRange();
+        Range arg2Range = extr.getArgument2().getRange();
+        String a1s = String.valueOf(arg1Range.getStart());
+        String a1e = String.valueOf(arg1Range.getEnd());
+        String rs = String.valueOf(relRange.getStart());
+        String re = String.valueOf(relRange.getEnd());
+        String a2s = String.valueOf(arg2Range.getStart());
+        String a2e = String.valueOf(arg2Range.getEnd());
+        
+        String row = StringUtils.join(new String[] {
+                currentFile,
+                String.valueOf(numSents),
+                arg1, rel, arg2,
+                a1s, a1e,
+                rs, re,
+                a2s, a2e,
+                String.valueOf(conf),
+                toks, pos, chunks
+        }, '\t');
+        
+        System.out.println(row);
 	}
 
 }

@@ -111,5 +111,27 @@
       <version>1.5</version>
     </dependency>
   </dependencies>
+
+   <build>
+    <plugins>
+
+      <!-- Used for creating a single executable fat jar -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>edu.washington.cs.knowitall.util.CommandLineReVerb</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 </project>
  

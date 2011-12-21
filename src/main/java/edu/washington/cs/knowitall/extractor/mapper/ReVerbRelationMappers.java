@@ -2,7 +2,6 @@ package edu.washington.cs.knowitall.extractor.mapper;
 
 import java.io.IOException;
 
-import edu.washington.cs.knowitall.extractor.RegexExtractor;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 

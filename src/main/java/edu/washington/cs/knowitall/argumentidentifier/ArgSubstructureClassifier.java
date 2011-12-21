@@ -1,6 +1,5 @@
 package edu.washington.cs.knowitall.argumentidentifier;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -53,35 +52,32 @@ public class ArgSubstructureClassifier {
 		}
 	}
 	
-	private Pair<Double, Sequence> applyCRF(String testingdata){
-    	Sequence input = null;
-        Sequence output = null;
+	private Pair<Double, Sequence<?>> applyCRF(String testingdata){
+    	Sequence<?> input = null;
+        Sequence<?> output = null;
         Double conf;
 
         InstanceList testSequence = null;
     	crf_pipe.setTargetProcessing(true);
     	testSequence = new InstanceList(crf_pipe);
-    	StringReader reader = new StringReader(testingdata);
-        LineGroupIterator iterator = new LineGroupIterator(reader, Pattern.compile("^\\s*$"), true);
         testSequence.addThruPipe(
             new LineGroupIterator(new StringReader(testingdata),
               Pattern.compile("^\\s*$"), true));
 
         if(testSequence.size() < 1){
-        	return new Pair<Double, Sequence>(-1.0, null);
+        	return new Pair<Double, Sequence<?>>(-1.0, null);
         }
         
 		Instance inst = testSequence.get(0);
-		input = (Sequence) inst.getData();		
-		assert(input.size() == output.size());
+		input = (Sequence<?>) inst.getData();		
 
 		output = crf.transduce(input);
 		conf = crf_estimator.estimateConfidenceFor(inst, startTags, inTags);
 
-		return new Pair<Double, Sequence>(conf, output);
+		return new Pair<Double, Sequence<?>>(conf, output);
 	}
 	
-	private int readCRFOutputLeft(ChunkedExtraction extr, int start, Sequence output){
+	private int readCRFOutputLeft(ChunkedExtraction extr, int start, Sequence<?> output){
         int s = 0;
         int predstart = extr.getStart();
         int lastnp = -1;
@@ -117,7 +113,7 @@ public class ArgSubstructureClassifier {
         return lastnp;
 	}
 	
-	private int readCRFOutputRight(ChunkedExtraction extr, int start, Sequence output){
+	private int readCRFOutputRight(ChunkedExtraction extr, int start, Sequence<?> output){
         int s = 1;
         int lastnp = -1;
         List<String> chunkLabels = extr.getSentence().getChunkTags();
@@ -150,9 +146,9 @@ public class ArgSubstructureClassifier {
 		}
 		
 		//apply crf
-		Pair<Double, Sequence> pair = applyCRF(testingdata);
+		Pair<Double, Sequence<?>> pair = applyCRF(testingdata);
         Double conf = pair.getFirst();
-		Sequence output = pair.getSecond();
+		Sequence<?> output = pair.getSecond();
         
 		if(conf == -1.0){
 			return toreturn;

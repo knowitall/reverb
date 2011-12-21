@@ -1,6 +1,5 @@
 package edu.washington.cs.knowitall.argumentidentifier;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -10,6 +9,8 @@ import weka.classifiers.functions.Logistic;
 import weka.core.Instances;
 import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.commonlib.ResourceUtils;
+import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunction;
+import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunctionException;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
@@ -24,7 +25,7 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
  *
  */
 
-public class ConfidenceMetric {
+public class ConfidenceMetric implements ConfidenceFunction {
 	private static String TRAINING_DATA = "confidence-training.arff";
 	
     private Logistic classifier = new Logistic();
@@ -54,26 +55,24 @@ public class ConfidenceMetric {
 		header = getHeader();
 		
 	}
-	public double getConfidence(ChunkedBinaryExtraction extr){
+	public double getConf(ChunkedBinaryExtraction extr) throws ConfidenceFunctionException {
 		String features = getAllMetrics(extr);
 		StringReader testreader = new StringReader(header+features+",true\n");
 		Instances testinginstances = null;
 		try {
+		    
 			testinginstances = new Instances(testreader);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		testinginstances.setClassIndex(testinginstances.numAttributes() - 1);
-		testreader.close();
+
+			testinginstances.setClassIndex(testinginstances.numAttributes() - 1);
+			testreader.close();
 		
-		try {
 			classifier.classifyInstance(testinginstances.firstInstance());
 			return classifier.distributionForInstance(testinginstances.firstInstance())[0];
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new ConfidenceFunctionException(e);
 		}
 		
-		return .5;
 	}
 	
 	public String getHeader(){

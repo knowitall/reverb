@@ -150,7 +150,6 @@ public class ArgSubstructureFeatureGenerator {
 	
 	private ArrayList<String> getSetFeatures(ChunkedExtraction extr, int argend, boolean train){
 		ArrayList<String> setfeatures = new ArrayList<String>();
-		boolean debug = false;
 
 		boolean rel = false;
 		boolean nest1 = false;
@@ -578,7 +577,6 @@ public class ArgSubstructureFeatureGenerator {
 	private Vector<Vector<String>> addPredicateFeatures(Vector<PositionInstance> instances, Vector<Vector<String>> features){
 
 		Vector<String> rel_inst = new Vector<String>();
-		String phrase = "";
 		String relchunks = "";
 		String reltags = "";
 		String relwds = "";
@@ -586,7 +584,6 @@ public class ArgSubstructureFeatureGenerator {
 		for(int i=0; i< instances.size(); i++) {
 			PositionInstance inst_i = (PositionInstance) instances.get(i);
 			if(inst_i.isRelInstance()){
-				phrase+=(String) inst_i.features().get(0)+"_";
 				Vector<String> inst_i_features = inst_i.features();
 				for(int j = 0; j < inst_i_features.size(); j++){
 					if(inst_i_features.get(j).split("_").length>1){

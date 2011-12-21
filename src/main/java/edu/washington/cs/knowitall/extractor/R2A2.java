@@ -62,7 +62,7 @@ public class R2A2 extends ReVerbRelationExtractor {
             
             for (ChunkedBinaryExtraction extr : extractor.extract(sent)) {
                 
-                double score = scoreFunc.getConfidence(extr);
+                double score = scoreFunc.getConf(extr);
                 
                 String arg1 = extr.getArgument1().toString();
                 String rel = extr.getRelation().toString();

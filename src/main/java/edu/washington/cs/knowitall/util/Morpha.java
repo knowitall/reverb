@@ -52157,7 +52157,6 @@ public class Morpha {
 	}
 
 	private StringBuffer yytextBuff;
-	private final static boolean noTags = false;
 
 	// A list of verbs that have doubling of consonants
 	// this list can be rebuilt with the main method in process.Morphology!

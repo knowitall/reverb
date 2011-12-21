@@ -1,10 +1,12 @@
-/* For representing a sentence that is annotated with pos tags and np chunks.*/
-import edu.washington.cs.knowitall.nlp.NpChunkedSentence;
+package edu.washington.cs.knowitall.examples;
 
-/* String -> NpChunkedSentence */
+/* For representing a sentence that is annotated with pos tags and np chunks.*/
+import edu.washington.cs.knowitall.nlp.ChunkedSentence;
+
+/* String -> ChunkedSentence */
 import edu.washington.cs.knowitall.nlp.OpenNlpSentenceChunker;
 
-/* The class that is responsbile for extraction. */
+/* The class that is responsible for extraction. */
 import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
 
 /* The class that is responsible for assigning a confidence score to an 
@@ -15,27 +17,25 @@ import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
 /* A class for holding a (arg1, rel, arg2) triple. */
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-
-public class Example {
+public class ReVerbExample {
+    
     public static void main(String[] args) throws Exception {
 
         String sentStr = "Michael McGinn is the mayor of Seattle.";
-
+    
         // Looks on the classpath for the default model files.
         OpenNlpSentenceChunker chunker = new OpenNlpSentenceChunker();
-        NpChunkedSentence sent = chunker.chunkSentence(sentStr);
-
+        ChunkedSentence sent = chunker.chunkSentence(sentStr);
+    
         // Prints out the (token, tag, chunk-tag) for the sentence
         System.out.println(sentStr);
         for (int i = 0; i < sent.getLength(); i++) {
             String token = sent.getToken(i);
             String posTag = sent.getPosTag(i);
-            String chunkTag = sent.getNpChunkTag(i);
+            String chunkTag = sent.getChunkTag(i);
             System.out.println(token + " " + posTag + " " + chunkTag);
         }
-
+    
         // Prints out extractions from the sentence.
         ReVerbExtractor reverb = new ReVerbExtractor();
         ReVerbConfFunction confFunc = new ReVerbConfFunction();
