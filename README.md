@@ -43,7 +43,7 @@ The command line interface to ReVerb takes plain text or HTML as input, and outp
 
 For example:
 
-    $ echo "Olympia is the capital city of Washington." | ./bin/reverb -q -s | tr '\t' '\n' | cat -n
+    $ echo "Olympia is the capital city of Washington." | ./reverb -q -s | tr '\t' '\n' | cat -n
      1  stdin
      2  1
      3  Olympia
@@ -60,26 +60,26 @@ For example:
     14  NNP VBZ DT NN NN IN NNP .
     15  B-NP B-VP B-NP I-NP I-NP I-NP I-NP O
 
-For a list of options to the command line interface to ReVerb, run `/bin/reverb -h`. 
+For a list of options to the command line interface to ReVerb, run `reverb -h`. 
 
 ### Examples
 
 #### Running ReVerb on small set of files
-    ./bin/reverb file1 file2 file3 ...
+    ./reverb file1 file2 file3 ...
 
 #### Running ReVerb on standard input
-    ./bin/reverb < input
+    ./reverb < input
 
 #### Running ReVerb on HTML files
 The `--strip-html` flag (short version: `-s`) removes tags from the input before running ReVerb. 
 
-    ./bin/reverb --strip-html myfile.html
+    ./reverb --strip-html myfile.html
 
 #### Running ReVerb on a list of files
 You may have an entire directory structure that you want to run ReVerb on. ReVerb takes approximately 10 seconds to initialize, so it is not feasible to simply start a new process for each file. To pass ReVerb a list of paths, use the `-f` switch:
 
     # Run ReVerb on all files under mydir/
-    find mydir/ -type f | ./bin/reverb -f
+    find mydir/ -type f | ./reverb -f
 
 ## Java Interface
 To include ReVerb as a library in your own project, please take a look at the example class `ReVerbExample` in the `src/main/java/edu/washington/cs/knowitall/examples` directory. 
