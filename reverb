@@ -1,3 +1,3 @@
 #!/bin/bash
 export MAVEN_OPTS=-Xmx512m
-mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb $@
+mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb -Dexec.args="$@"
