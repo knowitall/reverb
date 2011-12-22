@@ -67,6 +67,12 @@ public class CommandLineReVerb {
 	private String currentFile;
 	private Queue<String> fileArgs;
 	
+	private static String[] colNames = {"filename", "sentence number", "arg1", 
+	    "rel", "arg2", "arg1 start", "arg1 end", "rel start", "rel end", 
+	    "arg2 start", "arg2 end", "conf", "sentence words", "sentence pos tags", 
+        "sentence chunk tags", "arg1 normalized", "rel normalized", 
+        "arg2 normalized"};
+	
 	public static void main(String[] args) throws ExtractorException {
 		
 		Options options = new Options();
@@ -107,6 +113,17 @@ public class CommandLineReVerb {
 	public static void usage(Options options) {
 		HelpFormatter help = new HelpFormatter();
 		help.printHelp(String.format("%s [OPTIONS] [FILES]", NAME), options);
+		System.out.println();
+		printOutputFormatHelp();
+		System.out.println();
+	}
+	
+	private static void printOutputFormatHelp() {
+	    System.out.println("Output Columns:");
+	    for (int i = 0; i < colNames.length; i++) {
+	        int j = i + 1;
+	        System.out.println("    " + j + ". " + colNames[i]);
+	    }
 	}
 	
 	public CommandLineReVerb(CommandLine params) throws ExtractorException {
