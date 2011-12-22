@@ -105,12 +105,12 @@ Then, start Eclipse and navigate to File > Import. Then, under General, select "
 For more information, please visit the ReVerb homepage at the University of Washington: <http://reverb.cs.washingotn.edu>.
 
 ## Contributors
-* Anthony Fader (afader at cs.washington.edu)
-* Michael Schmitz (schmmd at cs.washington.edu)
+* Anthony Fader <http://www.cs.washington.edu/homes/afader>
+* Michael Schmitz <http://www.schmitztech.com/>
 * Robert Bart (rbart at cs.washington.edu)
-* Janara Christensen (janara at cs.washington.edu)
-* Niranjan Balasubramanian (getniranj at yahoo.com)
-* Jonathan Berant (jonatha6 at post.tau.ac.il)
+* Janara Christensen <http://www.cs.washington.edu/homes/janara>
+* Niranjan Balasubramanian <http://www.cs.washington.edu/homes/niranjan>
+* Jonathan Berant <http://www.cs.tau.ac.il/~jonatha6>
 
 ## Citing ReVerb
 If you use ReVerb in your academic work, please cite ReVerb with the following BibTeX citation:
