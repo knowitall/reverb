@@ -82,7 +82,7 @@ The `--strip-html` flag (short version: `-s`) removes tags from the input before
     ./reverb --strip-html myfile.html
 
 #### Running ReVerb on a list of files
-You may have an entire directory structure that you want to run ReVerb on. ReVerb takes approximately 10 seconds to initialize, so it is not feasible to simply start a new process for each file. To pass ReVerb a list of paths, use the `-f` switch:
+You may have an entire directory structure that you want to run ReVerb on. ReVerb takes approximately 10 seconds to initialize, so it is not efficient to start a new process for each file. To pass ReVerb a list of paths, use the `-f` switch:
 
     # Run ReVerb on all files under mydir/
     find mydir/ -type f | ./reverb -f
