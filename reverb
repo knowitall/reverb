@@ -1,3 +1,8 @@
 #!/bin/bash
+
+# Increase the heap size for reverb
 export MAVEN_OPTS=-Xmx512m
-mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb -Dexec.args="$@"
+
+# Thanks to http://stackoverflow.com/questions/3570377/preserving-argument-spacing-etc-when-passing-into-mvn-execjava for this escaping trick
+args=(${@// /\\ })
+mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb -Dexec.args="${args[*]}"

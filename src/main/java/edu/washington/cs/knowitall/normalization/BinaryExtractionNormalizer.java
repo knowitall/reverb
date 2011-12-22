@@ -5,21 +5,21 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
 /***
  * A class for normalizing {@link ChunkedBinaryExtraction} objects. This class
- * uses {@link LowerCaseNormalizer} to normalize arg1 and arg2, and 
+ * uses {@link ArgumentNormalizer} to normalize arg1 and arg2, and 
  * {@link VerbalRelationNormalizer} to normalize rel.
  * @author afader
  *
  */
 public class BinaryExtractionNormalizer {
     
-    private LowerCaseNormalizer argNormalizer;
+    private ArgumentNormalizer argNormalizer;
     private VerbalRelationNormalizer relNormalizer;
     
     /**
      * Constructs a new normalizer object.
      */
     public BinaryExtractionNormalizer() {
-        this.argNormalizer = new LowerCaseNormalizer();
+        this.argNormalizer = new ArgumentNormalizer();
         this.relNormalizer = new VerbalRelationNormalizer();
     }
     
