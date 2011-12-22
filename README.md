@@ -2,7 +2,7 @@
 
 ReVerb is a program that automatically identifies and extracts binary relationships from English sentences. ReVerb is designed for Web-scale information extraction, where the target relations cannot be specified in advance and speed is important. 
 
-ReVerb takes raw text as input, and outputs (argument1, relation phrase, argument2) triples. For example, given the sentence "Oranges are high in vitamin C," ReVerb will extract the triple (oranges, are high in, vitamin c). 
+ReVerb takes raw text as input, and outputs (argument1, relation phrase, argument2) triples. For example, given the sentence "Bananas are an excellent source of potassium," ReVerb will extract the triple (bananas, be source of, potassium). 
 
 More information is available at the ReVerb homepage: <http://reverb.cs.washington.edu>
 
