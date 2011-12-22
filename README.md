@@ -40,25 +40,31 @@ The command line interface to ReVerb takes plain text or HTML as input, and outp
 13. The words of the sentence this extraction came from, space-separated.
 14. The part-of-speech tags for the sentence words, space-separated. 
 15. The chunk tags for the sentence words, space separated. These represent a shallow parse of the sentence. 
+16. A normalized version of arg1. See the `BinaryExtractionNormalizer` javadoc for details about how the normalization is done.
+17. A normalized version of rel.
+18. A normalized version of arg2.
 
 For example:
 
-    $ echo "Olympia is the capital city of Washington." | ./reverb -q -s | tr '\t' '\n' | cat -n
+    $ echo "Bananas are an excellent source of potassium." | ./reverb -q | tr '\t' '\n' | cat -n
      1  stdin
      2  1
-     3  Olympia
-     4  is the capital city of
-     5  Washington
+     3  Bananas
+     4  are an excellent source of
+     5  potassium
      6  0
      7  1
      8  1
      9  6
     10  6
     11  7
-    12  0.9999999999644988
-    13  Olympia is the capital city of Washington .
-    14  NNP VBZ DT NN NN IN NNP .
+    12  0.9999999997341693
+    13  Bananas are an excellent source of potassium .
+    14  NNS VBP DT JJ NN IN NN .
     15  B-NP B-VP B-NP I-NP I-NP I-NP I-NP O
+    16  bananas
+    17  be source of
+    18  potassium
 
 For a list of options to the command line interface to ReVerb, run `reverb -h`. 
 

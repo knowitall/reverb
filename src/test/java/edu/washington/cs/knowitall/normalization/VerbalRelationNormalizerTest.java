@@ -55,6 +55,10 @@ public class VerbalRelationNormalizerTest {
 		assertNorm("take kid to", "took my kids to", "VBD PRP$ NNS TO");
 		assertNorm("ravage by", "has been ravaged by", "VBZ VBN VBN IN");
 		assertNorm("have nothing to do with", "has nothing to do with", "VBZ NN TO VB IN");
+		assertNorm("be high in", "are high in", "VBZ JJ IN");
+		assertNorm("be high in", "are very high in", "VBZ RB JJ IN");
+		assertNorm("look high in", "looks very high in", "VBZ RB JJ IN");
+		assertNorm("be taller than", "is taller than", "VBZ JJR IN");
 	}
 
 }

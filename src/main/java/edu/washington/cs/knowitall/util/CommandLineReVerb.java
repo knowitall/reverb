@@ -30,6 +30,8 @@ import edu.washington.cs.knowitall.io.BufferedReaderIterator;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.ChunkedSentenceReader;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
+import edu.washington.cs.knowitall.normalization.BinaryExtractionNormalizer;
+import edu.washington.cs.knowitall.normalization.NormalizedBinaryExtraction;
 
 /***
  * A command line wrapper for ReVerbExtractor. Run with -h to see the usage information.
@@ -43,6 +45,7 @@ public class CommandLineReVerb {
 	private ReVerbRelationExtractor extractor;
 	private ConfidenceFunction confFunc;
 	private BufferedReaderIterator stdinLineIterator;
+	private BinaryExtractionNormalizer normalizer;
 	
 	private long startAtTime;
 	private boolean dataStdin = false;
@@ -133,6 +136,8 @@ public class CommandLineReVerb {
 		allowUnary = params.hasOption("allowUnary");
 		
 		useArgLearner = params.hasOption("argLearner");
+		
+		normalizer = new BinaryExtractionNormalizer();
 		
 		try {
 			
@@ -275,13 +280,14 @@ public class CommandLineReVerb {
 			for (ChunkedBinaryExtraction extr : extractor.extract(sent)) {
 				numExtrs++;
 		        double conf = getConf(extr);
-		        printExtr(extr, conf);
+		        NormalizedBinaryExtraction extrNorm = normalizer.normalize(extr);
+		        printExtr(extrNorm, conf);
 			}
 			if (numSents % messageEvery == 0) summary();
 		}
 	}
 	
-	private void printExtr(ChunkedBinaryExtraction extr, double conf) {
+	private void printExtr(NormalizedBinaryExtraction extr, double conf) {
 		String arg1 = extr.getArgument1().toString();
         String rel = extr.getRelation().toString();
         String arg2 = extr.getArgument2().toString();
@@ -290,6 +296,9 @@ public class CommandLineReVerb {
         String toks = sent.getTokensAsString();
         String pos = sent.getPosTagsAsString();
         String chunks = sent.getChunkTagsAsString();
+        String arg1Norm = extr.getArgument1Norm().toString();
+        String relNorm = extr.getRelationNorm().toString();
+        String arg2Norm = extr.getArgument2Norm().toString();
         
         Range arg1Range = extr.getArgument1().getRange();
         Range relRange = extr.getRelation().getRange();
@@ -309,7 +318,8 @@ public class CommandLineReVerb {
                 rs, re,
                 a2s, a2e,
                 String.valueOf(conf),
-                toks, pos, chunks
+                toks, pos, chunks,
+                arg1Norm, relNorm, arg2Norm
         }, '\t');
         
         System.out.println(row);

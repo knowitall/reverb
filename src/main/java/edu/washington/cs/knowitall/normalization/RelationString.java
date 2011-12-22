@@ -2,8 +2,6 @@ package edu.washington.cs.knowitall.normalization;
 // package ac.biu.nlp.graph.untyped.preprocessing.rep;
 
 import java.util.Scanner;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents a Reverb predicate that contains (1) the original predicate from the text (2) normalized version (3) POS sequence
@@ -225,74 +223,6 @@ public class RelationString implements Comparable<RelationString> {
         return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());        
     }
 
-    private RelationString handleBeDo(Map<String, String> normVbnToVbnMap) {
-
-
-        String[] normTokens = m_normPred.split("\\s+");
-        String[] posTokens = m_posPred.split("\\s+");
-
-        StringBuilder normBuilder = new StringBuilder();
-        StringBuilder posBuilder = new StringBuilder();
-
-        for(int i = 0; i < posTokens.length; ++i) {
-
-            if(normTokens[i].equals("be") && i < posTokens.length-1) {
-
-                if(posTokens[i+1].equals("VBN")) {
-                    if(normVbnToVbnMap.get(normTokens[i+1])==null)
-                        throw new IllegalArgumentException("vbn map missing value for: " + normTokens[i+1]);
-
-                    normBuilder.append(normTokens[i]+" "+normVbnToVbnMap.get(normTokens[i+1])+" ");
-                    posBuilder.append(posTokens[i]+" "+posTokens[i+1]+" ");
-                    i++;
-                }
-                else if(posTokens[i+1].equals("VBG")) {
-                    //handle "be going to"
-                    if(i+3 < posTokens.length) {
-                        if(normTokens[i+1].equals("go") && 
-                                posTokens[i+1].equals("VBG") &&
-                                normTokens[i+2].equals("to") &&
-                                posTokens[i+3].equals("VB")) {
-                            i = i+2; //skip to "to"
-                        }
-                    }
-                    //we do nothing to skip the "be" (or "to")
-                }
-                else {
-                    normBuilder.append(normTokens[i]+" ");
-                    posBuilder.append(posTokens[i]+" ");
-                }
-            }
-            else if(normTokens[i].equals("do") && i < posTokens.length-1 && posTokens[i+1].equals("VB")) {
-                //just skip it
-            }
-            else if(posTokens[i].equals("VBN")) {
-                if(normVbnToVbnMap.get(normTokens[i])==null)
-                    throw new IllegalArgumentException("vbn map missing value for: " + normTokens[i]);
-                normBuilder.append(normVbnToVbnMap.get(normTokens[i])+" ");
-                posBuilder.append(posTokens[i]+" ");
-            }
-            else {
-                normBuilder.append(normTokens[i]+" ");
-                posBuilder.append(posTokens[i]+" ");
-            }
-        }
-        return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());        
-    }
-
-    private Map<String, String> createVbnMap() {
-
-        String[] predTokens = m_pred.split("\\s+");
-        String[] normTokens = m_normPred.split("\\s+");
-        String[] posTokens = m_posPred.split("\\s+");
-
-        Map<String,String> vbnToVbMap = new HashMap<String, String>();
-        for(int i = 0; i < posTokens.length;++i) {
-            if(posTokens[i].equals("VBN"))
-                vbnToVbMap.put(normTokens[i].toLowerCase(), predTokens[i].toLowerCase());
-        }
-        return vbnToVbMap;
-    }
 
     private RelationString omitAdverbs() {
 

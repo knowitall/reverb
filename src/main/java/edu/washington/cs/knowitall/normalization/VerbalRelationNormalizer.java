@@ -103,9 +103,29 @@ public class VerbalRelationNormalizer implements FieldNormalizer {
 	}
 	
 	private void removeIgnoredPosTags(List<String> tokens, List<String> posTags) {
-		int i = 0;
+		
+	    boolean noNoun = true;
+	    for (int j = 0; j < posTags.size(); j++) {
+	        if (posTags.get(j).startsWith("N")) {
+	            noNoun = false;
+	            break;
+	        }
+	    }
+		
+	    int i = 0;
 		while (i < posTags.size()) {
-			if (ignorePosTags.contains(posTags.get(i))) {
+		    String tag = posTags.get(i);
+		    boolean isAdj = tag.startsWith("J");
+		    
+		    /*
+		     * This is checking for a special case where the relation phrase 
+		     * contains an adjective, but no noun. This covers cases like
+		     * "is high in" or "looks perfect for" where the adjective carries
+		     * most of the semantics of the relation phrase. In these cases,
+		     * we don't want to strip out the adjectives.
+		     */
+		    boolean keepAdj = isAdj && noNoun;
+			if (ignorePosTags.contains(tag) && !keepAdj) {
 				tokens.remove(i);
 				posTags.remove(i);
 			} else {
