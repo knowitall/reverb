@@ -13,9 +13,3 @@ fi
 FATJAR=`ls $REVERB_HOME/target/reverb-core-*-jar-with-dependencies.jar | head -1`
 
 java -Xmx512m -jar $FATJAR ${ARGS[*]}
-
-# Increase the heap size for reverb
-#export MAVEN_OPTS=-Xmx512m
-#
-## Thanks to http://stackoverflow.com/questions/3570377/preserving-argument-spacing-etc-when-passing-into-mvn-execjava for this escaping trick
-##mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb -Dexec.args="${args[*]}"
