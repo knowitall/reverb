@@ -32,11 +32,10 @@ public class ArgumentNormalizer implements FieldNormalizer {
      * Lowercases each token in the field.
      */
     public NormalizedField normalizeField(ChunkedExtraction field) {
-        int n = field.getLength();
         ArrayList<String> tokens = new ArrayList<String>(field.getTokens());
         ArrayList<String> tags = new ArrayList<String>(field.getPosTags());
         int i = 0;
-        while (i < n) {
+        while (i < tokens.size()) {
             String token = tokens.get(i);
             String tag = tags.get(i);
             if (ignorePosTags.contains(tag)) {

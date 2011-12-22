@@ -1,8 +1,21 @@
 #!/bin/bash
 
-# Increase the heap size for reverb
-export MAVEN_OPTS=-Xmx512m
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+REVERB_HOME="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+ARGS=(${@// /\\ })
 
-# Thanks to http://stackoverflow.com/questions/3570377/preserving-argument-spacing-etc-when-passing-into-mvn-execjava for this escaping trick
-args=(${@// /\\ })
-mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb -Dexec.args="${args[*]}"
+if [ ! -f $REVERB_HOME/target/reverb-core-*-jar-with-dependencies.jar ]; then
+    echo "Can't find fatjar in $REVERB_HOME/target. Try running mvn assembly:single"
+    exit 1
+fi
+
+FATJAR=`ls $REVERB_HOME/target/reverb-core-*-jar-with-dependencies.jar | head -1`
+
+java -Xmx512m -jar $FATJAR ${ARGS[*]}
+
+# Increase the heap size for reverb
+#export MAVEN_OPTS=-Xmx512m
+#
+## Thanks to http://stackoverflow.com/questions/3570377/preserving-argument-spacing-etc-when-passing-into-mvn-execjava for this escaping trick
+##mvn -e -q exec:java -Dexec.mainClass=edu.washington.cs.knowitall.util.CommandLineReVerb -Dexec.args="${args[*]}"

@@ -59,6 +59,7 @@ public class VerbalRelationNormalizerTest {
 		assertNorm("be high in", "are very high in", "VBZ RB JJ IN");
 		assertNorm("look high in", "looks very high in", "VBZ RB JJ IN");
 		assertNorm("be taller than", "is taller than", "VBZ JJR IN");
+		assertNorm("be source of", "is an excellent source of", "VBZ DT JJ NN IN");
 	}
 
 }

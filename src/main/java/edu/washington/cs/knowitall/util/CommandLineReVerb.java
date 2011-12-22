@@ -209,6 +209,8 @@ public class CommandLineReVerb {
 					extractFromNextFile();
 				} catch (ExtractorException e) {
 					message("Error during extraction: " + e.getMessage());
+				} catch (IOException e) {
+				    message("Error reading file: " + e.getMessage());
 				}
 				numFiles++;
 			}
