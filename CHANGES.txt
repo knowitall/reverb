@@ -1,0 +1,5 @@
+New in ReVerb 1.2
+- New extraction confidence function
+- Updated argument identification code (run with -a)
+- Updated output format w/NLP metadata and extraction normalization
+- Removed unused code
