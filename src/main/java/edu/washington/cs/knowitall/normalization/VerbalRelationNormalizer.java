@@ -24,6 +24,7 @@ import edu.washington.cs.knowitall.util.Morpha;
 public class VerbalRelationNormalizer implements FieldNormalizer {
 	
 	private Morpha lexer;
+	private boolean stripBeAdj = false;
 	private HashSet<String> ignorePosTags;
 	private HashSet<String> auxVerbs;
 	
@@ -47,6 +48,15 @@ public class VerbalRelationNormalizer implements FieldNormalizer {
 		auxVerbs.add("be");
 		auxVerbs.add("have");
 		auxVerbs.add("do");
+	}
+	
+	/**
+	 * If set to true, then will not remove adjectives in phrases like 
+	 * "is happy about".
+	 * @param value
+	 */
+	public void stripBeAdj(boolean value) {
+	    stripBeAdj = value;
 	}
 	
 	/**
@@ -125,7 +135,7 @@ public class VerbalRelationNormalizer implements FieldNormalizer {
 		     * we don't want to strip out the adjectives.
 		     */
 		    boolean keepAdj = isAdj && noNoun;
-			if (ignorePosTags.contains(tag) && !keepAdj) {
+			if (ignorePosTags.contains(tag) && (!keepAdj || stripBeAdj)) {
 				tokens.remove(i);
 				posTags.remove(i);
 			} else {

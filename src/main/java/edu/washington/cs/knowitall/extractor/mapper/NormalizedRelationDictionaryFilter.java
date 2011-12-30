@@ -27,6 +27,7 @@ public class NormalizedRelationDictionaryFilter extends FilterMapper<ChunkedExtr
     public NormalizedRelationDictionaryFilter(HashSet<String> relations) {
         this.relations = relations;
         normalizer = new VerbalRelationNormalizer();
+        normalizer.stripBeAdj(true);
     }
 
     /**
