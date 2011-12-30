@@ -9,7 +9,7 @@
   <parent>
     <groupId>edu.washington.cs.knowitall</groupId>
     <artifactId>knowitall</artifactId>
-    <version>1.2.0</version>
+    <version>2.0.0</version>
   </parent>
   <inceptionYear>2010</inceptionYear>
   <licenses>
