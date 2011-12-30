@@ -32,6 +32,11 @@ single executable jar file.
 
     mvn clean compile assembly:single
 
+The compiled class files will be put in the `target/classes` directory. The 
+single executable jar file will be written to 
+`target/reverb-core-*-jar-with-dependencies.jar` where `*` is replaced with
+the version number.  
+
 ## Command Line Interface
 Once you have built ReVerb, you can run it from the command line.
 

@@ -6,7 +6,7 @@ REVERB_HOME="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 ARGS=(${@// /\\ })
 
 if [ ! -f $REVERB_HOME/target/reverb-core-*-jar-with-dependencies.jar ]; then
-    echo "Can't find reverb-core-*-jar-with-dependenceis.jar in $REVERB_HOME/target. "
+    echo "Can't find reverb-core-*-jar-with-dependencies.jar in $REVERB_HOME/target. "
     echo "Try running \"mvn clean compile assembly:single\""
     exit 1
 fi
