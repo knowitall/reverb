@@ -5,13 +5,13 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.washington.cs.knowitall.commonlib.logic.ArgFactory;
-import edu.washington.cs.knowitall.commonlib.logic.LogicExpression;
-import edu.washington.cs.knowitall.commonlib.logic.Tok.Arg;
-import edu.washington.cs.knowitall.commonlib.regex.Expression;
-import edu.washington.cs.knowitall.commonlib.regex.ExpressionFactory;
-import edu.washington.cs.knowitall.commonlib.regex.Match;
-import edu.washington.cs.knowitall.commonlib.regex.RegularExpression;
+import edu.washington.cs.knowitall.logic.ArgFactory;
+import edu.washington.cs.knowitall.logic.LogicExpression;
+import edu.washington.cs.knowitall.logic.Expression.Arg;
+import edu.washington.cs.knowitall.regex.Expression;
+import edu.washington.cs.knowitall.regex.ExpressionFactory;
+import edu.washington.cs.knowitall.regex.Match;
+import edu.washington.cs.knowitall.regex.RegularExpression;
 
 public class ChunkedSentencePattern {
     /***
@@ -41,7 +41,7 @@ public class ChunkedSentencePattern {
      * @return
      */
     public static RegularExpression<ChunkedSentenceToken> compile(String regex) {
-        return new RegularExpression<ChunkedSentenceToken>(regex,
+        return RegularExpression.compile(regex,
                 new ExpressionFactory<ChunkedSentenceToken>() {
 
                     @Override
@@ -53,7 +53,7 @@ public class ChunkedSentencePattern {
                             private final LogicExpression<ChunkedSentenceToken> logic;
 
                             {
-                                this.logic = new LogicExpression<ChunkedSentenceToken>(
+                                this.logic = LogicExpression.compile(
                                         expression, new ArgFactory<ChunkedSentenceToken>() {
                                             @Override
                                             public Arg<ChunkedSentenceToken> create(

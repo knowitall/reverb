@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import edu.washington.cs.knowitall.commonlib.regex.Match;
-import edu.washington.cs.knowitall.commonlib.regex.RegularExpression;
+import edu.washington.cs.knowitall.regex.Match;
+import edu.washington.cs.knowitall.regex.RegularExpression;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 import edu.washington.cs.knowitall.nlp.ChunkedSentencePattern;
 import edu.washington.cs.knowitall.nlp.ChunkedSentenceToken;

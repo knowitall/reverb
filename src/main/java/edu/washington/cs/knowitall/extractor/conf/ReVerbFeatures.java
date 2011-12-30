@@ -6,8 +6,8 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import edu.washington.cs.knowitall.commonlib.Range;
-import edu.washington.cs.knowitall.commonlib.regex.Match;
-import edu.washington.cs.knowitall.commonlib.regex.RegularExpression;
+import edu.washington.cs.knowitall.regex.Match;
+import edu.washington.cs.knowitall.regex.RegularExpression;
 import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
 import edu.washington.cs.knowitall.extractor.conf.featureset.ChunkFeature;
