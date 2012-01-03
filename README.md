@@ -137,6 +137,78 @@ Then, start Eclipse and navigate to File > Import. Then, under General, select
 "Existing Projects into Workspace". Then point Eclipse to the main ReVerb 
 directory.
 
+## Including ReVerb as a Dependency
+If you want to start a new project that depends on ReVerb, first create a new
+skeleton project using Maven. The following command will ask you to fill in
+the details of your project name, etc.:
+
+    mvn archetype:generate
+
+Next, add a new repository to the project `pom.xml` file. You can do this by
+adding the following XML under the `<project>` element:
+
+    <repositories>
+      <repository>
+        <id>knowitall</id>
+        <url>http://knowitall.cs.washington.edu/maven2</url>
+      </repository>
+    </repositories>
+
+Finally, add ReVerb as a dependency. Do this by adding the following XML under
+the `<project>` element:
+
+    <dependencies>
+      <dependency>
+        <groupId>edu.washington.cs.knowitall</groupId>
+        <artifactId>reverb-core</artifactId>
+        <version>1.3.0</version>
+      </dependency>
+    </dependencies>
+
+Your final `pom.xml` file should look something like this:
+
+    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+    
+      <groupId>mygroup</groupId>
+      <artifactId>myartifact</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <packaging>jar</packaging>
+
+      <name>myartifact</name>
+      <url>http://maven.apache.org</url>
+    
+      <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      </properties>
+    
+      <repositories>
+        <repository>
+          <id>knowitall</id>
+          <url>http://knowitall.cs.washington.edu/maven2</url>
+        </repository>
+      </repositories>
+    
+      <dependencies>
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>3.8.1</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>edu.washington.cs.knowitall</groupId>
+          <artifactId>reverb-core</artifactId>
+          <version>1.3.0</version>
+        </dependency>  
+      </dependencies>
+    </project>
+
+You should be able to include ReVerb in your code now. You can try this out by
+including `import edu.washington.cs.knowitall.extractor.ReVerbExtractor` in 
+your program.
+
 ## Retraining the Confidence Function
 ReVerb includes a class for training new confidence functions, given a list of 
 labeled examples, called `ReVerbClassifierTrainer`. Example code for training a 
