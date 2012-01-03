@@ -21,9 +21,9 @@ line. Follow these steps to get started:
 1.  Download the latest ReVerb jar from 
 <http://reverb.cs.washington.edu/reverb-latest.jar>
 
-2.  Run `java -Xmx512m -jar reverb.jar yourfile.txt`.
+2.  Run `java -Xmx512m -jar reverb-latest.jar yourfile.txt`.
 
-3.  Run `java -Xmx512m -jar reverb.jar -h` for more options.
+3.  Run `java -Xmx512m -jar reverb-latest.jar -h` for more options.
 
 ## Building
 Building ReVerb from source requires Apache Maven (<http://maven.apache.org>). 
