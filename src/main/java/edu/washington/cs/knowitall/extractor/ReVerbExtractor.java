@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 
+import com.google.common.base.Joiner;
+
 import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument1Mappers;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument2Mappers;
@@ -75,13 +77,14 @@ public class ReVerbExtractor extends ReVerbRelationExtractor {
         ChunkedSentenceReader sentReader = DefaultObjects.getDefaultSentenceReader(reader);
         System.err.println("Done.");
         
+        Joiner joiner = Joiner.on("\t");
+        
         for (ChunkedSentence sent : sentReader.getSentences()) {
             
             sentenceCount++;
             
             String sentString = sent.getTokensAsString();
             System.out.println(String.format("sentence\t%s\t%s", sentenceCount, sentString));
-            
             
             for (ChunkedBinaryExtraction extr : extractor.extract(sent)) {
                 
@@ -91,7 +94,7 @@ public class ReVerbExtractor extends ReVerbRelationExtractor {
                 String rel = extr.getRelation().toString();
                 String arg2 = extr.getArgument2().toString();
                 
-                String extrString = String.format("%s\t%s\t%s\t%s\t%s", sentenceCount, arg1, rel, arg2, score);
+                String extrString = joiner.join(sentenceCount, arg1, rel, arg2, score);
                 
                 System.out.println("extraction\t" + extrString);
                 
