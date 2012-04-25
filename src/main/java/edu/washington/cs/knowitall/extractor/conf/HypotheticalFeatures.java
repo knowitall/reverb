@@ -29,8 +29,6 @@ public class HypotheticalFeatures {
 	
 	private HashMap<String, Predicate<ChunkedBinaryExtraction>> featureMap;
 	
-	private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
-
 	private static String[] ifWords = new String[] {"if","whether","though","although"};
 	private static String[] thatWords = new String[] {"that","which","who"};
 	private static String[] mayWords= new String[] {"may","might","would","could","should","suppose"};
@@ -68,13 +66,6 @@ public class HypotheticalFeatures {
 		thatSet = new HashSet<String>();
 		thatSet.addAll(Arrays.asList(thatWords));
 	}
-	
-	/**
-	 * @return the feature set used for the Merged Extraction confidence function
-	 */
-	public BooleanFeatureSet<ChunkedBinaryExtraction> getFeatureSet() {
-		return featureSet;
-	}
 
 	public Map<String, Predicate<ChunkedBinaryExtraction>> getFeatureMap() {
 		
@@ -83,7 +74,6 @@ public class HypotheticalFeatures {
 	
 	private void initFeatureSet() throws SequenceException {
 		initFeatureMap();
-		featureSet = new BooleanFeatureSet<ChunkedBinaryExtraction>(featureMap);
 	}
 	
 	private void initFeatureMap() {
