@@ -26,8 +26,6 @@ public class NestedFeatures {
 
 	private Map<String, Predicate<ChunkedBinaryExtraction>> featureMap;
 	
-	private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
-
 	// keyword lists. See end of file for hardcoded keywords.
 	private Set<String> com;
 	private Set<String> cog;
@@ -53,10 +51,6 @@ public class NestedFeatures {
 		
 	}
 	
-	public BooleanFeatureSet<ChunkedBinaryExtraction> getFeatureSet() {
-		return featureSet;
-	}
-
 	public Map<String, Predicate<ChunkedBinaryExtraction>> getFeatureMap() {
 		
 		return featureMap;
@@ -64,7 +58,6 @@ public class NestedFeatures {
 	
 	private void initFeatureSet() throws SequenceException {
 		initFeatureMap();
-		featureSet = new BooleanFeatureSet<ChunkedBinaryExtraction>(featureMap);
 	}
 	
 	private void initFeatureMap() {
