@@ -102,4 +102,8 @@ public class BooleanFeatureSet<T> extends FeatureSet<T> {
     public double featurize(String featureName, T object) {
         return this.features.get(featureName).apply(object) == true ? 1.0 : 0.0;
     }
+    
+    public boolean featurizeToBool(String featureName, T object) {
+        return this.features.get(featureName).apply(object);
+    }
 }

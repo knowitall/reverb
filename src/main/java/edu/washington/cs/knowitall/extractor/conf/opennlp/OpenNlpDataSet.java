@@ -24,6 +24,7 @@ public class OpenNlpDataSet<T> {
 
 	private final BooleanFeatureSet<T> features;
 	private final List<Event> instances;
+	private final OpenNlpAlphabet<T> alphabet;
 	
 	/**
 	 * Constructs a new data set
@@ -34,6 +35,7 @@ public class OpenNlpDataSet<T> {
 	    this.name = name;
 		this.features = featureSet;
 		this.instances = new ArrayList<Event>();
+		this.alphabet = new OpenNlpAlphabet<T>(featureSet);
 	}
 	
 	/**
@@ -47,8 +49,9 @@ public class OpenNlpDataSet<T> {
 	    String[] stringFeatures = new String[featurized.size()];
 	    
 	    int i = 0;
-	    for (String feature : featurized.keySet()) {
-	        stringFeatures[i++] = feature + "=" + Boolean.toString(featurized.get(feature));
+	    for (String feature : features.getFeatureNames()) {
+	    	boolean value = features.featurizeToBool(feature, instance);
+	        stringFeatures[i++] = this.alphabet.lookup.get(new OpenNlpAlphabet.Key(feature, value));
 	    }
 	    
 	    Event event = new Event(Integer.toString(label), stringFeatures);
