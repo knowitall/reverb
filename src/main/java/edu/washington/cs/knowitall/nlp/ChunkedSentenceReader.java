@@ -2,10 +2,8 @@ package edu.washington.cs.knowitall.nlp;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Iterator;
 
 import com.google.common.base.Predicate;
-
 
 import edu.washington.cs.knowitall.extractor.SentenceExtractor;
 import edu.washington.cs.knowitall.io.BufferedReaderIterator;
@@ -108,7 +106,7 @@ public class ChunkedSentenceReader implements Iterable<ChunkedSentence> {
     /**
      * @return an iterator over the sentences from the <code>BufferedReader</code> given during construction.
      */
-    public Iterator<ChunkedSentence> iterator() {
+    @Override public ChunkedSentenceIterator iterator() {
         return chunkedSentIter;
     }
 
