@@ -133,15 +133,10 @@ public class ArgSubstructureFeatureGenerator {
         // build a string out of the features, skipping the label for testing
         // instances
         StringBuilder features = new StringBuilder();
-        Iterator<Vector<String>> instanceIter = instances.iterator();
-        while (instanceIter.hasNext()) {
-            Vector<String> instance = instanceIter.next();
-            Iterator<String> featureIter = instance.iterator();
-            String feature = "";
+        for (Vector<String> instance : instances) {
             String label = instance.lastElement();
 
-            while (featureIter.hasNext()) {
-                feature = featureIter.next();
+            for (String feature : instance) {
                 if (train || !feature.equals(label)) {
                     features.append(feature + " ");
                 }
