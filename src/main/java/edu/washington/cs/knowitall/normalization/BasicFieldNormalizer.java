@@ -3,8 +3,9 @@ package edu.washington.cs.knowitall.normalization;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 
+import uk.ac.susx.informatics.Morpha;
+
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
-import edu.washington.cs.knowitall.util.Morpha;
 
 /**
  * A field normalizer that applies the stemmer to every token
@@ -15,22 +16,22 @@ import edu.washington.cs.knowitall.util.Morpha;
 public class BasicFieldNormalizer implements FieldNormalizer {
 
 	private Morpha lexer;
-	
+
 	public BasicFieldNormalizer() {
-		
+
 		lexer = new Morpha(new ByteArrayInputStream("".getBytes()));
 	}
-	
+
 	@Override
 	public NormalizedField normalizeField(ChunkedExtraction field) {
-		
+
 		String[] normTokens = new String[field.getLength()];
-		
+
 		for (int i = 0; i < field.getLength(); ++i) {
-			
+
 			normTokens[i] = stem(field.getToken(i), field.getPosTag(i));
 		}
-		
+
 		return new NormalizedField(field, normTokens, field.getPosTags().toArray(new String[normTokens.length]));
 	}
 
@@ -58,9 +59,9 @@ public class BasicFieldNormalizer implements FieldNormalizer {
 	        return token;
 	    }
 	}
-	
+
 	public String stemSingleToken(String token, String posTag) {
-		
+
 		return stem(token, posTag);
 	}
 }

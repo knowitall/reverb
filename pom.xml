@@ -94,6 +94,11 @@
       <artifactId>opennlp-tools</artifactId>
       <version>1.5.2-incubating</version>
     </dependency>
+    <dependency>
+      <groupId>uk.ac.susx.informatics</groupId>
+      <artifactId>morpha-stemmer</artifactId>
+      <version>1.0.2</version>
+    </dependency>
     <!-- OpenNLP Models -->
     <dependency>
       <groupId>edu.washington.cs.knowitall</groupId>

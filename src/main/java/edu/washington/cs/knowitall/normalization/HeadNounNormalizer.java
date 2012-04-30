@@ -3,9 +3,10 @@ package edu.washington.cs.knowitall.normalization;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 
+import uk.ac.susx.informatics.Morpha;
+
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 import edu.washington.cs.knowitall.sequence.SequenceException;
-import edu.washington.cs.knowitall.util.Morpha;
 
 /***
  * A normalizer function that heuristically finds the head noun phrase of
@@ -22,16 +23,16 @@ import edu.washington.cs.knowitall.util.Morpha;
  *
  */
 public class HeadNounNormalizer implements FieldNormalizer {
-	
+
 	private static Morpha lexer;
-	
+
 	public HeadNounNormalizer() {
 		lexer = new Morpha(new ByteArrayInputStream("".getBytes()));
 	}
 
 	@Override
 	public NormalizedField normalizeField(ChunkedExtraction field) {
-		
+
 		boolean containsProperNoun = false;
 		int lastNounIndex = -1;
 		for (int i = 0; i < field.getLength(); i++) {
@@ -43,14 +44,14 @@ public class HeadNounNormalizer implements FieldNormalizer {
 				lastNounIndex = i;
 			}
 		}
-		
+
 		NormalizedField norm;
 		if (containsProperNoun || lastNounIndex == -1) {
 			try {
 				norm = new NormalizedField(field, field.getTokens(), field.getPosTags());
 			} catch (SequenceException e) {
 				String msg = String.format(
-					"tokens and posTags are not the same length for field %s", 
+					"tokens and posTags are not the same length for field %s",
 					field);
 				throw new IllegalStateException(msg, e);
 			}
@@ -64,16 +65,16 @@ public class HeadNounNormalizer implements FieldNormalizer {
 				norm = new NormalizedField(field, tokens, posTags);
 			} catch (SequenceException e) {
 				String msg = String.format(
-					"tokens and posTags are not the same length for field %s", 
+					"tokens and posTags are not the same length for field %s",
 					field);
 				throw new IllegalStateException(msg, e);
 			}
 		}
-		
+
 		return norm;
-		
+
 	}
-	
+
 	private String stem(String token, String posTag) {
 		token = token.toLowerCase();
 		String wordTag = token + "_" + posTag;

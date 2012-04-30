@@ -5,7 +5,8 @@ import edu.washington.cs.knowitall.sequence.SequenceException;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
-import edu.washington.cs.knowitall.util.Morpha;
+
+import uk.ac.susx.informatics.Morpha;
 
 /**
  * Created by IntelliJ IDEA.
