@@ -26,26 +26,26 @@ public class PatternExtractor {
     public static String ALPHANUM = "[A-Zçêòéñìa-z0-9]";
     public static String PUNT = "[,\\.;:?!()-]";
 
-    public static String np = "(<chunk='B-NP'> <chunk='I-NP'>*)";
-    public static String vp = "(<chunk='B-VP'> <chunk='I-VP'>* <chunk='B-PRT'>?)";
-    public static String comma = "(<string=','>)";
-    public static String and = "(<string='and'>)";
-    public static String or = "(<string='or'>)";
-    public static String adjp = "(<chunk='B-ADJP'> <chunk='I-ADJP'>*)";
-    public static String advp = "(<chunk='B-ADVP'> <chunk='I-ADVP'>*)";
+    public static String np = "(?:<chunk='B-NP'> <chunk='I-NP'>*)";
+    public static String vp = "(?:<chunk='B-VP'> <chunk='I-VP'>* <chunk='B-PRT'>?)";
+    public static String comma = "(?:<string=','>)";
+    public static String and = "(?:<string='and'>)";
+    public static String or = "(?:<string='or'>)";
+    public static String adjp = "(?:<chunk='B-ADJP'> <chunk='I-ADJP'>*)";
+    public static String advp = "(?:<chunk='B-ADVP'> <chunk='I-ADVP'>*)";
 
-    public static String np_pp = "(<chunk='B-NP'> <chunk='I-NP'>* (<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>*)*)";
-    public static String pp_np1 = "(<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>* (<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>*)*)";
-    public static String pp_np2 = "(<chunk='B-PP'>? <chunk='B-NP'> <chunk='I-NP'>* (<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>*)*)";
-    public static String vp1 = "((<pos='VBD'> | <pos='VB'> | <pos='VBZ'> | <pos='VBP'> | <pos='MD'> | <pos='VBG'> | <pos='VBN'>) <chunk='I-VP'>* <chunk='B-PRT'>?)";
-    public static String vp2 = "((<pos='VBD'> | <pos='VB'> | <pos='VBZ'> | <pos='VBP'> | <pos='MD'>) <chunk='I-VP'>* <chunk='B-PRT'>?)";
-    public static String vp3 = "(<pos='TO'> <chunk='I-VP'>+ <chunk='B-PRT'>?)";
-    public static String advp_vp_advp = "(" + advp + "? " + vp1 + " " + advp
+    public static String np_pp = "(?:<chunk='B-NP'> <chunk='I-NP'>* (?:<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>*)*)";
+    public static String pp_np1 = "(?:<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>* (?:<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>*)*)";
+    public static String pp_np2 = "(?:<chunk='B-PP'>? <chunk='B-NP'> <chunk='I-NP'>* (?:<chunk='B-PP'> <chunk='B-NP'> <chunk='I-NP'>*)*)";
+    public static String vp1 = "(?:(?:<pos='VBD'> | <pos='VB'> | <pos='VBZ'> | <pos='VBP'> | <pos='MD'> | <pos='VBG'> | <pos='VBN'>) <chunk='I-VP'>* <chunk='B-PRT'>?)";
+    public static String vp2 = "(?:(?:<pos='VBD'> | <pos='VB'> | <pos='VBZ'> | <pos='VBP'> | <pos='MD'>) <chunk='I-VP'>* <chunk='B-PRT'>?)";
+    public static String vp3 = "(?:<pos='TO'> <chunk='I-VP'>+ <chunk='B-PRT'>?)";
+    public static String advp_vp_advp = "(?:" + advp + "? " + vp1 + " " + advp
             + "?)";
-    public static String pp = "(<chunk='B-PP'> <chunk='I-PP'>*)";
-    public static String introduces_if = "(<string='if'> | <string='as'> | <string='while'> | <string='so'> | <string='although'> | <string='whether'> | <string='why'> | <string='where'> | <string='because'> | <string='but'>)";
-    public static String vp_np = "(" + advp + "? " + vp + " (" + pp_np2
-            + " (<string=','>? <pos='CC'>? " + pp_np2 + ")*)*)";
+    public static String pp = "(?:<chunk='B-PP'> <chunk='I-PP'>*)";
+    public static String introduces_if = "(?:<string='if'> | <string='as'> | <string='while'> | <string='so'> | <string='although'> | <string='whether'> | <string='why'> | <string='where'> | <string='because'> | <string='but'>)";
+    public static String vp_np = "(?:" + advp + "? " + vp + " (?:" + pp_np2
+            + " (?:<string=','>? <pos='CC'>? " + pp_np2 + ")*)*)";
 
     private HashMap<String, String> patternMapArg1 = new HashMap<String, String>();
     private HashMap<String, RegularExpression<ChunkedSentenceToken>> compiledPatternMapArg1 = new HashMap<String, RegularExpression<ChunkedSentenceToken>>();
