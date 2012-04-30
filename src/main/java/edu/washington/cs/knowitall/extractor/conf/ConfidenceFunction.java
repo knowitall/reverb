@@ -8,7 +8,5 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
  *
  */
 public interface ConfidenceFunction {
-    
     public double getConf(ChunkedBinaryExtraction extr) throws ConfidenceFunctionException;
-
 }

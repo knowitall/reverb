@@ -13,26 +13,26 @@ import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 
 /***
  * <p>
- * This class represents an extraction from a single sentence that is made up
- * of one or more fields, each of which corresponds to a span in the sentence. 
+ * This class represents an extraction from a single sentence that is made up of
+ * one or more fields, each of which corresponds to a span in the sentence.
  * </p>
  * <p>
- * For example, a binary subject-verb-object relationship can
- * be represented as a {@code SentenceSpanExtraction} with three fields: one 
- * for the subject, one for the verb phrase, and one for the object. This class
- * keeps a reference to the sentence the extraction originated from, and the 
- * ranges of each field. Each field is represented as a 
- * {@link ChunkedExtraction}.
+ * For example, a binary subject-verb-object relationship can be represented as
+ * a {@code SentenceSpanExtraction} with three fields: one for the subject, one
+ * for the verb phrase, and one for the object. This class keeps a reference to
+ * the sentence the extraction originated from, and the ranges of each field.
+ * Each field is represented as a {@link ChunkedExtraction}.
  * </p>
  * <p>
- * A SpanExtraction object is also equipped with a set of properties,
- * mapping a String key to a String value.
+ * A SpanExtraction object is also equipped with a set of properties, mapping a
+ * String key to a String value.
  * </p>
+ *
  * @author afader
  *
  */
 public class SpanExtraction {
-    
+
     private ChunkedSentence sent;
     private int numFields;
     private ImmutableList<Range> fieldRanges;
@@ -40,23 +40,25 @@ public class SpanExtraction {
     private ImmutableList<String> fieldNames;
     private HashMap<String, ChunkedExtraction> namedFields;
     private Map<String, String> props;
-    
+
     /**
-     * Constructs a new extraction from the given sentence, with fields
-     * defined by the given ranges and names.
+     * Constructs a new extraction from the given sentence, with fields defined
+     * by the given ranges and names.
+     *
      * @param sent
      * @param ranges
      * @param fieldNames
      */
     public SpanExtraction(ChunkedSentence sent, List<Range> fieldRanges,
-        List<String> fieldNames) {
+            List<String> fieldNames) {
         initFromRanges(sent, fieldRanges, fieldNames);
     }
-    
+
     /**
-     * Constructs a new extraction from the given sentence, with fields 
-     * defined by the given ranges. Uses the default field names of 
-     * field0, field1, field2, etc.
+     * Constructs a new extraction from the given sentence, with fields defined
+     * by the given ranges. Uses the default field names of field0, field1,
+     * field2, etc.
+     *
      * @param sent
      * @param ranges
      */
@@ -64,54 +66,63 @@ public class SpanExtraction {
         int n = fieldRanges.size();
         initFromRanges(sent, fieldRanges, getDefaultFieldNames(n));
     }
-    
+
     /**
      * Constructs a new extraction from the given {@link ChunkedExtraction}s.
-     * These must all come from the same sentence. Uses the default field names 
+     * These must all come from the same sentence. Uses the default field names
      * of field0, field1, field2, etc.
+     *
      * @param fields
      */
     public SpanExtraction(List<ChunkedExtraction> fields) {
         int n = fields.size();
         initFromFields(fields, getDefaultFieldNames(n));
     }
-    
+
     /**
      * Constructs a new extraction from the given {@link ChunkedExtraction}s.
-     * These must all come from the same sentence. Uses the default field names 
+     * These must all come from the same sentence. Uses the default field names
      * of field0, field1, field2, etc.
+     *
      * @param fields
      */
     public SpanExtraction(ChunkedExtraction[] fields) {
-        List<ChunkedExtraction> fieldsList = new ArrayList<ChunkedExtraction>(fields.length);
-        for (ChunkedExtraction field : fields) fieldsList.add(field);
+        List<ChunkedExtraction> fieldsList = new ArrayList<ChunkedExtraction>(
+                fields.length);
+        for (ChunkedExtraction field : fields)
+            fieldsList.add(field);
         initFromFields(fieldsList, getDefaultFieldNames(fieldsList.size()));
     }
-    
+
     /**
      * Constructs a new extraction from the given {@link ChunkedExtraction}s.
      * These must all come from the same sentence.
+     *
      * @param fields
      * @param fieldNames
      */
-    public SpanExtraction(List<ChunkedExtraction> fields, List<String> fieldNames) {
+    public SpanExtraction(List<ChunkedExtraction> fields,
+            List<String> fieldNames) {
         initFromFields(fields, fieldNames);
     }
-    
+
     /**
      * Constructs a new extraction from the given {@link ChunkedExtraction}s.
      * These must all come from the same sentence.
+     *
      * @param fields
      * @param fieldNames
      */
     public SpanExtraction(ChunkedExtraction[] fields, String[] fieldNames) {
-        List<ChunkedExtraction> fieldsList = new ArrayList<ChunkedExtraction>(fields.length);
-        for (ChunkedExtraction field : fields) fieldsList.add(field);
+        List<ChunkedExtraction> fieldsList = new ArrayList<ChunkedExtraction>(
+                fields.length);
+        for (ChunkedExtraction field : fields)
+            fieldsList.add(field);
         List<String> fieldNamesList = new ArrayList<String>(fieldNames.length);
-        for (String name : fieldNames) fieldNamesList.add(name);
+        for (String name : fieldNames)
+            fieldNamesList.add(name);
         initFromFields(fieldsList, fieldNamesList);
     }
-    
 
     /**
      * @return the number of fields in this extraction
@@ -119,14 +130,14 @@ public class SpanExtraction {
     public int getNumFields() {
         return fieldRanges.size();
     }
-    
+
     /**
      * @return the field names of this extraction
      */
     public List<String> getFieldNames() {
         return fieldNames;
     }
-    
+
     /**
      * @param name
      * @return true if this extraction has the given named field
@@ -134,7 +145,7 @@ public class SpanExtraction {
     public boolean hasField(String name) {
         return namedFields.containsKey(name);
     }
-    
+
     /**
      * @return the sentence
      */
@@ -163,7 +174,7 @@ public class SpanExtraction {
     public Range getFieldRange(int i) {
         return getFieldRanges().get(i);
     }
-    
+
     /**
      * @param name
      * @return the range of the field with the given name
@@ -171,7 +182,7 @@ public class SpanExtraction {
     public Range getFieldRange(String name) {
         return namedFields.get(name).getRange();
     }
-    
+
     /**
      * @param name
      * @return the field with the given name
@@ -187,7 +198,7 @@ public class SpanExtraction {
     public ChunkedExtraction getField(int i) {
         return getFields().get(i);
     }
-    
+
     /**
      * @param i
      * @return the name of the ith field
@@ -195,40 +206,45 @@ public class SpanExtraction {
     public String getFieldName(int i) {
         return getFieldNames().get(i);
     }
-    
+
     /**
      * @return the map of property names to property values
      */
     public Map<String, String> getProperties() {
         return props;
     }
-    
+
     /**
      * Sets the given property
-     * @param name the name of the property
-     * @param value the value
+     *
+     * @param name
+     *            the name of the property
+     * @param value
+     *            the value
      */
     public void setProperty(String name, String value) {
         props.put(name, value);
     }
-    
+
     /**
      * Sets the properties to the given map.
+     *
      * @param props
      */
     public void setProperties(Map<String, String> props) {
         this.props = props;
     }
-    
+
     /**
      * Checks whether this extraction has the given property.
+     *
      * @param name
      * @return true if this extraction has the given property
      */
     public boolean hasProperty(String name) {
         return props.containsKey(name);
     }
-    
+
     /**
      * @param name
      * @return the value of the given property
@@ -237,28 +253,30 @@ public class SpanExtraction {
         if (hasProperty(name)) {
             return props.get(name);
         } else {
-            throw new IllegalArgumentException("Invalid property name: "+name);
+            throw new IllegalArgumentException("Invalid property name: " + name);
         }
     }
-    
+
     /**
      * @return the names of any properties that have been set
      */
     public Set<String> getPropertyNames() {
         return props.keySet();
     }
-    
+
     /**
      * Returns a B/I/O encoding of this extraction as a list of strings. The
-     * list has the same length as the underlying sentence. The tags used in
-     * the B/I/O encoding are in the form B-FieldName0, I-FieldName0, ...
-     * for each field name. 
+     * list has the same length as the underlying sentence. The tags used in the
+     * B/I/O encoding are in the form B-FieldName0, I-FieldName0, ... for each
+     * field name.
+     *
      * @return the B/I/O encoding as a list of strings
      */
     public List<String> toBIOLayer() {
         int n = getSentence().getLength();
         ArrayList<String> result = new ArrayList<String>(n);
-        for (int i = 0; i < n; i++) result.add("O");
+        for (int i = 0; i < n; i++)
+            result.add("O");
         for (String fieldName : getFieldNames()) {
             Range r = getFieldRange(fieldName);
             int start = r.getStart();
@@ -270,24 +288,26 @@ public class SpanExtraction {
         }
         return result;
     }
-    
-    private void initFromRanges(ChunkedSentence sent, List<Range> fieldRanges, 
+
+    private void initFromRanges(ChunkedSentence sent, List<Range> fieldRanges,
             List<String> fieldNames) {
 
         if (fieldRanges.size() < 1) {
             throw new IllegalArgumentException("must have at least 1 field");
         }
         if (fieldNames.size() != fieldRanges.size()) {
-            throw new IllegalArgumentException("length of ranges must equal length of fieldNames");
+            throw new IllegalArgumentException(
+                    "length of ranges must equal length of fieldNames");
         }
-        
+
         this.sent = sent;
         this.numFields = fieldRanges.size();
         this.fieldRanges = ImmutableList.copyOf(fieldRanges);
-        
-        List<ChunkedExtraction> tFields = new ArrayList<ChunkedExtraction>(numFields);
+
+        List<ChunkedExtraction> tFields = new ArrayList<ChunkedExtraction>(
+                numFields);
         this.namedFields = new HashMap<String, ChunkedExtraction>(numFields);
-        
+
         for (int i = 0; i < numFields; i++) {
             Range range = fieldRanges.get(i);
             ChunkedExtraction field = new ChunkedExtraction(sent, range);
@@ -295,50 +315,54 @@ public class SpanExtraction {
             tFields.add(field);
             namedFields.put(fieldName, field);
         }
-        
+
         this.fields = ImmutableList.copyOf(tFields);
         this.fieldNames = ImmutableList.copyOf(fieldNames);
         this.props = new HashMap<String, String>();
     }
-    
-    private void initFromFields(List<ChunkedExtraction> fields, List<String> fieldNames) {
-        
+
+    private void initFromFields(List<ChunkedExtraction> fields,
+            List<String> fieldNames) {
+
         List<Range> tFieldRanges = new ArrayList<Range>(fields.size());
         for (ChunkedExtraction field : fields) {
             tFieldRanges.add(field.getRange());
         }
-        
+
         if (fields.size() < 1) {
             throw new IllegalArgumentException("must have at least 1 field");
         }
-        
+
         for (int i = 0; i < fields.size(); i++) {
             ChunkedSentence sent1 = fields.get(i).getSentence();
-            ChunkedSentence sent2 = fields.get((i+1) % fields.size()).getSentence();
+            ChunkedSentence sent2 = fields.get((i + 1) % fields.size())
+                    .getSentence();
             if (!sent1.equals(sent2)) {
-                throw new IllegalArgumentException("fields must come from the same sentence");
+                throw new IllegalArgumentException(
+                        "fields must come from the same sentence");
             }
         }
-        
+
         this.sent = fields.get(0).getSentence();
         this.numFields = fields.size();
         this.fieldRanges = ImmutableList.copyOf(tFieldRanges);
         this.fields = ImmutableList.copyOf(fields);
         this.fieldNames = ImmutableList.copyOf(fieldNames);
-        
-        this.namedFields = new HashMap<String, ChunkedExtraction>(this.numFields);
+
+        this.namedFields = new HashMap<String, ChunkedExtraction>(
+                this.numFields);
         for (int i = 0; i < this.numFields; i++) {
             this.namedFields.put(fieldNames.get(i), fields.get(i));
         }
-        
+
         this.props = new HashMap<String, String>();
-        
-        
+
     }
-    
+
     private static List<String> getDefaultFieldNames(int n) {
         List<String> result = new ArrayList<String>(n);
-        for (int i = 0; i < n; i++) result.add("field" + i);
+        for (int i = 0; i < n; i++)
+            result.add("field" + i);
         return result;
     }
 
@@ -402,9 +426,5 @@ public class SpanExtraction {
             return false;
         return true;
     }
-
-
-    
-    
 
 }

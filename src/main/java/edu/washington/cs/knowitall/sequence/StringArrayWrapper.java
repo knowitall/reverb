@@ -7,9 +7,9 @@ import com.google.common.base.Joiner;
 /**
  * A class that wraps a String array so it can be used as the key in a
  * {@link java.util.HashSet} object.
- *
+ * 
  * @author afader
- *
+ * 
  */
 public class StringArrayWrapper {
 
@@ -17,7 +17,7 @@ public class StringArrayWrapper {
 
     /**
      * Wraps the given data
-     *
+     * 
      * @param data
      */
     public StringArrayWrapper(String[] data) {

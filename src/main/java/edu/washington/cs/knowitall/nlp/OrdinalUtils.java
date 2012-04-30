@@ -16,34 +16,26 @@ public final class OrdinalUtils {
     /**
      * Static members used for identifying ordinal numbers.
      */
-    private static final String[] onesNumbers = {
-        "zero", "one", "two", "three", "four", "five", "six", "seven",
-        "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
-        "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
-    };
+    private static final String[] onesNumbers = { "zero", "one", "two",
+            "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+            "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+            "seventeen", "eighteen", "nineteen" };
 
-    private static final String[] tensNumbers = {
-        "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
-        "eighty", "ninety"
-    };
+    private static final String[] tensNumbers = { "twenty", "thirty", "forty",
+            "fifty", "sixty", "seventy", "eighty", "ninety" };
 
-    private static final String[] scalesNumbers = {
-        "hundred", "thousand", "million", "billion"
-    };
+    private static final String[] scalesNumbers = { "hundred", "thousand",
+            "million", "billion" };
 
-    private static final int[] scalesInts = {
-        100, 1000, 1000000, 1000000000
-    };
+    private static final int[] scalesInts = { 100, 1000, 1000000, 1000000000 };
 
-    private static final String[] ordinalWords = {
-        "first", "second", "third", "fifth", "eighth", "ninth", "twelfth"
-    };
+    private static final String[] ordinalWords = { "first", "second", "third",
+            "fifth", "eighth", "ninth", "twelfth" };
 
-    private static final int[] ordinalWordValues = {
-        1, 2, 3, 5, 8, 9, 12
-    };
+    private static final int[] ordinalWordValues = { 1, 2, 3, 5, 8, 9, 12 };
 
-    private static final Pattern numericOrdSuffix = Pattern.compile("(\\d+)(st|nd|rd|th)$");
+    private static final Pattern numericOrdSuffix = Pattern
+            .compile("(\\d+)(st|nd|rd|th)$");
 
     private static HashMap<String, Integer> scales;
     private static HashMap<String, Integer> increments;
@@ -61,8 +53,8 @@ public final class OrdinalUtils {
             scales.put(onesNumbers[i], 1);
         }
         for (int i = 0; i < tensNumbers.length; i++) {
-            increments.put(tensNumbers[i], 10*(i+2));
-            numberValues.put(tensNumbers[i], 10*(i+2));
+            increments.put(tensNumbers[i], 10 * (i + 2));
+            numberValues.put(tensNumbers[i], 10 * (i + 2));
             scales.put(tensNumbers[i], 1);
         }
         for (int i = 0; i < scalesNumbers.length; i++) {
@@ -88,7 +80,8 @@ public final class OrdinalUtils {
     }
 
     public static long parseNumber(String s) {
-        if (!isInitialized) init();
+        if (!isInitialized)
+            init();
         s = s.toLowerCase();
         try {
             return Long.parseLong(s);
@@ -97,7 +90,7 @@ public final class OrdinalUtils {
                 return numberValues.get(s);
             } else {
                 return parseOrdinal(s);
-            } 
+            }
         }
     }
 
@@ -117,7 +110,8 @@ public final class OrdinalUtils {
     }
 
     public static int parseOrdinal(String s) {
-        if (!isInitialized) init();
+        if (!isInitialized)
+            init();
 
         s = s.replace('-', ' ').toLowerCase();
 
@@ -129,8 +123,9 @@ public final class OrdinalUtils {
         }
 
         String[] words = s.split("\\s+");
-        String lastWord = words[words.length-1];
-        if (!isBasicOrdinal(lastWord)) return -1;
+        String lastWord = words[words.length - 1];
+        if (!isBasicOrdinal(lastWord))
+            return -1;
 
         int result = 0;
         int current = 0;
@@ -144,8 +139,8 @@ public final class OrdinalUtils {
                     word = word.substring(0, word.length() - 4) + "y";
                 } else if (word.endsWith("th")) {
                     word = word.substring(0, word.length() - 2);
-                } 
-                if (scales.containsKey(word) && increments.containsKey(word)) { 
+                }
+                if (scales.containsKey(word) && increments.containsKey(word)) {
                     scale = scales.get(word);
                     increment = increments.get(word);
                 } else {
@@ -159,11 +154,10 @@ public final class OrdinalUtils {
             }
         }
 
-
         return result + current;
 
     }
-    
+
     public static List<Range> getOrdinalRanges(List<String> list) {
         return getOrdinalRanges(list.toArray(new String[] {}));
     }
@@ -177,14 +171,17 @@ public final class OrdinalUtils {
         List<Range> results = new ArrayList<Range>();
         for (int i = 0; i < n; i++) {
 
-            while(i < n && !isNumber(tokens[i])) i++;
+            while (i < n && !isNumber(tokens[i]))
+                i++;
 
-            if (i == n) break;
+            if (i == n)
+                break;
 
             int start = i;
-            while (i < n && isNumber(tokens[i])) i++;
+            while (i < n && isNumber(tokens[i]))
+                i++;
 
-            if (isOrdinal(tokens[i-1])) {
+            if (isOrdinal(tokens[i - 1])) {
                 Range r = new Range(start, i - start);
                 results.add(r);
             }
@@ -197,7 +194,8 @@ public final class OrdinalUtils {
 
         int n = tokens.length;
         String[] result = new String[n];
-        for (int i = 0; i < n; i++) result[i] = "O";
+        for (int i = 0; i < n; i++)
+            result[i] = "O";
 
         for (Range range : getOrdinalRanges(tokens)) {
             for (int i = range.getStart(); i < i + range.getLength(); i++) {
@@ -207,7 +205,7 @@ public final class OrdinalUtils {
 
         return result;
     }
-    
+
     public static String[] tagOrdinals(List<String> list) {
         return tagOrdinals(list.toArray(new String[] {}));
     }
