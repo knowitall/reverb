@@ -4,10 +4,12 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 
 /**
  * A list of mappers for <code>ReVerbExtractor</code>'s first arguments.
+ *
  * @author afader
  *
  */
-public class ReVerbArgument2Mappers extends MapperList<ChunkedArgumentExtraction> {
+public class ReVerbArgument2Mappers extends
+        MapperList<ChunkedArgumentExtraction> {
 
     public ReVerbArgument2Mappers() {
         init();
@@ -21,7 +23,8 @@ public class ReVerbArgument2Mappers extends MapperList<ChunkedArgumentExtraction
         addFirstPosTagNotEqualsFilter("WRB");
         addFirstTokenNotEqualsFilter("which");
 
-        // Second argument should be closest to relation that passes through filters
+        // Second argument should be closest to relation that passes through
+        // filters
         addMapper(new ClosestArgumentMapper());
 
         // Second argument should be adjacent to the relation
@@ -45,6 +48,5 @@ public class ReVerbArgument2Mappers extends MapperList<ChunkedArgumentExtraction
             }
         });
     }
-
 
 }

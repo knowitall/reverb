@@ -4,10 +4,12 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 
 /**
  * A list of mappers for <code>ReVerbExtractor</code>'s second arguments.
+ *
  * @author afader
  *
  */
-public class ReVerbArgument1Mappers extends MapperList<ChunkedArgumentExtraction> {
+public class ReVerbArgument1Mappers extends
+        MapperList<ChunkedArgumentExtraction> {
 
     public ReVerbArgument1Mappers() {
         init();
@@ -30,7 +32,7 @@ public class ReVerbArgument1Mappers extends MapperList<ChunkedArgumentExtraction
         // Can't be "that"
         addFirstTokenNotEqualsFilter("that");
         addFirstTokenNotEqualsFilter("which");
-        
+
         // Can't be reflexive pronoun
         addFirstTokenNotEqualsFilter("myself");
         addFirstTokenNotEqualsFilter("yourself");
@@ -42,12 +44,13 @@ public class ReVerbArgument1Mappers extends MapperList<ChunkedArgumentExtraction
         addFirstTokenNotEqualsFilter("ourself");
         addFirstTokenNotEqualsFilter("yourselves");
         addFirstTokenNotEqualsFilter("themselves");
-        
 
-        // First argument can't match "ARG1, REL" "ARG1 and REL" or "ARG1, and REL"
+        // First argument can't match "ARG1, REL" "ARG1 and REL" or
+        // "ARG1, and REL"
         addMapper(new ConjunctionCommaArgumentFilter());
 
-        // First argument should be closest to relation that passes through filters
+        // First argument should be closest to relation that passes through
+        // filters
         addMapper(new ClosestArgumentMapper());
     }
 

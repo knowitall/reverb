@@ -14,23 +14,24 @@ public class HtmlUtils {
     private static HashSet<Pattern> breakPatterns;
     private static boolean initialized = false;
 
-    private static final String[] breakTags = { "blockquote", "br", "center", "dd", "div",
-        "dt", "fieldset", "h\\d", "hr", "img", "input", "isindex", "li",
-        "noframes", "noscript", "p", "pre", "q", "table", "td", "textarea", "th",
-    "xmp" };
+    private static final String[] breakTags = { "blockquote", "br", "center",
+            "dd", "div", "dt", "fieldset", "h\\d", "hr", "img", "input",
+            "isindex", "li", "noframes", "noscript", "p", "pre", "q", "table",
+            "td", "textarea", "th", "xmp" };
 
-    private static final String[] removeTags = { "applet", "form", "head", "iframe", "legend",
-        "map", "object", "script", "select", "style", "title" };
+    private static final String[] removeTags = { "applet", "form", "head",
+            "iframe", "legend", "map", "object", "script", "select", "style",
+            "title" };
 
     private static Pattern tag = Pattern.compile("<[^<]*?>");
     private static Pattern whiteSpace = Pattern.compile("\\s+");
     private static Pattern multiSpace = Pattern.compile("  +");
     private static Pattern multiBreaks = Pattern.compile("\n\n+");
 
-
     public static String removeHtml(String content) {
 
-        if (!initialized) initPatterns();
+        if (!initialized)
+            initPatterns();
 
         // Normalize whitespace
         content = whiteSpace.matcher(content).replaceAll(" ");
@@ -48,7 +49,7 @@ public class HtmlUtils {
         // Fix more whitespace
         content = multiSpace.matcher(content).replaceAll(" ");
         content = multiBreaks.matcher(content).replaceAll("\n");
-        content  = content.replace(';', '\n');
+        content = content.replace(';', '\n');
 
         return content;
 
@@ -76,10 +77,11 @@ public class HtmlUtils {
     }
 
     private static void initPatterns() {
-        removePatterns= new HashSet<Pattern>();
+        removePatterns = new HashSet<Pattern>();
         breakPatterns = new HashSet<Pattern>();
         for (int i = 0; i < removeTags.length; i++) {
-            Pattern p = Pattern.compile("(?is)<" + removeTags[i] + "[^<]*?>.*?</" + removeTags[i] + ">");
+            Pattern p = Pattern.compile("(?is)<" + removeTags[i]
+                    + "[^<]*?>.*?</" + removeTags[i] + ">");
             removePatterns.add(p);
             p = Pattern.compile("(?i)</?" + removeTags[i] + "[^<]*?>");
             breakPatterns.add(p);

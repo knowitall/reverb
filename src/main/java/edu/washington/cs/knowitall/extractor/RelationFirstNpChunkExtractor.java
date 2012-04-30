@@ -10,43 +10,43 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
 /**
  * <p>
- * Extracts {@link ChunkedBinaryExtraction} objects by first extracting 
- * relations, and then for each relation, extracting a pair of arguments. A 
+ * Extracts {@link ChunkedBinaryExtraction} objects by first extracting
+ * relations, and then for each relation, extracting a pair of arguments. A
  * {@code RelationFirstNpChunkExtractor} must have:
  * </p>
  * <ul>
- * <li>A relation extractor of type 
+ * <li>A relation extractor of type
  * {@code Extractor<NpChunkedSentence, NpChunkedExtraction>}</li>
- * <li>An argument1 extractor of type 
+ * <li>An argument1 extractor of type
  * {@code Extractor<NpChunkedExtraction, NpChunkArgumentExtraction>}</li>
- * <li>An argument2 extractor of type 
+ * <li>An argument2 extractor of type
  * {@code Extractor<NpChunkedExtraction, NpChunkArgumentExtraction>}</li>
- * </ul> 
+ * </ul>
  * <p>
- * Subclasses extending {@code RelationFirstNpChunkExtractor} are responsible 
- * for setting the extractors via the 
- * {@link RelationFirstNpChunkExtractor#setRelationExtractor(Extractor)}, 
- * {@link RelationFirstNpChunkExtractor#setArgument1Extractor(Extractor)}, and 
+ * Subclasses extending {@code RelationFirstNpChunkExtractor} are responsible
+ * for setting the extractors via the
+ * {@link RelationFirstNpChunkExtractor#setRelationExtractor(Extractor)},
+ * {@link RelationFirstNpChunkExtractor#setArgument1Extractor(Extractor)}, and
  * {@link RelationFirstNpChunkExtractor#setArgument2Extractor(Extractor)}
  * methods.
- * </p> 
+ * </p>
  * @author afader
  *
  */
-public abstract class RelationFirstNpChunkExtractor 
+public abstract class RelationFirstNpChunkExtractor
     extends Extractor<ChunkedSentence, ChunkedBinaryExtraction> {
 
-	//Allow unary relations to be extracted.
-	protected boolean allowUnary = false;
-    
-	protected Extractor<ChunkedSentence, ChunkedExtraction> relExtr;
+    // Allow unary relations to be extracted.
+    protected boolean allowUnary = false;
+
+    protected Extractor<ChunkedSentence, ChunkedExtraction> relExtr;
     protected Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg1Extr;
     protected Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg2Extr;
 
     /**
      * @return the extractor used to extract relations.
      */
-    public Extractor<ChunkedSentence, ChunkedExtraction> 
+    public Extractor<ChunkedSentence, ChunkedExtraction>
         getRelationExtractor() {
         return relExtr;
     }
@@ -54,7 +54,7 @@ public abstract class RelationFirstNpChunkExtractor
     /**
      * @return the extractor used to extract argument1.
      */
-    public Extractor<ChunkedExtraction, ChunkedArgumentExtraction> 
+    public Extractor<ChunkedExtraction, ChunkedArgumentExtraction>
         getArgument1Extractor() {
         return arg1Extr;
     }
@@ -62,7 +62,7 @@ public abstract class RelationFirstNpChunkExtractor
     /**
      * @return the extractor used to extract argument2.
      */
-    public Extractor<ChunkedExtraction, ChunkedArgumentExtraction> 
+    public Extractor<ChunkedExtraction, ChunkedArgumentExtraction>
         getArgument2Extractor() {
         return arg2Extr;
     }
@@ -93,42 +93,42 @@ public abstract class RelationFirstNpChunkExtractor
         Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg2Extr) {
         this.arg2Extr = arg2Extr;
     }
-    
+
     public void setAllowUnary(boolean allowUnary) {
-		this.allowUnary = allowUnary;
-	}
+        this.allowUnary = allowUnary;
+    }
 
 
     @Override
     /**
-     * Extracts the candidate {@link ChunkedBinaryExtraction} objects from the 
-     * given {@link ChunkedSentence} source. It extracts relations, and for 
-     * each relation extracts a pair of candidate arguments. If either argument 
+     * Extracts the candidate {@link ChunkedBinaryExtraction} objects from the
+     * given {@link ChunkedSentence} source. It extracts relations, and for
+     * each relation extracts a pair of candidate arguments. If either argument
      * extractor returns no extractions, then no binary relation is extracted.
      * @throws ExtractorException if unable to extract
      */
-    protected Collection<ChunkedBinaryExtraction> 
+    protected Collection<ChunkedBinaryExtraction>
         extractCandidates(ChunkedSentence source) throws ExtractorException {
 
-        Extractor<ChunkedSentence, ChunkedExtraction> relExtr = 
+        Extractor<ChunkedSentence, ChunkedExtraction> relExtr =
             getRelationExtractor();
-        Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg1Extr = 
+        Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg1Extr =
             getArgument1Extractor();
-        Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg2Extr = 
+        Extractor<ChunkedExtraction, ChunkedArgumentExtraction> arg2Extr =
             getArgument2Extractor();
 
         Iterable<? extends ChunkedExtraction> rels = relExtr.extract(source);
-        Collection<ChunkedBinaryExtraction> extrs = 
+        Collection<ChunkedBinaryExtraction> extrs =
             new ArrayList<ChunkedBinaryExtraction>();
         for (ChunkedExtraction rel : rels) {
-            Iterable<? extends ChunkedArgumentExtraction> arg1s = 
+            Iterable<? extends ChunkedArgumentExtraction> arg1s =
                 arg1Extr.extract(rel);
-            Iterable<? extends ChunkedArgumentExtraction> arg2s = 
+            Iterable<? extends ChunkedArgumentExtraction> arg2s =
                 arg2Extr.extract(rel);
-            
+
             extrs.addAll(
                 ChunkedBinaryExtraction.productOfArgs(rel, arg1s, arg2s, allowUnary));
-            
+
         }
 
         return extrs;

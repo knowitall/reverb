@@ -10,9 +10,11 @@ import java.util.Map;
 
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
-public class AdjacentExtractionGrouper implements ExtractionGrouper<ChunkedExtraction> {
+public class AdjacentExtractionGrouper implements
+        ExtractionGrouper<ChunkedExtraction> {
 
-    private List<ChunkedExtraction> asSortedList(Collection<ChunkedExtraction> extrs) {
+    private List<ChunkedExtraction> asSortedList(
+            Collection<ChunkedExtraction> extrs) {
         List<ChunkedExtraction> sorted = new ArrayList<ChunkedExtraction>(extrs);
         Collections.sort(sorted, new Comparator<ChunkedExtraction>() {
             public int compare(ChunkedExtraction e1, ChunkedExtraction e2) {
@@ -25,7 +27,8 @@ public class AdjacentExtractionGrouper implements ExtractionGrouper<ChunkedExtra
     }
 
     @Override
-    public Map<Integer, List<ChunkedExtraction>> groupExtractions(Collection<ChunkedExtraction> extractions) {
+    public Map<Integer, List<ChunkedExtraction>> groupExtractions(
+            Collection<ChunkedExtraction> extractions) {
 
         if (extractions.size() < 2) {
             HashMap<Integer, List<ChunkedExtraction>> results = new HashMap<Integer, List<ChunkedExtraction>>();
@@ -53,7 +56,5 @@ public class AdjacentExtractionGrouper implements ExtractionGrouper<ChunkedExtra
 
         return results;
     }
-
-
 
 }

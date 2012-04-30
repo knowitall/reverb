@@ -1,20 +1,23 @@
 package edu.washington.cs.knowitall.normalization;
+
 // package ac.biu.nlp.graph.untyped.preprocessing.rep;
 
 import java.util.Scanner;
 
 /**
- * Represents a Reverb predicate that contains (1) the original predicate from the text (2) normalized version (3) POS sequence
- * (modified by Michael Schmitz)
+ * Represents a Reverb predicate that contains (1) the original predicate from
+ * the text (2) normalized version (3) POS sequence (modified by Michael
+ * Schmitz)
+ * 
  * @author Jonathan Berant
  * @date 28/8/11
- *
+ * 
  */
 
 public class RelationString implements Comparable<RelationString> {
 
-    private String m_pred; //original predicate extracted by reverb
-    private String m_normPred; 
+    private String m_pred; // original predicate extracted by reverb
+    private String m_normPred;
     private String m_posPred;
 
     public RelationString(String m_pred, String m_normPred, String m_posPred) {
@@ -61,7 +64,7 @@ public class RelationString implements Comparable<RelationString> {
 
     @Override
     public String toString() {
-        return  m_pred + "\t" + m_normPred + "\t" + m_posPred;
+        return m_pred + "\t" + m_normPred + "\t" + m_posPred;
     }
 
     @Override
@@ -98,42 +101,49 @@ public class RelationString implements Comparable<RelationString> {
     }
 
     /**
-     * Normalizes the predicate - takes predicate normalized by TextRunner and applies rule based normalization:
+     * Normalizes the predicate - takes predicate normalized by TextRunner and
+     * applies rule based normalization:
      * <ol>
-     * <li> if predicate doesn't start with a letter or a abbreviated aux - return empty predicate</li>
-     * <li> transform to lower case </li>
-     * <li> omit adverbs (<i>RB</i> pos-tag) </li>
-     * <li> omit quasi-modals: "used to VB", "ought to VB", "be able to VB", "have to VB" </li>
-     * <li> omit modals: (<i>MD</i> pos-tag) </li>
-     * <li> handle "have": change "have VBN/VB/VBD" to "VBD" </li>
-     * <li> handle "be": reverse TextRunner normalization of "be VBN" to unnormalized form, omit "be" in "be VBG" unless is "be going to VB", 
+     * <li>if predicate doesn't start with a letter or a abbreviated aux -
+     * return empty predicate</li>
+     * <li>transform to lower case</li>
+     * <li>omit adverbs (<i>RB</i> pos-tag)</li>
+     * <li>omit quasi-modals: "used to VB", "ought to VB", "be able to VB",
+     * "have to VB"</li>
+     * <li>omit modals: (<i>MD</i> pos-tag)</li>
+     * <li>handle "have": change "have VBN/VB/VBD" to "VBD"</li>
+     * <li>handle "be": reverse TextRunner normalization of "be VBN" to
+     * unnormalized form, omit "be" in "be VBG" unless is "be going to VB",
      * which is treated like a quasi-modal</li>
-     * <li> handle "do": omit "do" in "do VB" expressions</li>
-     * <li> handle "have" again to solve some extreme cases where it needs to be applied twice (<i>'d have had to have been doing")</i></li>
-     * <li> if what's left is "be" or "do" or "be be" or "do do" - return empty predicate since this predicate is not informative</li>
-     * <li> if what's left doesn't start with a letter or a abbreviated aux - return empty predicate since the extraction was bad</li>
-     * <li> if what's contains "be be " or "do do " or "have have " - return empty predicate since the extraction was bad</li>
-     * </ol> 
+     * <li>handle "do": omit "do" in "do VB" expressions</li>
+     * <li>handle "have" again to solve some extreme cases where it needs to be
+     * applied twice (<i>'d have had to have been doing")</i></li>
+     * <li>if what's left is "be" or "do" or "be be" or "do do" - return empty
+     * predicate since this predicate is not informative</li>
+     * <li>if what's left doesn't start with a letter or a abbreviated aux -
+     * return empty predicate since the extraction was bad</li>
+     * <li>if what's contains "be be " or "do do " or "have have " - return
+     * empty predicate since the extraction was bad</li>
+     * </ol>
+     * 
      * @return
-     * @throws IllegalArgumentException 
+     * @throws IllegalArgumentException
      */
     public void correctNormalization() {
 
-        if(m_pred.length()==0)
-            throw new IllegalArgumentException("pos-tagged predicate has zero length");
+        if (m_pred.length() == 0)
+            throw new IllegalArgumentException(
+                    "pos-tagged predicate has zero length");
 
-
-        if(!(Character.isLetter(m_pred.charAt(0)) || 
-                startsWithShortenedAux(m_pred))) {
+        if (!(Character.isLetter(m_pred.charAt(0)) || startsWithShortenedAux(m_pred))) {
             clearPredicate();
-        }
-        else {
+        } else {
 
             m_normPred = m_normPred.toLowerCase();
-            //remember the original form of the VBNs
+            // remember the original form of the VBNs
             // Map<String,String> vbnToVbMap = createVbnMap();
-        
-            //the order matters
+
+            // the order matters
             setRelationString(omitAdverbs());
             setRelationString(handleQuasiModals());
             setRelationString(omitModals());
@@ -142,7 +152,7 @@ public class RelationString implements Comparable<RelationString> {
             // setRelationString(handleHave());
             postProcess();
 
-            if(m_normPred.equals("be") || m_normPred.equals("do"))
+            if (m_normPred.equals("be") || m_normPred.equals("do"))
                 clearPredicate();
         }
 
@@ -150,14 +160,17 @@ public class RelationString implements Comparable<RelationString> {
 
     private void postProcess() {
 
-        //if the predicate is not informative get rid of it
-        if(m_normPred.equals("be") || m_normPred.equals("do") || m_normPred.equals("be be") || m_normPred.equals("do do"))
+        // if the predicate is not informative get rid of it
+        if (m_normPred.equals("be") || m_normPred.equals("do")
+                || m_normPred.equals("be be") || m_normPred.equals("do do"))
             clearPredicate();
-        //if the predicate appears syntactically wrong after normalization rid of it
-        else if(m_normPred.contains("have have ") || m_normPred.contains("do do ") || m_normPred.contains("be be "))
+        // if the predicate appears syntactically wrong after normalization rid
+        // of it
+        else if (m_normPred.contains("have have ")
+                || m_normPred.contains("do do ")
+                || m_normPred.contains("be be "))
             clearPredicate();
-        else if(!(Character.isLetter(m_normPred.charAt(0)) || 
-                startsWithShortenedAux(m_normPred))) 
+        else if (!(Character.isLetter(m_normPred.charAt(0)) || startsWithShortenedAux(m_normPred)))
             clearPredicate();
     }
 
@@ -169,20 +182,23 @@ public class RelationString implements Comparable<RelationString> {
         StringBuilder normBuilder = new StringBuilder();
         StringBuilder posBuilder = new StringBuilder();
 
-        for(int i = 0; i < posTokens.length; ++i) {
-            if(normTokens[i].equals("have") && i < (posTokens.length - 1) && 
-                    (posTokens[i+1].equals("VBN") || posTokens[i+1].equals("VB") || posTokens[i+1].equals("VBD"))) {
-                //skip the have and change it to past
-                normBuilder.append(normTokens[i+1]+" ");
+        for (int i = 0; i < posTokens.length; ++i) {
+            if (normTokens[i].equals("have")
+                    && i < (posTokens.length - 1)
+                    && (posTokens[i + 1].equals("VBN")
+                            || posTokens[i + 1].equals("VB") || posTokens[i + 1]
+                            .equals("VBD"))) {
+                // skip the have and change it to past
+                normBuilder.append(normTokens[i + 1] + " ");
                 posBuilder.append("VBD ");
                 i++;
-            }
-            else {
-                normBuilder.append(normTokens[i]+" ");
-                posBuilder.append(posTokens[i]+" ");
+            } else {
+                normBuilder.append(normTokens[i] + " ");
+                posBuilder.append(posTokens[i] + " ");
             }
         }
-        return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());        
+        return new RelationString(m_pred, normBuilder.toString().trim(),
+                posBuilder.toString().trim());
     }
 
     private RelationString handleQuasiModals() {
@@ -193,83 +209,94 @@ public class RelationString implements Comparable<RelationString> {
         StringBuilder normBuilder = new StringBuilder();
         StringBuilder posBuilder = new StringBuilder();
 
-        for(int i = 0; i < posTokens.length; ++i) {
-            
-            if(i < posTokens.length-2) {
-                if(normTokens[i].equals("ought") && normTokens[i+1].equals("to") && posTokens[i+2].equals("VB")) {
+        for (int i = 0; i < posTokens.length; ++i) {
+
+            if (i < posTokens.length - 2) {
+                if (normTokens[i].equals("ought")
+                        && normTokens[i + 1].equals("to")
+                        && posTokens[i + 2].equals("VB")) {
                     i++;
-                }
-                else if(normTokens[i].equals("have") && normTokens[i+1].equals("to") && posTokens[i+2].equals("VB")) {
+                } else if (normTokens[i].equals("have")
+                        && normTokens[i + 1].equals("to")
+                        && posTokens[i + 2].equals("VB")) {
                     i++;
-                }
-                else if(normTokens[i].equals("use") && normTokens[i+1].equals("to") && posTokens[i+2].equals("VB") 
+                } else if (normTokens[i].equals("use")
+                        && normTokens[i + 1].equals("to")
+                        && posTokens[i + 2].equals("VB")
                         && m_pred.contains("used")) {
                     i++;
+                } else if ((i < posTokens.length - 3)
+                        && normTokens[i].equals("be")
+                        && normTokens[i + 1].equals("able")
+                        && normTokens[i + 2].equals("to")
+                        && posTokens[i + 3].equals("VB")) {
+                    i += 2;
+                } else {
+                    normBuilder.append(normTokens[i] + " ");
+                    posBuilder.append(posTokens[i] + " ");
                 }
-                else if((i <  posTokens.length-3) && normTokens[i].equals("be") && normTokens[i+1].equals("able") && normTokens[i+2].equals("to") && posTokens[i+3].equals("VB")) {
-                    i+=2;
-                }
-                else {
-                    normBuilder.append(normTokens[i]+" ");
-                    posBuilder.append(posTokens[i]+" ");
-                }
-            }
-            else {
-                normBuilder.append(normTokens[i]+" ");
-                posBuilder.append(posTokens[i]+" ");
+            } else {
+                normBuilder.append(normTokens[i] + " ");
+                posBuilder.append(posTokens[i] + " ");
             }
         }
 
-        return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());        
+        return new RelationString(m_pred, normBuilder.toString().trim(),
+                posBuilder.toString().trim());
     }
-
 
     private RelationString omitAdverbs() {
 
         String[] normTokens = m_normPred.split("\\s+");
         String[] posTokens = m_posPred.split("\\s+");
-        if(normTokens.length!=posTokens.length)
-            throw new IllegalArgumentException("different number of tokens in: " + m_normPred + " and " + m_posPred);
+        if (normTokens.length != posTokens.length)
+            throw new IllegalArgumentException(
+                    "different number of tokens in: " + m_normPred + " and "
+                            + m_posPred);
 
         StringBuilder normBuilder = new StringBuilder();
         StringBuilder posBuilder = new StringBuilder();
 
-        for(int i = 0; i < posTokens.length; ++i) {
-            if(!posTokens[i].equals("RB")) {
-                normBuilder.append(normTokens[i]+" ");
-                posBuilder.append(posTokens[i]+" ");
+        for (int i = 0; i < posTokens.length; ++i) {
+            if (!posTokens[i].equals("RB")) {
+                normBuilder.append(normTokens[i] + " ");
+                posBuilder.append(posTokens[i] + " ");
             }
         }
-        return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());
+        return new RelationString(m_pred, normBuilder.toString().trim(),
+                posBuilder.toString().trim());
     }
 
     private RelationString omitModals() {
 
         String[] normTokens = m_normPred.split("\\s+");
         String[] posTokens = m_posPred.split("\\s+");
-        if(normTokens.length!=posTokens.length)
-            throw new IllegalArgumentException("different number of tokens in: " + m_normPred + " and " + m_posPred);
+        if (normTokens.length != posTokens.length)
+            throw new IllegalArgumentException(
+                    "different number of tokens in: " + m_normPred + " and "
+                            + m_posPred);
 
         StringBuilder normBuilder = new StringBuilder();
         StringBuilder posBuilder = new StringBuilder();
 
-        for(int i = 0; i < posTokens.length; ++i) {
-            if(!posTokens[i].equals("MD")) {
-                normBuilder.append(normTokens[i]+" ");
-                posBuilder.append(posTokens[i]+" ");
+        for (int i = 0; i < posTokens.length; ++i) {
+            if (!posTokens[i].equals("MD")) {
+                normBuilder.append(normTokens[i] + " ");
+                posBuilder.append(posTokens[i] + " ");
             }
         }
-        return new RelationString(m_pred, normBuilder.toString().trim(), posBuilder.toString().trim());
+        return new RelationString(m_pred, normBuilder.toString().trim(),
+                posBuilder.toString().trim());
     }
 
     private boolean startsWithShortenedAux(String predicate) {
 
-        if(predicate.startsWith("'d ") || predicate.startsWith("'D ") ||
-                predicate.startsWith("'ll ") || predicate.startsWith("'LL ") ||
-                predicate.startsWith("'m ") || predicate.startsWith("'M ") ||
-                predicate.startsWith("'re ") || predicate.startsWith("'RE ") ||
-                predicate.startsWith("'s ") || predicate.startsWith("'S ") ||
-                predicate.startsWith("'ve ") || predicate.startsWith("'VE ")) 
+        if (predicate.startsWith("'d ") || predicate.startsWith("'D ")
+                || predicate.startsWith("'ll ") || predicate.startsWith("'LL ")
+                || predicate.startsWith("'m ") || predicate.startsWith("'M ")
+                || predicate.startsWith("'re ") || predicate.startsWith("'RE ")
+                || predicate.startsWith("'s ") || predicate.startsWith("'S ")
+                || predicate.startsWith("'ve ") || predicate.startsWith("'VE "))
             return true;
         return false;
     }
@@ -280,8 +307,9 @@ public class RelationString implements Comparable<RelationString> {
             String line = scanner.nextLine();
             String[] parts = line.split("\t");
             System.out.println("input: " + line);
-            
-            RelationString relst = new RelationString(parts[0], parts[1], parts[2]);
+
+            RelationString relst = new RelationString(parts[0], parts[1],
+                    parts[2]);
             relst.correctNormalization();
             System.out.println("output: " + relst.toString());
         }

@@ -16,5 +16,4 @@ public class SentenceStartFilter extends FilterMapper<String> {
     public boolean doFilter(String sent) {
         return startPattern.matcher(sent).find();
     }
-
 }

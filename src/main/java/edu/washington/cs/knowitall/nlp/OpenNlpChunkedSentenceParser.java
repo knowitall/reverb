@@ -7,36 +7,36 @@ import edu.washington.cs.knowitall.sequence.SequenceException;
 
 /**
  * <p>
- * A utility class for "parsing" the output of the OpenNLP command line chunker. 
+ * A utility class for "parsing" the output of the OpenNLP command line chunker.
  * The command line chunker returns strings in this form:
  * </p>
  * <p align="center">
  * {@code [NP JFK/NNP] [VP was/VBD elected/VBN] [NP president/NN] [PP in/IN] [NP 1960/CD] ./.}
  * </p>
  * <p>
- * This class converts that String representation into a 
- * {@link ChunkedSentence} object.
+ * This class converts that String representation into a {@link ChunkedSentence}
+ * object.
  * </p>
+ *
  * @author afader
  *
  */
 public class OpenNlpChunkedSentenceParser {
-
 
     private boolean attachOfs = true;
     private boolean attachPossessives = true;
 
     /**
      * @return true if this object will attach NPs beginning with "of" with the
-     * previous NP.
+     *         previous NP.
      */
     public boolean attachOfs() {
         return attachOfs;
     }
 
     /**
-     * @return true if this object will attach NPs beginning with the tag POS 
-     * with the previous NP.
+     * @return true if this object will attach NPs beginning with the tag POS
+     *         with the previous NP.
      */
     public boolean attachPossessives() {
         return attachPossessives;
@@ -58,12 +58,14 @@ public class OpenNlpChunkedSentenceParser {
 
     /**
      * Converts sent into a {@link ChunkedSentence} object.
+     *
      * @param sent
      * @return the chunked representation
-     * @throws ParseException if sent is malformed.
+     * @throws ParseException
+     *             if sent is malformed.
      */
     public ChunkedSentence parseSentence(String sent) throws ParseException {
-        
+
         // Spaces before square brackets goof things up for some reason
         sent = sent.replace(" ]", "]");
 
@@ -93,7 +95,8 @@ public class OpenNlpChunkedSentenceParser {
                 } else {
                     npChunkTagsList.add("I-" + currentChunk);
                 }
-                if (isEndChunk(part)) currentChunk = null;
+                if (isEndChunk(part))
+                    currentChunk = null;
             }
 
         }
@@ -120,7 +123,6 @@ public class OpenNlpChunkedSentenceParser {
         }
     }
 
-
     private boolean isChunk(String part) {
         return part.startsWith("[");
     }
@@ -139,12 +141,12 @@ public class OpenNlpChunkedSentenceParser {
 
     private String[] getTokenTag(String piece) throws ParseException {
         if (piece.endsWith("]")) {
-            piece = piece.substring(0, piece.length()-1);
+            piece = piece.substring(0, piece.length() - 1);
         }
         int i = piece.lastIndexOf("/");
         if (i > 0) {
             String token = piece.substring(0, i);
-            String posTag = piece.substring(i+1);
+            String posTag = piece.substring(i + 1);
             return new String[] { token, posTag };
         } else {
             throw new ParseException("Couldn't get token/tag: " + piece, 0);

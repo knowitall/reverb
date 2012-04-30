@@ -7,6 +7,7 @@ import edu.washington.cs.knowitall.commonlib.Range;
 
 /**
  * A class of static methods for handling OpenNLP formats.
+ *
  * @author afader
  *
  */
@@ -47,7 +48,7 @@ public class OpenNlpUtils {
      * @param tags
      * @param name
      * @return list of <code>Range</code> objects representing the ranges of the
-     * chunks of type <code>name</code> in the sentence. 
+     *         chunks of type <code>name</code> in the sentence.
      */
     public static List<Range> computeChunkRanges(String[] tags, String name) {
         int start = 0;
@@ -85,14 +86,16 @@ public class OpenNlpUtils {
 
     /**
      * @param npChunkTags
-     * @return the <code>Range</code>s of the NP chunks in the given <code>npChunkTags</code>.
+     * @return the <code>Range</code>s of the NP chunks in the given
+     *         <code>npChunkTags</code>.
      */
     public static List<Range> computeNpChunkRanges(String[] npChunkTags) {
         return computeChunkRanges(npChunkTags, "NP");
     }
-    
+
     /**
      * A wrapper to support passing Lists.
+     *
      * @param npChunkTags
      * @return
      */
@@ -101,52 +104,55 @@ public class OpenNlpUtils {
     }
 
     /**
-     * Modifies <code>npChunkTags</code> so that NP chunks starting with "of" are merged with the
-     * previous NP chunk.
+     * Modifies <code>npChunkTags</code> so that NP chunks starting with "of"
+     * are merged with the previous NP chunk.
+     *
      * @param tokens
      * @param npChunkTags
      */
     public static void attachOfs(String[] tokens, String[] npChunkTags) {
         for (int i = 1; i < npChunkTags.length - 1; i++) {
-            if (tokens[i].equals("of") && isInNpChunk(npChunkTags[i-1]) && isInNpChunk(npChunkTags[i+1])) {
+            if (tokens[i].equals("of") && isInNpChunk(npChunkTags[i - 1])
+                    && isInNpChunk(npChunkTags[i + 1])) {
                 npChunkTags[i] = IN_NP;
-                npChunkTags[i+1] = IN_NP;
+                npChunkTags[i + 1] = IN_NP;
             }
         }
     }
-    
+
     public static void detatchOfs(String[] tokens, String[] npChunkTags) {
         for (int i = 1; i < npChunkTags.length - 1; i++) {
-            if (tokens[i].equals("of") && isInNpChunk(npChunkTags[i+1])) {
+            if (tokens[i].equals("of") && isInNpChunk(npChunkTags[i + 1])) {
                 npChunkTags[i] = "O";
-                npChunkTags[i+1] = START_NP;
+                npChunkTags[i + 1] = START_NP;
             }
         }
     }
 
     /**
-     * Modifies the <code>npChunkTags</code> so that NP chunks starting with a possessive 's are merged
-     * with the previous NP chunk.
+     * Modifies the <code>npChunkTags</code> so that NP chunks starting with a
+     * possessive 's are merged with the previous NP chunk.
+     *
      * @param posTags
      * @param npChunkTags
      */
     public static void attachPossessives(String[] posTags, String[] npChunkTags) {
         for (int i = 1; i < npChunkTags.length - 1; i++) {
-            if (isPossessive(posTags[i]) && isInNpChunk(npChunkTags[i-1])) {
+            if (isPossessive(posTags[i]) && isInNpChunk(npChunkTags[i - 1])) {
                 npChunkTags[i] = IN_NP;
-                if (isInNpChunk(npChunkTags[i+1])) {
-                    npChunkTags[i+1] = IN_NP;
+                if (isInNpChunk(npChunkTags[i + 1])) {
+                    npChunkTags[i + 1] = IN_NP;
                 }
             }
         }
     }
-    
+
     public static void detatchPossessives(String[] posTags, String[] npChunkTags) {
         for (int i = 1; i < npChunkTags.length - 1; i++) {
-            if (isPossessive(posTags[i]) && isInNpChunk(npChunkTags[i+1])) {
+            if (isPossessive(posTags[i]) && isInNpChunk(npChunkTags[i + 1])) {
                 npChunkTags[i] = OUT;
-                if (isInNpChunk(npChunkTags[i+1])) {
-                    npChunkTags[i+1] = START_NP;
+                if (isInNpChunk(npChunkTags[i + 1])) {
+                    npChunkTags[i + 1] = START_NP;
                 }
             }
         }
