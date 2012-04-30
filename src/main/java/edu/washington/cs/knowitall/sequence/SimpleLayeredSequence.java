@@ -6,29 +6,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 import edu.washington.cs.knowitall.commonlib.Range;
 
 /***
- * An immutable implementation of {@link LayeredSequence}. This class 
+ * An immutable implementation of {@link LayeredSequence}. This class
  * represents a sequence with multiple layers (e.g. a sentence
  * with words and part-of-speech tags). In this implementation, the length
  * of the sequence is fixed and the values at each position in the sequence
- * cannot be changed. New layers can be added.  
+ * cannot be changed. New layers can be added.
  * @author afader
  *
  */
 public class SimpleLayeredSequence implements LayeredSequence {
-    
+
 
     private HashMap<String, ImmutableList<String>> layers;
     private HashSet<String> layerNames;
     private int numLayers;
     private int length;
-    
+
     /**
      * Constructs a new layered sequence with the given length
      * @param length
@@ -38,7 +37,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
         this.length = length;
         numLayers = 0;
     }
-    
+
     private void init() {
         layers = new HashMap<String, ImmutableList<String>>();
         layerNames = new HashSet<String>();
@@ -56,31 +55,31 @@ public class SimpleLayeredSequence implements LayeredSequence {
                     "Invalid layer name: " + layerName);
         }
     }
-    
+
     /**
      * @return the number of layers
      */
     public int getNumLayers() {
         return numLayers;
     }
-    
+
     /**
      * @return the length of the sequence
      */
     public int getLength() {
         return length;
     }
-    
+
     /**
      * Adds a new layer to the sequence
      * @param layerName
      * @param layer
-     * @throws SequenceException if a layer with layerName already exists or 
+     * @throws SequenceException if a layer with layerName already exists or
      * the given layer has the incorrect length
      */
-    public void addLayer(String layerName, ImmutableList<String> layer) 
+    public void addLayer(String layerName, ImmutableList<String> layer)
         throws SequenceException {
-        
+
         if (hasLayer(layerName)) {
             String msg = String.format(
                     "Cannot add layer '%s': layer already exists", layerName);
@@ -88,7 +87,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
         } else if (layer.size() != length) {
             String msg = String.format(
                     "Cannot add layer '%s': layer parameter has invalid length "
-                    + "(expected %s, but got %s)", 
+                    + "(expected %s, but got %s)",
                     layerName, length, layer.size());
             throw new SequenceException(msg);
         }
@@ -96,33 +95,33 @@ public class SimpleLayeredSequence implements LayeredSequence {
         layers.put(layerName, layer);
         numLayers++;
     }
-    
+
     /**
-     * Adds a new layer to the sequence.  An immutable list will be 
+     * Adds a new layer to the sequence.  An immutable list will be
      * instantiated around <code>layer</code>.
      * @param layerName
      * @param layer
-     * @throws SequenceException if a layer with layerName already exists or 
+     * @throws SequenceException if a layer with layerName already exists or
      * the given layer has the incorrect length
      */
     public void addLayer(String layerName, List<String> layer) {
         this.addLayer(layerName, ImmutableList.copyOf(layer));
     }
-    
+
     /**
      * Adds a new layer to the sequence
      * @param layerName
      * @param layer
-     * @throws SequenceException if a layer with layerName already exists or 
+     * @throws SequenceException if a layer with layerName already exists or
      * the given layer has the incorrect length
      */
-    public void addLayer(String layerName, String[] layer) 
+    public void addLayer(String layerName, String[] layer)
         throws SequenceException {
         List<String> layerList = new ArrayList<String>(layer.length);
         for (int i = 0; i < layer.length; i++) layerList.add(layer[i]);
         addLayer(layerName, layerList);
     }
-    
+
     /**
      * @param layerName
      * @return true if this sequence has a layer with the given name
@@ -130,7 +129,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
     public boolean hasLayer(String layerName) {
         return layerNames.contains(layerName);
     }
-    
+
     /**
      * @return the value of the given layer at the given index
      */
@@ -138,12 +137,12 @@ public class SimpleLayeredSequence implements LayeredSequence {
         List<String> layer = getLayer(layerName);
         return layer.get(index);
     }
-    
+
     /**
      * @param layerName
      * @param start
      * @param length
-     * @return an immutable subsequence of the layer 
+     * @return an immutable subsequence of the layer
      */
     public ImmutableList<String> getSubSequence(String layerName, int start, int length) {
         //if(length < 0) { length = 0;}
@@ -152,7 +151,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
     	//return layer.subList(start, start+length);
     	return getLayer(layerName).subList(start, start+length);
     }
-    
+
     /**
      * @param layerName
      * @param r
@@ -161,7 +160,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
     public List<String> getSubSequence(String layerName, Range r) {
         return getSubSequence(layerName, r.getStart(), r.getLength());
     }
-    
+
     /**
      * Returns the subsequence of this layered sequence starting at the
      * given position with the given length
@@ -172,7 +171,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
     public SimpleLayeredSequence getSubSequence(int start, int length) {
         SimpleLayeredSequence sub = new SimpleLayeredSequence(length);
         for (String layerName : getLayerNames()) {
-            
+
             try {
                 sub.addLayer(layerName, getSubSequence(layerName, start, length));
             } catch (SequenceException e) {
@@ -184,7 +183,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
         }
         return sub;
     }
-    
+
     /**
      * Returns the subsequence of this layered sequence starting at the
      * given position with the given length
@@ -194,14 +193,14 @@ public class SimpleLayeredSequence implements LayeredSequence {
     public SimpleLayeredSequence getSubSequence(Range r) {
         return getSubSequence(r.getStart(), r.getLength());
     }
-    
+
     /**
      * @return the layer names
      */
     public Collection<String> getLayerNames() {
         return layerNames;
     }
-    
+
     /**
      * @param layerName
      * @return the tokens in the given layer name, joined by spaces
@@ -209,7 +208,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
     public String getLayerAsString(String layerName) {
         return getLayerAsString(layerName, 0, getLength());
     }
-    
+
     /**
      * @param layerName
      * @param r
@@ -219,7 +218,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
     public String getLayerAsString(String layerName, Range r) {
         return getLayerAsString(layerName, r.getStart(), r.getLength());
     }
-    
+
     /**
      * @param layerName
      * @param start
@@ -229,7 +228,7 @@ public class SimpleLayeredSequence implements LayeredSequence {
      */
     public String getLayerAsString(String layerName, int start, int length) {
         List<String> sub = getSubSequence(layerName, start, length);
-        return StringUtils.join(sub.iterator(), " ");
+        return Joiner.on(" ").join(sub.iterator());
     }
 
     @Override
@@ -269,5 +268,5 @@ public class SimpleLayeredSequence implements LayeredSequence {
             return false;
         return true;
     }
-    
+
 }

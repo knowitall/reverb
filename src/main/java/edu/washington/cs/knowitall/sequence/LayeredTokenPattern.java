@@ -9,22 +9,22 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import com.google.common.base.Joiner;
 
 /**
  * <p>
- * A class that defines a regular expression over the tokens appearing in a 
+ * A class that defines a regular expression over the tokens appearing in a
  * {@link LayeredSequence} object.
- * </p> 
+ * </p>
  * <p>
- * For example, suppose we want to find 
- * parts of sentences that match the pattern "DT cow", where "DT" is the 
- * part-of-speech tag representing a determiner. Assume that sentences are 
+ * For example, suppose we want to find
+ * parts of sentences that match the pattern "DT cow", where "DT" is the
+ * part-of-speech tag representing a determiner. Assume that sentences are
  * represented as {@link LayeredSequence} objects, where the words layer has
  * the name "word" and the part-of-speech layer has the name "pos". Then the
  * above pattern can be constructed by calling {@code new LayeredTokenPattern(
  * "DT_pos cow_word")}. Given a test sentence {@code sent}, the {@link #matcher(
- * LayeredSequence)} method will return a {@link LayeredTokenMatcher} object 
+ * LayeredSequence)} method will return a {@link LayeredTokenMatcher} object
  * that will allow you to access the ranges and groups.
  * </p>
  * <p>
@@ -35,20 +35,20 @@ import org.apache.commons.lang.StringUtils;
  * The basic unit of match is not a character, but instead a token. A
  * token consists of two parts: a value and a layer name. A token is expressed
  * using an underscore to separate the two. For example {@code Foo_bar} will
- * match when the token @{code Foo} appears on the layer with the name {@code 
+ * match when the token @{code Foo} appears on the layer with the name {@code
  * bar}. In the example above, the token {@code DT_pos} will match the word-
  * POS pair {@code (w, p)} pair when {@code p = DT}. The value of {@code w} is
- * allowed to be anything. Currently there is no way to match the value of 
- * multiple layers at once (e.g. match all occurrences of "bank" that are 
- * nouns). 
+ * allowed to be anything. Currently there is no way to match the value of
+ * multiple layers at once (e.g. match all occurrences of "bank" that are
+ * nouns).
  * </p>
  * <p>
  * The value of a token can only have characters from this set:
- * {@code [a-zA-Z0-9\\-.,:;?!"'`]}. The layer name can only have characters 
+ * {@code [a-zA-Z0-9\\-.,:;?!"'`]}. The layer name can only have characters
  * from this set: {@code [a-zA-Z0-9\\-]}.
  * </p>
  * <p>
- * When expressing a pattern, tokens must be space separated. 
+ * When expressing a pattern, tokens must be space separated.
  * </p>
  * <p>
  * In the following examples {@code pos} refers to a part-of-speech layer, and
@@ -62,35 +62,35 @@ import org.apache.commons.lang.StringUtils;
  * <li>
  * {@code ^(NNP_pos+) lives_word in_word (NNP_pos+) ._pos$} - matches sentences
  * that start with at least one proper noun, followed by "lives in", followed
- * by at least one proper noun, and then ending with a period. Captures the 
+ * by at least one proper noun, and then ending with a period. Captures the
  * two proper nouns as groups (see {@link LayeredTokenMatcher}).
- * </li>   
+ * </li>
  * </ul>
- * 
+ *
  * @author afader
  *
  */
 public class LayeredTokenPattern {
-    
+
     // The caller-supplied pattern string
     private String patternString;
-    
+
     // Dealing with the tokenized pattern
     private LayeredPatternTokenizer tokenizer;
     private int patternLength;
     private String[] patternTokens;
     private String[] patternSymbols;
     private String[] patternLayerNames;
-    
+
     // Dealing with layers and their alphabets
     private List<String> layerNames;
     private Map<String, Set<String>> layerAlphabets;
-    
+
     // Dealing with the encoded version of the pattern
     private Encoder encoder;
     private String encodedPatternString;
     private Pattern encodedPattern;
-    
+
     /**
      * Constructs a new instance from the given String pattern
      * @param patternString
@@ -104,12 +104,12 @@ public class LayeredTokenPattern {
         buildEncoder();
         encodePattern();
     }
-    
+
     @Override
     public String toString() {
         return this.patternString;
     }
-    
+
     /**
      * Checks to make sure the caller-supplied patternString is valid
      * @throws SequenceException
@@ -126,7 +126,7 @@ public class LayeredTokenPattern {
             }
         }
     }
-    
+
     /**
      * Tokenizes the pattern using {@link LayeredPatternTokenizer}, and sets
      * the values of patternSymbols and patternLayerNames.
@@ -150,7 +150,7 @@ public class LayeredTokenPattern {
             }
         }
     }
-    
+
     /**
      * Builds the alphabets for each layer in the pattern. These are then fed
      * to the constructor of {@link Encoder}.
@@ -170,10 +170,10 @@ public class LayeredTokenPattern {
             }
         }
     }
-    
+
     /**
      * Builds a new encoder using the alphabets from the pattern. This encoder
-     * will map tuples of values to characters. 
+     * will map tuples of values to characters.
      * @throws SequenceException
      */
     private void buildEncoder() throws SequenceException {
@@ -183,9 +183,9 @@ public class LayeredTokenPattern {
         }
         encoder = new Encoder(sets);
     }
-    
+
     /**
-     * Uses the {@link Encoder} object to take the tokenized pattern and 
+     * Uses the {@link Encoder} object to take the tokenized pattern and
      * create an encoded representation of it, that can then be compiled as
      * a regular {@link java.util.regex.Pattern} object.
      * @throws SequenceException
@@ -204,32 +204,32 @@ public class LayeredTokenPattern {
                 encodedTokens[i] = "[" + Pattern.quote(classEncodingString) + "]";
             }
         }
-        encodedPatternString = StringUtils.join(encodedTokens, "");
+        encodedPatternString = Joiner.on("").join(encodedTokens);
         encodedPattern = Pattern.compile(encodedPatternString);
     }
-    
+
     /**
-     * Returns a matcher object, which can be used to scan seq for any 
+     * Returns a matcher object, which can be used to scan seq for any
      * subsequences that match this pattern.
      * @param seq
-     * @return the matcher 
+     * @return the matcher
      * @throws SequenceException if unable to create a matcher over seq
      */
-    public LayeredTokenMatcher matcher(LayeredSequence seq) 
+    public LayeredTokenMatcher matcher(LayeredSequence seq)
         throws SequenceException {
         String encoded = encodeSequence(seq);
         Matcher m = encodedPattern.matcher(encoded);
         return new LayeredTokenMatcher(m);
     }
-    
+
     /**
-     * Takes the given layered sequence object and encodes it using the 
+     * Takes the given layered sequence object and encodes it using the
      * {@link Encoder} object of this instance.
      * @param seq
      * @return an encoded version of seq
      * @throws SequenceException
      */
-    private String encodeSequence(LayeredSequence seq) 
+    private String encodeSequence(LayeredSequence seq)
         throws SequenceException {
         int n = seq.getLength();
         char[] encoded = new char[n];
@@ -239,7 +239,7 @@ public class LayeredTokenPattern {
         }
         return new String(encoded);
     }
-    
+
     /**
      * Returns a vertical "slice" of the given layered sequence at index i. This
      * is a tuple containing each layer's value at index i.
@@ -262,7 +262,7 @@ public class LayeredTokenPattern {
         }
         return tuple;
     }
-    
+
     /**
      * @return the character-level pattern that this {@link LayeredTokenPattern}
      * was compiled into.
