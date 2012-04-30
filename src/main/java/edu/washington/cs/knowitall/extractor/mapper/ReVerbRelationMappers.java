@@ -7,89 +7,93 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
 /**
  * A list of mappers for <code>ReVerbExtractor</code>'s relations.
+ *
  * @author afader
  *
  */
 public class ReVerbRelationMappers extends MapperList<ChunkedExtraction> {
 
-	/**
-	 * Default construction of ReVerbRelationMappers.
-	 * Uses Lexical and Syntactic constraints, merges overlapping relations, and requires a minimum of 20 distinct arguments
-	 * for each relation on a large corpus.
-	 * @throws IOException
-	 */
+    /**
+     * Default construction of ReVerbRelationMappers. Uses Lexical and Syntactic
+     * constraints, merges overlapping relations, and requires a minimum of 20
+     * distinct arguments for each relation on a large corpus.
+     *
+     * @throws IOException
+     */
     public ReVerbRelationMappers() throws IOException {
         init();
     }
 
-    
     public ReVerbRelationMappers(int minFreq) throws IOException {
         init(minFreq);
     }
-    
-    public ReVerbRelationMappers(int minFreq, boolean useLexSynConstraints, boolean mergeOverlapRels) throws IOException {
+
+    public ReVerbRelationMappers(int minFreq, boolean useLexSynConstraints,
+            boolean mergeOverlapRels) throws IOException {
         init(minFreq, useLexSynConstraints, mergeOverlapRels);
     }
 
-
     private void init() throws IOException {
-    	
-    	//Add lexical and syntactic constraints on the relations.
-    	addLexicalAndSyntacticConstraints();
-        
-        // The relation should have a minimum number of distinct arguments in a large corpus
+
+        // Add lexical and syntactic constraints on the relations.
+        addLexicalAndSyntacticConstraints();
+
+        // The relation should have a minimum number of distinct arguments in a
+        // large corpus
         addMapper(new ReVerbRelationDictionaryFilter());
-        
+
         // Overlapping relations should be merged together
         addMapper(new MergeOverlappingMapper());
 
     }
 
-    
-   
     private void init(int minFreq) throws IOException {
-    	
-    	//Add lexical and syntactic constraints on the relation.
-    	addLexicalAndSyntacticConstraints();
-        
-        // The relation should have a minimum number of distinct arguments in a large corpus
+
+        // Add lexical and syntactic constraints on the relation.
+        addLexicalAndSyntacticConstraints();
+
+        // The relation should have a minimum number of distinct arguments in a
+        // large corpus
         addMapper(new ReVerbRelationDictionaryFilter(minFreq));
-        
+
         // Overlapping relations should be merged together
         addMapper(new MergeOverlappingMapper());
 
     }
 
-    private void init(int minFreq, boolean useLexSynConstraints, boolean mergeOverlapRels) throws IOException{
-    	//Add lexical and syntactic constraints on the relation.
-    	if(useLexSynConstraints) {
-    		addLexicalAndSyntacticConstraints();
-    	}
-        // The relation should have a minimum number of distinct arguments in a large corpus
-        if(minFreq > 0){
-        	addMapper(new ReVerbRelationDictionaryFilter(minFreq));
+    private void init(int minFreq, boolean useLexSynConstraints,
+            boolean mergeOverlapRels) throws IOException {
+        // Add lexical and syntactic constraints on the relation.
+        if (useLexSynConstraints) {
+            addLexicalAndSyntacticConstraints();
+        }
+        // The relation should have a minimum number of distinct arguments in a
+        // large corpus
+        if (minFreq > 0) {
+            addMapper(new ReVerbRelationDictionaryFilter(minFreq));
         }
         // Overlapping relations should be merged together
-    	if(mergeOverlapRels) {
-    		addMapper(new MergeOverlappingMapper());
-    
-    	}
+        if (mergeOverlapRels) {
+            addMapper(new MergeOverlappingMapper());
+
+        }
     }
-    
-	private void addLexicalAndSyntacticConstraints() {
-		/*
-    	 * The relation shouldn't just be a single character. This usually happens due to errors
-    	 * in the various NLP tools (sentence detector, tokenizer, POS tagger, chunker).
-    	 */
-    	addMapper(new FilterMapper<ChunkedExtraction>() {
-    		public boolean doFilter(ChunkedExtraction rel) {
-    			if (rel.getLength() == 1) {
-    				return rel.getToken(0).length() > 1;
-    			} else {
-    				return true;
-    			}
-    		}
-    	});
+
+    private void addLexicalAndSyntacticConstraints() {
+        /*
+         * The relation shouldn't just be a single character. This usually
+         * happens due to errors in the various NLP tools (sentence detector,
+         * tokenizer, POS tagger, chunker).
+         */
+        addMapper(new FilterMapper<ChunkedExtraction>() {
+            public boolean doFilter(ChunkedExtraction rel) {
+                if (rel.getLength() == 1) {
+                    return rel.getToken(0).length() > 1;
+                } else {
+                    return true;
+                }
+            }
+        });
 
         // These pos tags and tokens cannot appear in the relation
         StopListFilter relStopList = new StopListFilter();
@@ -109,9 +113,9 @@ public class ReVerbRelationMappers extends MapperList<ChunkedExtraction> {
                 int length = rel.getLength();
                 for (int i = start; i < start + length; i++) {
                     String posTag = sent.getPosTags().get(i);
-                    
+
                     if (posTag.startsWith("VB")) {
-                    	return !posTag.equals("VBG") && !posTag.equals("VBN");
+                        return !posTag.equals("VBG") && !posTag.equals("VBN");
                     }
                 }
                 return true;
@@ -125,10 +129,10 @@ public class ReVerbRelationMappers extends MapperList<ChunkedExtraction> {
                 if (s == 0) {
                     return true;
                 } else {
-                	String posTag = rel.getSentence().getPosTag(s-1);
+                    String posTag = rel.getSentence().getPosTag(s - 1);
                     return !posTag.equals("EX") && !posTag.equals("TO");
                 }
             }
         });
-	}
+    }
 }

@@ -15,12 +15,12 @@ import edu.washington.cs.knowitall.regex.RegularExpression;
 
 public class ChunkedSentencePattern {
     /***
-     * This class compiles regular expressions over the ChunkedSentenceTokens in a sentence
-     * into an NFA. There is a lot of redundancy in their expressiveness. This
-     * is largely because it supports pattern matching on the fields This is not
-     * necessary but is an optimization and a shorthand (i.e.
-     * {@code <pos="NNPS?"> is equivalent to "<pos="NNP" | pos="NNPS">} and
-     * {@code (?:<pos="NNP"> | <pos="NNPS">)}.
+     * This class compiles regular expressions over the ChunkedSentenceTokens in
+     * a sentence into an NFA. There is a lot of redundancy in their
+     * expressiveness. This is largely because it supports pattern matching on
+     * the fields This is not necessary but is an optimization and a shorthand
+     * (i.e. {@code <pos="NNPS?"> is equivalent to "<pos="NNP" | pos="NNPS">}
+     * and {@code (?:<pos="NNP"> | <pos="NNPS">)}.
      * <p>
      * Here are some equivalent examples:
      * <ol>
@@ -30,13 +30,15 @@ public class ChunkedSentencePattern {
      * <li> {@code <pos="JJ">* (?:<pos="NNP"> | <pos="NNPS">)+}
      * </ol>
      * Note that (3) and (4) are not preferred for efficiency reasons. Regex OR
-     * (in example (4)) should only be used on multi-ChunkedSentenceToken sequences.
+     * (in example (4)) should only be used on multi-ChunkedSentenceToken
+     * sequences.
      * <p>
      * The Regular Expressions support named groups (<name>: ... ), unnamed
      * groups (?: ... ), and capturing groups ( ... ). The operators allowed are
-     * +, ?, *, and |. The Logic Expressions (that describe each ChunkedSentenceToken) allow
-     * grouping "( ... )", not '!', or '|', and and '&'.
-     * 
+     * +, ?, *, and |. The Logic Expressions (that describe each
+     * ChunkedSentenceToken) allow grouping "( ... )", not '!', or '|', and and
+     * '&'.
+     *
      * @param regex
      * @return
      */
@@ -49,12 +51,14 @@ public class ChunkedSentencePattern {
                             final String expression) {
                         final Pattern valuePattern = Pattern
                                 .compile("([\"'])(.*)\\1");
-                        return new Expression.BaseExpression<ChunkedSentenceToken>(expression) {
+                        return new Expression.BaseExpression<ChunkedSentenceToken>(
+                                expression) {
                             private final LogicExpression<ChunkedSentenceToken> logic;
 
                             {
                                 this.logic = LogicExpression.compile(
-                                        expression, new ArgFactory<ChunkedSentenceToken>() {
+                                        expression,
+                                        new ArgFactory<ChunkedSentenceToken>() {
                                             @Override
                                             public Arg<ChunkedSentenceToken> create(
                                                     final String argument) {
@@ -121,16 +125,19 @@ public class ChunkedSentencePattern {
 
     public static void main(String[] args) throws ChunkerException, IOException {
         System.out.println("Compiling the expression... ");
-        RegularExpression<ChunkedSentenceToken> expression = ChunkedSentencePattern.compile(args[0]);
+        RegularExpression<ChunkedSentenceToken> expression = ChunkedSentencePattern
+                .compile(args[0]);
         System.out.println(expression);
         OpenNlpSentenceChunker chunker = new OpenNlpSentenceChunker();
-        
-        System.out.println("Please enter a sentence to match with the above expression.");
+
+        System.out
+                .println("Please enter a sentence to match with the above expression.");
         Scanner scan = new Scanner(System.in);
         while (scan.hasNextLine()) {
             String line = scan.nextLine();
             ChunkedSentence chunked = chunker.chunkSentence(line);
-            Match<ChunkedSentenceToken> match = expression.match(ChunkedSentenceToken.tokenize(chunked));
+            Match<ChunkedSentenceToken> match = expression
+                    .match(ChunkedSentenceToken.tokenize(chunked));
             if (match != null) {
                 System.out.println(match.groups().get(0));
             }

@@ -1,12 +1,12 @@
 package edu.washington.cs.knowitall.nlp.extraction;
 
-
 import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
 
 /**
- * An extraction object that represents a contiguous subsequence of a 
- * {@link ChunkedSentence} object. 
+ * An extraction object that represents a contiguous subsequence of a
+ * {@link ChunkedSentence} object.
+ *
  * @author afader
  *
  */
@@ -15,13 +15,16 @@ public class ChunkedExtraction extends ChunkedSentence {
     private final Range range;
     private final ChunkedSentence sent;
     private String string;
-    
+
     /**
-     * Constructs a new {@link ChunkedExtraction} object representing range in 
-     * the sentence sent. range must be a subset of 
-     * [0, {@code sent.getLength()}).
-     * @param sent the source sentence.
-     * @param range the subsequence of sent that this extraction will represent.
+     * Constructs a new {@link ChunkedExtraction} object representing range in
+     * the sentence sent. range must be a subset of [0, {@code sent.getLength()}
+     * ).
+     *
+     * @param sent
+     *            the source sentence.
+     * @param range
+     *            the subsequence of sent that this extraction will represent.
      */
     public ChunkedExtraction(ChunkedSentence sent, Range range) {
         super(sent.getSubSequence(range));
@@ -29,14 +32,20 @@ public class ChunkedExtraction extends ChunkedSentence {
         this.sent = sent;
         this.string = null;
     }
-    
+
     /**
-     * Constructs a new <code>NpChunkedExtraction</code> object representing <code>range</code> in 
-     * the sentence <code>sent</code>. <code>range</code> must be a subset of [0, <code>sent.getLength()</code>).
-     * @param sent the source sentence.
-     * @param range the subsequence of <code>sent</code> that this extraction will represent.
-     * @param string a string representation of the relation part, usually different than just the 
-     * subsequence in the sentence.
+     * Constructs a new <code>NpChunkedExtraction</code> object representing
+     * <code>range</code> in the sentence <code>sent</code>. <code>range</code>
+     * must be a subset of [0, <code>sent.getLength()</code>).
+     *
+     * @param sent
+     *            the source sentence.
+     * @param range
+     *            the subsequence of <code>sent</code> that this extraction will
+     *            represent.
+     * @param string
+     *            a string representation of the relation part, usually
+     *            different than just the subsequence in the sentence.
      */
     public ChunkedExtraction(ChunkedSentence sent, Range range, String string) {
         super(sent.getSubSequence(range));
@@ -53,8 +62,8 @@ public class ChunkedExtraction extends ChunkedSentence {
     }
 
     /**
-     * @return the <code>Range</code> object that represents the 
-     * subsequence in the source sentence.
+     * @return the <code>Range</code> object that represents the subsequence in
+     *         the source sentence.
      */
     public Range getRange() {
         return range;
@@ -69,8 +78,8 @@ public class ChunkedExtraction extends ChunkedSentence {
 
     /**
      * @param extr
-     * @return true if this extraction is adjacent to or overlaps with 
-     * extr in this sentence.
+     * @return true if this extraction is adjacent to or overlaps with extr in
+     *         this sentence.
      */
     public boolean isAdjacentOrOverlaps(ChunkedExtraction extr) {
         return getRange().isAdjacentOrOverlaps(extr.getRange());
@@ -114,17 +123,17 @@ public class ChunkedExtraction extends ChunkedSentence {
             return false;
         return true;
     }
-    
+
     public String getText() {
         if (string == null) {
             string = this.sent.getTokensAsString(this.getRange());
         }
-        
+
         return string;
     }
-    
+
     @Override
     public String toString() {
-    	return this.getText();
+        return this.getText();
     }
 }

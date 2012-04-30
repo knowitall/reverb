@@ -6,12 +6,14 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
 /**
- * A mapper object for <code>NpChunkArgumentExtraction</code> objects that returns the object
- * closest to the relation.
+ * A mapper object for <code>NpChunkArgumentExtraction</code> objects that
+ * returns the object closest to the relation.
+ *
  * @author afader
  *
  */
-public class ClosestArgumentMapper extends MaxMapper<Integer, ChunkedArgumentExtraction> {
+public class ClosestArgumentMapper extends
+        MaxMapper<Integer, ChunkedArgumentExtraction> {
 
     @Override
     /**
@@ -23,7 +25,6 @@ public class ClosestArgumentMapper extends MaxMapper<Integer, ChunkedArgumentExt
         int argStart = arg.getStart();
         int distance = Math.abs(argStart - relStart);
         return -distance; // return -distance since we want the minimum distance
-    }     
-
+    }
 
 }

@@ -21,7 +21,8 @@ public abstract class AbstractNestedIterator<S, T> extends AbstractIterator<T> {
 
     @Override
     protected T computeNext() {
-        if (inner != null && inner.hasNext()) return inner.next();
+        if (inner != null && inner.hasNext())
+            return inner.next();
         while (outer.hasNext()) {
             inner = computeInnerIterator(outer.next());
             if (inner != null && inner.hasNext()) {

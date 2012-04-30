@@ -36,6 +36,5 @@ public class BufferedReaderIterator extends AbstractIterator<String> {
         } catch (IOException e) {
             return endOfData();
         }
-
     }
 }

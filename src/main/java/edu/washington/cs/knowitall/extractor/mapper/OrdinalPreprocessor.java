@@ -13,5 +13,4 @@ public class OrdinalPreprocessor extends IndependentMapper<String> {
         String result = m.replaceAll("$1 $2");
         return result;
     }
-
 }

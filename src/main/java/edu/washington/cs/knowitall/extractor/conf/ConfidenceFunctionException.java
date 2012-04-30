@@ -8,8 +8,8 @@ public class ConfidenceFunctionException extends NlpException {
     public ConfidenceFunctionException(Exception cause) {
         super(cause);
     }
-    
+
     public ConfidenceFunctionException(String message, Exception cause) {
-    	super(message, cause);
+        super(message, cause);
     }
 }
