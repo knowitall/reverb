@@ -19,6 +19,8 @@ public class ChunkedSentenceIterator extends AbstractIterator<ChunkedSentence> {
     private SentenceChunker chunker;
     private Iterator<String> sentIter;
     private List<Predicate<ChunkedSentence>> filters;
+    
+    private long lastComputeTime = 0;
 
     /**
      * @param sentIter an iterator over <code>String</code> sentences.
@@ -29,6 +31,14 @@ public class ChunkedSentenceIterator extends AbstractIterator<ChunkedSentence> {
         this.sentIter = sentIter;
         this.chunker = chunker;
         this.filters = new ArrayList<Predicate<ChunkedSentence>>();
+    }
+    
+    /**
+     * 
+     * @return  the time of the last computation in nanoseconds
+     */
+    public long getLastComputeTime() {
+    	return this.lastComputeTime;
     }
     
     /***
@@ -42,8 +52,9 @@ public class ChunkedSentenceIterator extends AbstractIterator<ChunkedSentence> {
     @Override
     protected ChunkedSentence computeNext() {
         while (sentIter.hasNext()) {
-            
             try {
+            	long start = System.nanoTime();
+            	
                 ChunkedSentence chunkedSentence 
                     = chunker.chunkSentence(sentIter.next());
                 for (Predicate<ChunkedSentence> filter : this.filters) {
@@ -51,12 +62,17 @@ public class ChunkedSentenceIterator extends AbstractIterator<ChunkedSentence> {
                         continue;
                     }
                 }
+                
+                lastComputeTime = System.nanoTime() - start;
+                
                 return chunkedSentence;
             } catch (ChunkerException e) {
                 continue;
             }
 
         }
+        
+        lastComputeTime = 0;
         return endOfData();
     }
 }
