@@ -38,7 +38,6 @@ public class DefaultObjects {
 	private static BracketsRemover BRACKETS_REMOVER;
 	private static SentenceStartFilter SENTENCE_START_FILTER;
 	private static SentenceEndFilter SENTENCE_END_FILTER;
-	private static HtmlSentenceExtractor HTML_SENTENCE_EXTRACTOR;
 
 	public static InputStream getResourceAsStream(String resource)
 			throws IOException {
@@ -110,11 +109,9 @@ public class DefaultObjects {
 
 	public static HtmlSentenceExtractor getDefaultHtmlSentenceExtractor()
 			throws IOException {
-		if (HTML_SENTENCE_EXTRACTOR == null) {
-			HTML_SENTENCE_EXTRACTOR = new HtmlSentenceExtractor();
-			addDefaultSentenceFilters(HTML_SENTENCE_EXTRACTOR);
-		}
-		return HTML_SENTENCE_EXTRACTOR;
+		HtmlSentenceExtractor extractor = new HtmlSentenceExtractor();
+		addDefaultSentenceFilters(extractor);
+		return extractor;
 	}
 	/**
 	 * Return the default sentence reader.
