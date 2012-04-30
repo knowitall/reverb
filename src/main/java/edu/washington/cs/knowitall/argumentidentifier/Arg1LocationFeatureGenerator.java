@@ -2,6 +2,9 @@ package edu.washington.cs.knowitall.argumentidentifier;
 
 import java.util.List;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
@@ -40,9 +43,10 @@ public class Arg1LocationFeatureGenerator {
 
     }
 
+    @SuppressWarnings("unchecked")
     public String extractFeatures(ChunkedExtraction extr,
             ChunkedArgumentExtraction arg1, int current, boolean train) {
-        String features = "";
+        StringBuilder features = new StringBuilder();
 
         boolean not_seen_yet = true;
         List<String> words = extr.getSentence().getTokens();
@@ -113,17 +117,16 @@ public class Arg1LocationFeatureGenerator {
                 }
 
                 String delim = ",";
-                features += (simple_subj + delim + quotes_subj + delim
-                        + relative_subj + delim + verb_conj + delim
-                        + app_clause + delim + which_who + delim + capitalized
-                        + delim + punctuation_count + delim + (intervening_np)
-                        + delim + np_count_before + delim
-                        + word_before_pred_conj + delim + intervening_and
-                        + delim + word_after_vp + delim + word_before_vp
-                        + delim + classification + "\n");
+                features.append(Joiner.on(delim).join(
+                        Lists.newArrayList(simple_subj, quotes_subj,
+                                relative_subj, verb_conj, app_clause,
+                                which_who, capitalized, punctuation_count,
+                                intervening_np, np_count_before,
+                                word_before_pred_conj, intervening_and,
+                                word_after_vp, word_before_vp, classification)) + "\n");
 
             }
         }
-        return features;
+        return features.toString();
     }
 }

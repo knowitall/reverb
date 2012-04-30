@@ -130,7 +130,7 @@ public class ConfidenceMetric implements ConfidenceFunction {
 
     public String getAllMetrics(ChunkedBinaryExtraction extr) {
 
-        String toprint = "";
+        StringBuilder toprint = new StringBuilder();
 
         // relation metrics
         boolean pred_starts_w_np = predStartsWithNP(extr);
@@ -175,23 +175,23 @@ public class ConfidenceMetric implements ConfidenceFunction {
         boolean sent_more_than_20 = sentLength(extr, 21, Integer.MAX_VALUE);
         boolean extr_covers_phrase = extrCoversPhrase(extr);
 
-        toprint += correct_end + "," + pred_starts_w_np + "," + to_before_pred
-                + ",";
-        toprint += conj_before_rel + "," + which_before_rel + ","
+        toprint.append(correct_end + "," + pred_starts_w_np + "," + to_before_pred
+                + ",");
+        toprint.append(conj_before_rel + "," + which_before_rel + ","
                 + rel_one_verb + "," + rel_to + "," + rel_for + "," + rel_in
-                + "," + rel_of + "," + rel_on + ",";
-        toprint += pp_before_arg1 + "," + words_till_start + "," + arg1_conf
+                + "," + rel_of + "," + rel_on + ",");
+        toprint.append(pp_before_arg1 + "," + words_till_start + "," + arg1_conf
                 + "," + arg1_proper + "," + np_before_arg1 + "," + arg1_length
-                + ",";
-        toprint += adj + "," + comp + "," + nest1 + "," + nest2 + "," + rel
-                + "," + npinf + "," + doublenp + ",";
-        toprint += arg2_proper + "," + verb_after_arg2 + "," + np_after_arg2
+                + ",");
+        toprint.append(adj + "," + comp + "," + nest1 + "," + nest2 + "," + rel
+                + "," + npinf + "," + doublenp + ",");
+        toprint.append(arg2_proper + "," + verb_after_arg2 + "," + np_after_arg2
                 + "," + pp_after_arg2 + "," + words_till_end + "," + arg2_conf
-                + ",";
-        toprint += sent_less_than_10 + "," + sent_less_than_20 + ","
-                + sent_more_than_20 + "," + extr_covers_phrase;
+                + ",");
+        toprint.append(sent_less_than_10 + "," + sent_less_than_20 + ","
+                + sent_more_than_20 + "," + extr_covers_phrase);
 
-        return toprint;
+        return toprint.toString();
     }
 
     public int getIntValue(boolean bool, boolean dir) {

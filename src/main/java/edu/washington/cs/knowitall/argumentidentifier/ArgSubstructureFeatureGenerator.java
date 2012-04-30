@@ -132,7 +132,7 @@ public class ArgSubstructureFeatureGenerator {
 
         // build a string out of the features, skipping the label for testing
         // instances
-        String features = "";
+        StringBuilder features = new StringBuilder();
         Iterator<Vector<String>> instanceIter = instances.iterator();
         while (instanceIter.hasNext()) {
             Vector<String> instance = instanceIter.next();
@@ -143,13 +143,13 @@ public class ArgSubstructureFeatureGenerator {
             while (featureIter.hasNext()) {
                 feature = featureIter.next();
                 if (train || !feature.equals(label)) {
-                    features += feature + " ";
+                    features.append(feature + " ");
                 }
             }
-            features += "\n";
+            features.append("\n");
         }
 
-        return features;
+        return features.toString();
     }
 
     private ArrayList<String> getSetFeatures(ChunkedExtraction extr,
