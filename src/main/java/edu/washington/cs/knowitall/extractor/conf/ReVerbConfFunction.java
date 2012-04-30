@@ -1,10 +1,12 @@
 package edu.washington.cs.knowitall.extractor.conf;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import weka.classifiers.Classifier;
 import weka.core.SerializationHelper;
-import edu.washington.cs.knowitall.commonlib.ResourceUtils;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
 import edu.washington.cs.knowitall.extractor.conf.weka.WekaClassifierConfFunction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
@@ -26,27 +28,36 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  *
  */
 public class ReVerbConfFunction implements ConfidenceFunction {
-
     public final Classifier classifier;
     private ReVerbFeatures reverbFeatures;
     private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
     private WekaClassifierConfFunction<ChunkedBinaryExtraction> func;
 
     /**
-     * Constructs a new instance of the confidence function.
+     * Constructs a new instance of the confidence function using the default
+     * model.
      *
      * @throws ConfidenceFunctionException
      *             if unable to initialize
+     * @throws IOException
      */
-    public ReVerbConfFunction() throws ConfidenceFunctionException {
+    public ReVerbConfFunction() throws ConfidenceFunctionException, IOException {
         this(DefaultObjects.confFunctionModelFile);
     }
 
-    public ReVerbConfFunction(String model) {
+    /**
+     * Constructs a new instance of the confidence function from the specified
+     * URL.
+     *
+     * @throws ConfidenceFunctionException
+     *             if unable to initialize
+     * @throws IOException
+     */
+    public ReVerbConfFunction(URL url) throws IOException {
+        InputStream is = url.openStream();
         try {
             try {
-                classifier = (Classifier) SerializationHelper
-                        .read(ResourceUtils.loadResource(model, this.getClass()));
+                classifier = (Classifier) SerializationHelper.read(is);
             } catch (Exception e) {
                 throw new IOException(e);
             }
@@ -55,15 +66,34 @@ public class ReVerbConfFunction implements ConfidenceFunction {
 
         } catch (IOException e) {
             throw new ConfidenceFunctionException("Unable to load classifier: "
-                    + model, e);
+                    + url, e);
+        } finally {
+            is.close();
         }
     }
 
-    public ReVerbConfFunction(Classifier classifier) {
+    /**
+     * Constructs a new instance of the confidence function from the specified
+     * resource item.
+     *
+     * @throws ConfidenceFunctionException
+     *             if unable to initialize
+     * @throws IOException
+     */
+    public ReVerbConfFunction(String model) throws IOException {
+        this(ReVerbConfFunction.class.getClassLoader().getResource(model));
+    }
 
-        this.classifier = classifier;
-
-        initializeConfFunction();
+    /**
+     * Constructs a new instance of the confidence function from the specified
+     * file.
+     *
+     * @throws ConfidenceFunctionException
+     *             if unable to initialize
+     * @throws IOException
+     */
+    public ReVerbConfFunction(File file) throws IOException {
+        this(file.toURI().toURL());
     }
 
     /* Assumes that this.classifier is valid */
@@ -73,6 +103,13 @@ public class ReVerbConfFunction implements ConfidenceFunction {
         featureSet = reverbFeatures.getFeatureSet();
         func = new WekaClassifierConfFunction<ChunkedBinaryExtraction>(
                 featureSet, classifier);
+    }
+
+    public ReVerbConfFunction(Classifier classifier) {
+
+        this.classifier = classifier;
+
+        initializeConfFunction();
     }
 
     /**
