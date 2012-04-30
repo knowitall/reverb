@@ -134,6 +134,10 @@ public class ChunkedSentence extends BIOLayeredSequence {
         return this.offsets;
     }
 
+    public Range getRange() {
+        return Range.fromInterval(0, this.getLength() - 1);
+    }
+
     /**
      * Returns a new ChunkedSentence object that starts at the given range.
      *

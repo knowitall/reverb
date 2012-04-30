@@ -890,7 +890,6 @@ public class PatternExtractor {
 
     public boolean matches(ChunkedSentence sentence, String type, boolean arg1) {
         Match<ChunkedSentenceToken> match;
-        // long start = System.currentTimeMillis();
         if (arg1) {
             match = compiledPatternMapArg1.get(type).match(
                     ChunkedSentenceToken.tokenize(sentence));
@@ -898,11 +897,7 @@ public class PatternExtractor {
             match = compiledPatternMapArg2.get(type).match(
                     ChunkedSentenceToken.tokenize(sentence));
         }
-        // matchtime+=(System.currentTimeMillis()-start);
-        if (match != null) {
-            return true;
-        }
-        return false;
+        return match != null;
     }
 
     public static boolean inNPList(ChunkedExtraction extr, int current) {
