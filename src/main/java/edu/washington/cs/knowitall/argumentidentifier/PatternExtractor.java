@@ -2,12 +2,13 @@ package edu.washington.cs.knowitall.argumentidentifier;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import edu.washington.cs.knowitall.regex.Match;
 import edu.washington.cs.knowitall.regex.RegularExpression;
-import edu.washington.cs.knowitall.nlp.ChunkedSentence;
+import edu.washington.cs.knowitall.commonlib.Range;
 import edu.washington.cs.knowitall.nlp.ChunkedSentencePattern;
 import edu.washington.cs.knowitall.nlp.ChunkedSentenceToken;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
@@ -245,20 +246,20 @@ public class PatternExtractor {
 
     public boolean prevStop(ChunkedExtraction extr, int current) {
 
-        if (!matches(extr.getSentence().getSubSequence(0, extr.getStart()),
+        if (!matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(0, extr.getStart())),
                 "between_commas", true)
                 && !matches(
-                        extr.getSentence().getSubSequence(0, extr.getStart()),
+                        ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(0, extr.getStart())),
                         "between_quotes", true)) {
             if ((!extr.getSentence().getPosTag(current).equals("WDT")
                     && !extr.getSentence().getPosTag(current).equals("WRB")
                     && !extr.getSentence().getPosTag(current).equals("WP") && matches(
-                        extr.getSentence().getSubSequence(0, current + 1),
+                        ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(0, current + 1)),
                         "double_np", true))
-                    || matches(extr.getSentence()
-                            .getSubSequence(0, current + 1), "if", true)
-                    || matches(extr.getSentence()
-                            .getSubSequence(0, current + 1), "verb_np", true)) {
+                    || matches(ChunkedSentenceToken.tokenize(extr.getSentence(),
+                            new Range(0, current + 1)), "if", true)
+                    || matches(ChunkedSentenceToken.tokenize(extr.getSentence(),
+                            new Range(0, current + 1)), "verb_np", true)) {
                 return true;
             }
         }
@@ -410,7 +411,7 @@ public class PatternExtractor {
             return false;
         }
         int length = extr.getStart() - current;
-        if (matches(extr.getSentence().getSubSequence(current, length),
+        if (matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current, length)),
                 "app_3", true)) {
             return true;
         }
@@ -418,7 +419,7 @@ public class PatternExtractor {
     }
 
     public boolean matchesRelativeClause(ChunkedExtraction extr, int argend) {
-        if (matches(extr.getSentence().getSubSequence(0, argend),
+        if (matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(0, argend)),
                 "relative_clause", true)
                 && !(extr.getSentence().getChunkTag(argend - 1).contains("NP") && extr
                         .getSentence().getChunkTag(argend).equals("B-VP"))) {
@@ -443,7 +444,7 @@ public class PatternExtractor {
             return false;
         }
         int length = extr.getSentence().getLength();
-        if (matches(extr.getSentence().getSubSequence(0, length), "statement",
+        if (matches(ChunkedSentenceToken.tokenize(extr.getSentence().getSubSequence(0, length)), "statement",
                 true)) {
             return true;
         }
@@ -452,8 +453,8 @@ public class PatternExtractor {
 
     public boolean matchesAppositiveStrict(ChunkedExtraction extr) {
         if (matches(
-                extr.getSentence().getSubSequence(extr.getStart(),
-                        extr.getLength()), "app_strict", true)) {
+                ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(extr.getStart(),
+                        extr.getLength())), "app_strict", true)) {
             return true;
         }
         return false;
@@ -461,8 +462,8 @@ public class PatternExtractor {
 
     public boolean matchesListStrict(ChunkedExtraction extr) {
         if (matches(
-                extr.getSentence().getSubSequence(extr.getStart(),
-                        extr.getLength()), "list_1", true)
+                ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(extr.getStart(),
+                        extr.getLength())), "list_1", true)
                 && !extr.getSentence()
                         .getSubSequence(extr.getStart(), extr.getLength())
                         .getPosTagsAsString().contains("IN")) {
@@ -479,12 +480,12 @@ public class PatternExtractor {
                         || extr.getSentence().getPosTag(current).contains(",") || extr
                         .getSentence().getPosTag(current).contains("CC"))) {
             int length = argend - current;
-            if ((matches(extr.getSentence().getSubSequence(current, length),
+            if ((matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current, length)),
                     "list_1", true)
                     || matches(
-                            extr.getSentence().getSubSequence(current, length),
-                            "list_3", true) || matches(extr.getSentence()
-                    .getSubSequence(current, length), "list_2", true))
+                            ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current, length)),
+                            "list_3", true) || matches(ChunkedSentenceToken.tokenize(extr.getSentence(),
+                    new Range(current, length)), "list_2", true))
                     && (current == 0
                             || extr.getSentence().getChunkTag(current)
                                     .equals(",")
@@ -504,7 +505,7 @@ public class PatternExtractor {
 
     public boolean matchesObj(ChunkedExtraction extr, int current) {
         int length = current + 1;
-        if ((matches(extr.getSentence().getSubSequence(0, length), "obj", true))) {
+        if ((matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(0, length)), "obj", true))) {
             return true;
         }
         return false;
@@ -551,14 +552,14 @@ public class PatternExtractor {
 
     public boolean vpStartsWithTo(ChunkedExtraction extr, int current) {
         int length = extr.getStart() - current;
-        return (matches(extr.getSentence().getSubSequence(current, length),
+        return (matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current, length)),
                 "to_verb", true));
     }
 
     public boolean matchesVerbConjSimple(ChunkedExtraction extr, int current) {
         if ((matches(
-                extr.getSentence().getSubSequence(current,
-                        extr.getStart() - current), "verb_conj_simple1", true))) {
+                ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current,
+                        extr.getStart() - current)), "verb_conj_simple1", true))) {
             return true;
         }
         return false;
@@ -583,8 +584,8 @@ public class PatternExtractor {
         }
 
         int length = extr.getStart() - i;
-        if (matches(extr.getSentence().getSubSequence(i, length), "app_1", true)
-                || matches(extr.getSentence().getSubSequence(i, length),
+        if (matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(i, length)), "app_1", true)
+                || matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(i, length)),
                         "app_2", true)) {
             return true;
         }
@@ -594,26 +595,26 @@ public class PatternExtractor {
     public boolean simpleSubj(ChunkedExtraction extr, int i) {
         if (!extr.getSentence().getPosTag(i).startsWith("W")
                 && (matches(
-                        extr.getSentence().getSubSequence(i,
-                                extr.getStart() - i), "subj_simple", true))) {
+                        ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(i,
+                                extr.getStart() - i)), "subj_simple", true))) {
             return true;
         }
         return false;
     }
 
     public boolean quotesSubj(ChunkedExtraction extr, int i) {
-        if (matches(extr.getSentence().getSubSequence(i, extr.getStart() - i),
+        if (matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(i, extr.getStart() - i)),
                 "subj_quotes1", true)
                 || matches(
-                        extr.getSentence().getSubSequence(i,
-                                extr.getStart() - i), "subj_quotes2", true)) {
+                        ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(i,
+                                extr.getStart() - i)), "subj_quotes2", true)) {
             return true;
         }
         return false;
     }
 
     public boolean relSubj(ChunkedExtraction extr, int i) {
-        if (matches(extr.getSentence().getSubSequence(i, extr.getStart() - i),
+        if (matches(ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(i, extr.getStart() - i)),
                 "subj_rel", true)) {
             return true;
         }
@@ -632,22 +633,23 @@ public class PatternExtractor {
         while (i > -1) {
             int start = i;
             int length = extr.getStart() - i;
-            if ((matches(extr.getSentence().getSubSequence(start, length),
-                    "subj_4", true))
+            if ((matches(ChunkedSentenceToken.tokenize(extr.getSentence(),
+                    new Range(start, length)), "subj_4", true))
                     || (extr.getSentence().getPosTag(extr.getStart())
                             .equals("VBN")
-                            && (matches(
-                                    extr.getSentence().getSubSequence(start,
-                                            length), "subj_6", true)) || (npcount < 1
-                            && (matches(
-                                    extr.getSentence().getSubSequence(start,
-                                            length), "subj_5a", true))
-                            || (matches(
-                                    extr.getSentence().getSubSequence(start,
-                                            length), "subj_5b", true)) || (matches(
-                                extr.getSentence()
-                                        .getSubSequence(start, length),
-                                "subj_5c", true))))) {
+                            && (matches(ChunkedSentenceToken.tokenize(
+                                    extr.getSentence(),
+                                    new Range(start, length)), "subj_6", true)) || (npcount < 1
+                            && (matches(ChunkedSentenceToken.tokenize(
+                                    extr.getSentence(),
+                                    new Range(start, length)), "subj_5a", true))
+                            || (matches(ChunkedSentenceToken.tokenize(
+                                    extr.getSentence(),
+                                    new Range(start, length)), "subj_5b", true)) || (matches(
+                                ChunkedSentenceToken.tokenize(extr
+                                        .getSentence(),
+                                        new Range(start, length)), "subj_5c",
+                                true))))) {
                 return true;
             }
             i--;
@@ -656,8 +658,8 @@ public class PatternExtractor {
     }
 
     public boolean appClause(ChunkedExtraction extr, int current) {
-        ChunkedSentence tocheck = extr.getSentence().getSubSequence(current,
-                extr.getSentence().getLength() - current);
+        List<ChunkedSentenceToken> tocheck = ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current,
+                extr.getSentence().getLength() - current));
         // matches pattern
         if (matches(tocheck, "app_1", false)
                 || matches(tocheck, "app_2", false)) {
@@ -667,8 +669,8 @@ public class PatternExtractor {
     }
 
     public boolean vbgIsNext(ChunkedExtraction extr, int current) {
-        ChunkedSentence tocheck = extr.getSentence().getSubSequence(current,
-                extr.getSentence().getLength() - current);
+        List<ChunkedSentenceToken> tocheck = ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current,
+                extr.getSentence().getLength() - current));
         // matches pattern
         if (matches(tocheck, "vbg_1", false)
                 || matches(tocheck, "vbg_2", false)) {
@@ -678,8 +680,8 @@ public class PatternExtractor {
     }
 
     public boolean relClause(ChunkedExtraction extr, int current) {
-        ChunkedSentence tocheck = extr.getSentence().getSubSequence(current,
-                extr.getSentence().getLength() - current);
+        List<ChunkedSentenceToken> tocheck = ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(current,
+                extr.getSentence().getLength() - current));
         // matches pattern
         if (matches(tocheck, "relclause1", false)
                 || matches(tocheck, "relclause2", false)
@@ -690,7 +692,7 @@ public class PatternExtractor {
     }
 
     public boolean ifClause(ChunkedExtraction extr) {
-        ChunkedSentence tocheck = getChunkedSentenceFromPredEnd(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPredEnd(extr);
         // matches pattern
         if (matches(tocheck, "ifclause1", false)
                 || matches(tocheck, "ifclause2", false)) {
@@ -700,7 +702,7 @@ public class PatternExtractor {
     }
 
     public boolean compoundVerb(ChunkedExtraction extr) {
-        ChunkedSentence tocheck = getChunkedSentenceFromPredEnd(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPredEnd(extr);
         // matches pattern
         if (matches(tocheck, "compound1", false)
                 || matches(tocheck, "compound2", false)) {
@@ -710,9 +712,8 @@ public class PatternExtractor {
     }
 
     public boolean startsList(ChunkedExtraction extr) {
-
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPredEnd(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPredEnd(extr);
         // matches pattern
         if (matches(tocheck, "list1", false)
                 || matches(tocheck, "list3", false)) {
@@ -723,7 +724,7 @@ public class PatternExtractor {
 
     public boolean adjRelation(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "adj_relation", false)) {
             return true;
@@ -733,7 +734,7 @@ public class PatternExtractor {
 
     public boolean objNestedClause(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "objNestedClause", false)) {
             return true;
@@ -743,7 +744,7 @@ public class PatternExtractor {
 
     public boolean complementClause(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "complement_clause1", false)
                 || matches(tocheck, "complement_clause2", false)) {
@@ -755,7 +756,7 @@ public class PatternExtractor {
 
     public boolean npInfinitiveClause(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "np_infinitive_clause", false)) {
             return true;
@@ -766,7 +767,7 @@ public class PatternExtractor {
 
     public boolean infinitiveClause(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "infinitive_clause", false)) {
             return true;
@@ -776,7 +777,7 @@ public class PatternExtractor {
 
     public boolean doubleNP(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPredEnd(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPredEnd(extr);
         // matches pattern
         if (matches(tocheck, "double_np1", false)
                 && !matches(tocheck, "double_np2", false)) {
@@ -787,7 +788,7 @@ public class PatternExtractor {
 
     public boolean nestedRelation1(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "nested_relation1", false)) {
             int count = 0;
@@ -807,7 +808,7 @@ public class PatternExtractor {
 
     public boolean nestedRelation2(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // matches pattern
         if (matches(tocheck, "nested_relation2", false)) {
             return true;
@@ -831,7 +832,7 @@ public class PatternExtractor {
 
     public boolean npRelativeClause(ChunkedExtraction extr) {
         // find start of pattern
-        ChunkedSentence tocheck = getChunkedSentenceFromPred(extr);
+        List<ChunkedSentenceToken> tocheck = getChunkedSentenceFromPred(extr);
         // match patterns
         if (matches(tocheck, "relative_clause", false)) {
             return true;
@@ -855,8 +856,8 @@ public class PatternExtractor {
             return false;
         }
         int length = extr.getSentence().getLength() - start;
-        ChunkedSentence tocheck = extr.getSentence().getSubSequence(start,
-                length);
+        List<ChunkedSentenceToken> tocheck = ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(start,
+                length));
 
         // match patterns
         boolean matches1 = matches(tocheck, "np_list", false);
@@ -867,7 +868,7 @@ public class PatternExtractor {
         return innplist;
     }
 
-    public static ChunkedSentence getChunkedSentenceFromPred(
+    public static List<ChunkedSentenceToken> getChunkedSentenceFromPred(
             ChunkedExtraction extr) {
         int pred_start_orig = extr.getStart();
         int start = pred_start_orig;
@@ -878,24 +879,24 @@ public class PatternExtractor {
             }
         }
         int end = extr.getSentence().getLength();
-        return extr.getSentence().getSubSequence(start, end - start);
+        return ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(start, end - start));
     }
 
-    public static ChunkedSentence getChunkedSentenceFromPredEnd(
+    public static List<ChunkedSentenceToken> getChunkedSentenceFromPredEnd(
             ChunkedExtraction extr) {
         int start = extr.getStart() + extr.getLength();
         int end = extr.getSentence().getLength();
-        return extr.getSentence().getSubSequence(start, end - start);
+        return ChunkedSentenceToken.tokenize(extr.getSentence(), new Range(start, end - start));
     }
 
-    public boolean matches(ChunkedSentence sentence, String type, boolean arg1) {
+    public boolean matches(List<ChunkedSentenceToken> tokens, String type, boolean arg1) {
         Match<ChunkedSentenceToken> match;
         if (arg1) {
             match = compiledPatternMapArg1.get(type).match(
-                    ChunkedSentenceToken.tokenize(sentence));
+                    tokens);
         } else {
             match = compiledPatternMapArg2.get(type).match(
-                    ChunkedSentenceToken.tokenize(sentence));
+                    tokens);
         }
         return match != null;
     }

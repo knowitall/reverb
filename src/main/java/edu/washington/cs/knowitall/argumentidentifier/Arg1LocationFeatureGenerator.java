@@ -43,7 +43,6 @@ public class Arg1LocationFeatureGenerator {
 
     }
 
-    @SuppressWarnings("unchecked")
     public String extractFeatures(ChunkedExtraction extr,
             ChunkedArgumentExtraction arg1, int current, boolean train) {
         StringBuilder features = new StringBuilder();
@@ -118,7 +117,7 @@ public class Arg1LocationFeatureGenerator {
 
                 String delim = ",";
                 features.append(Joiner.on(delim).join(
-                        Lists.newArrayList(simple_subj, quotes_subj,
+                        Lists.<Object>newArrayList(simple_subj, quotes_subj,
                                 relative_subj, verb_conj, app_clause,
                                 which_who, capitalized, punctuation_count,
                                 intervening_np, np_count_before,
