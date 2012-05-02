@@ -20,12 +20,12 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
  * <code>LabeledBinaryExtraction</code> instances, this class featurizes them
  * and trains a logistic regression classifier using Weka's
  * <code>Logistic</code> class.
- * 
+ *
  * This class can be called from the command-line to train a classifier and save
  * the resulting model to a file.
- * 
+ *
  * @author afader
- * 
+ *
  */
 public class ReVerbOpenNlpClassifierTrainer {
 
@@ -41,7 +41,7 @@ public class ReVerbOpenNlpClassifierTrainer {
 
     /**
      * Constructs and trains a new Logistic classifier using the given examples.
-     * 
+     *
      * @param examples
      * @throws Exception
      */
@@ -81,10 +81,7 @@ public class ReVerbOpenNlpClassifierTrainer {
      * Trains a logistic regression classifier using the examples in the given
      * file, and saves the model to disk. The examples must be in the format
      * described in <code>LabeledBinaryExtractionReader</code>.
-     * 
-     * An optional third parameter can be passed that writes the training data
-     * in Weka's ARFF file format to disk.
-     * 
+     *
      * @param args
      * @throws Exception
      */
@@ -106,9 +103,9 @@ public class ReVerbOpenNlpClassifierTrainer {
         ReVerbOpenNlpClassifierTrainer trainer = new ReVerbOpenNlpClassifierTrainer(
                 reader.readExtractions());
         GISModel model = trainer.getModel();
-        
+
         File outputFile = new File(args[1]);
         GISModelWriter writer = new SuffixSensitiveGISModelWriter(model, outputFile);
-        writer.persist(); 
+        writer.persist();
     }
 }
