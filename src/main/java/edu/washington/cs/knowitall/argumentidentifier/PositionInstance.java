@@ -24,12 +24,12 @@ public class PositionInstance {
     public void addFeature(int p, String f) {
         features.add(p, f);
     }
-    
-    public void setFeature(int p, String f){
-    	features.add(p, f);
-    	features.remove(p+1);
+
+    public void setFeature(int p, String f) {
+        features.add(p, f);
+        features.remove(p + 1);
     }
-    
+
     public Vector<String> features() {
         return features;
     }
@@ -37,7 +37,7 @@ public class PositionInstance {
     public void setIsMidInstance(boolean b) {
         isMidInstance = b;
     }
-    
+
     public boolean isMidInstance() {
         return isMidInstance;
     }
@@ -45,35 +45,35 @@ public class PositionInstance {
     public void setIsRelInstance(boolean b) {
         isRelInstance = b;
     }
-    
+
     public boolean isRelInstance() {
         return isRelInstance;
     }
+
     public String label() {
-        return (String) features.lastElement();
+        return features.lastElement();
     }
 
-    public int size()  {
+    public int size() {
         return features.size();
     }
 
     public String get(int i) {
-        return (String) features.get(i);
+        return features.get(i);
     }
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        if( isMidInstance )
+        if (isMidInstance)
             buf.append('*');
         buf.append(' ');
         buf.append(i);
         buf.append('\t');
-        for(Iterator<String> it = features.iterator(); it.hasNext(); ) {
-            buf.append( (String) it.next() );
+        for (Iterator<String> it = features.iterator(); it.hasNext();) {
+            buf.append(it.next());
             buf.append(' ');
         }
         return buf.toString().trim();
     }
-
 
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import edu.washington.cs.knowitall.commonlib.ResourceUtils;
@@ -88,10 +89,11 @@ public class ReVerbRelationDictionaryFilter extends
         String line;
         HashSet<String> relations = new HashSet<String>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        Pattern delim = Pattern.compile("\t");
         int lineNum = 0;
         while ((line = reader.readLine()) != null) {
             lineNum++;
-            String[] fields = line.split("\t");
+            String[] fields = delim.split(line);
             if (fields.length != 2) {
                 System.err.println("Could not read line " + lineNum + ": '"
                         + line + "'");

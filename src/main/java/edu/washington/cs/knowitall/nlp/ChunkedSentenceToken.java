@@ -7,11 +7,13 @@ import java.util.regex.Pattern;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
+import edu.washington.cs.knowitall.commonlib.Range;
+
 /***
  * A representation of a token in a ChunkedSentence.
- * 
+ *
  * @author schmmd
- * 
+ *
  */
 public class ChunkedSentenceToken {
     public final ChunkedSentence ChunkedSentence;
@@ -23,9 +25,13 @@ public class ChunkedSentenceToken {
     }
 
     public static List<ChunkedSentenceToken> tokenize(ChunkedSentence sentence) {
+        return ChunkedSentenceToken.tokenize(sentence, sentence.getRange());
+    }
+
+    public static List<ChunkedSentenceToken> tokenize(ChunkedSentence sentence, Range range) {
         List<ChunkedSentenceToken> tokens = new ArrayList<ChunkedSentenceToken>(
                 sentence.getLength());
-        for (int i = 0; i < sentence.getLength(); i++) {
+        for (int i = range.getStart(); i < range.getEnd(); i++) {
             tokens.add(new ChunkedSentenceToken(sentence, i));
         }
 
@@ -34,7 +40,7 @@ public class ChunkedSentenceToken {
 
     /***
      * The string of this token.
-     * 
+     *
      * @return
      */
     public String string() {
@@ -43,7 +49,7 @@ public class ChunkedSentenceToken {
 
     /***
      * The part of speech tag of this token.
-     * 
+     *
      * @return
      */
     public String pos() {
@@ -52,7 +58,7 @@ public class ChunkedSentenceToken {
 
     /***
      * The chunk tag of this token.
-     * 
+     *
      * @return
      */
     public String chunk() {
@@ -72,9 +78,9 @@ public class ChunkedSentenceToken {
 
     /***
      * An expression that is evaluated against a token.
-     * 
+     *
      * @author schmmd
-     * 
+     *
      */
     protected static abstract class Expression implements
             Predicate<ChunkedSentenceToken> {
@@ -83,9 +89,9 @@ public class ChunkedSentenceToken {
     /***
      * A regular expression that is evaluated against the string portion of a
      * token.
-     * 
+     *
      * @author schmmd
-     * 
+     *
      */
     protected static class StringExpression extends Expression {
         final Pattern pattern;
@@ -107,9 +113,9 @@ public class ChunkedSentenceToken {
     /***
      * A regular expression that is evaluated against the POS tag portion of a
      * token.
-     * 
+     *
      * @author schmmd
-     * 
+     *
      */
     protected static class PosTagExpression extends Expression {
         final Pattern pattern;
@@ -131,9 +137,9 @@ public class ChunkedSentenceToken {
     /***
      * A regular expression that is evaluated against the chunk tag portion of a
      * token.
-     * 
+     *
      * @author schmmd
-     * 
+     *
      */
     protected static class ChunkTagExpression extends Expression {
         final Pattern pattern;
