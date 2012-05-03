@@ -23,7 +23,7 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  * @author afader
  *
  */
-public class ReVerbIndependentConfFunction {
+public class ReVerbIndependentConfFunction implements ConfidenceFunction {
 
     private ReVerbFeatures reverbFeatures;
     private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
@@ -59,6 +59,7 @@ public class ReVerbIndependentConfFunction {
      * @throws ConfidenceFunctionException
      *             if unable to compute the confidence score
      */
+    @Override
     public double getConf(ChunkedBinaryExtraction extr)
             throws ConfidenceFunctionException {
         try {
