@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
 import opennlp.maxent.GISModel;
 import opennlp.maxent.io.PlainTextGISModelReader;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
-import edu.washington.cs.knowitall.extractor.conf.opennlp.OpenNlpAlphabet;
+import edu.washington.cs.knowitall.extractor.conf.opennlp.OpenNlpConfFunction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
 import edu.washington.cs.knowitall.util.DefaultObjects;
 
@@ -29,10 +29,7 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
 public class ReVerbOpenNlpConfFunction implements ConfidenceFunction {
 
     private ReVerbFeatures reverbFeatures;
-    private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
-    private GISModel model;
-
-    private OpenNlpAlphabet<ChunkedBinaryExtraction> alphabet;
+    private OpenNlpConfFunction<ChunkedBinaryExtraction> conf;
 
     /**
      * Constructs a new instance of the confidence function.
@@ -57,15 +54,16 @@ public class ReVerbOpenNlpConfFunction implements ConfidenceFunction {
     public ReVerbOpenNlpConfFunction(URL url) throws IOException {
         InputStream is = url.openStream();
         try {
+            GISModel model;
             try {
-                this.model = (GISModel) new PlainTextGISModelReader(
+                model = (GISModel) new PlainTextGISModelReader(
                         new BufferedReader(new InputStreamReader(
                                 new GZIPInputStream(is)))).getModel();
             } catch (Exception e) {
                 throw new IOException(e);
             }
 
-            initializeConfFunction();
+            initializeConfFunction(model);
 
         } catch (IOException e) {
             throw new ConfidenceFunctionException("Unable to load classifier: "
@@ -75,35 +73,31 @@ public class ReVerbOpenNlpConfFunction implements ConfidenceFunction {
         }
     }
 
+    /***
+     * Load a model specified as a resource path.
+     * @param modelResourcePath
+     * @throws IOException
+     */
     public ReVerbOpenNlpConfFunction(String modelResourcePath)
             throws IOException {
         this(ReVerbOpenNlpConfFunction.class.getClassLoader().getResource(
                 modelResourcePath));
     }
 
+    /***
+     * Load a model from the specified file.
+     * @param modelFile
+     * @throws IOException
+     */
     public ReVerbOpenNlpConfFunction(File modelFile) throws IOException {
         this(modelFile.toURI().toURL());
     }
 
     /* Assumes that this.classifier is valid */
-    private void initializeConfFunction() {
+    private void initializeConfFunction(GISModel model) throws IOException {
         this.reverbFeatures = new ReVerbFeatures();
-        this.featureSet = reverbFeatures.getFeatureSet();
-        this.alphabet = new OpenNlpAlphabet<ChunkedBinaryExtraction>(
-                this.featureSet);
-    }
-
-    private String[] featurize(ChunkedBinaryExtraction extr) {
-        String[] stringFeatures = new String[this.featureSet.getNumFeatures()];
-
-        int i = 0;
-        for (String feature : this.featureSet.getFeatureNames()) {
-            boolean value = this.featureSet.featurizeToBool(feature, extr);
-            stringFeatures[i++] = this.alphabet.lookup
-                    .get(new OpenNlpAlphabet.Key(feature, value));
-        }
-
-        return stringFeatures;
+        BooleanFeatureSet<ChunkedBinaryExtraction> featureSet = reverbFeatures.getFeatureSet();
+        this.conf = new OpenNlpConfFunction<ChunkedBinaryExtraction>(model, featureSet);
     }
 
     /**
@@ -115,6 +109,6 @@ public class ReVerbOpenNlpConfFunction implements ConfidenceFunction {
      */
     public double getConf(ChunkedBinaryExtraction extr)
             throws ConfidenceFunctionException {
-        return this.model.eval(this.featurize(extr))[0];
+        return this.conf.getConf(extr);
     }
 }

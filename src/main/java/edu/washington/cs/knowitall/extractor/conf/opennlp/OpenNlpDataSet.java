@@ -9,13 +9,12 @@ import opennlp.model.Event;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
 
 /***
- * A wrapper for the Weka <code>Instances</code> class. This class allows the
- * caller to add instances to a data set by directly passing an instance of type
- * <code>T</code> and a label. The instance is then featurized using a
- * <code>BooleanFeatureSet</code> and added to a Weka <code>Instances</code>
- * instance.
+ * A wrapper for the OpenNlp events. This class allows the caller to add events
+ * to a data set by directly passing an instance of type <code>T</code> and a
+ * label. The instance is then featurized using a <code>BooleanFeatureSet</code>
+ * . instance.
  *
- * @author afader
+ * @author schmmd
  *
  * @param <T>
  */
