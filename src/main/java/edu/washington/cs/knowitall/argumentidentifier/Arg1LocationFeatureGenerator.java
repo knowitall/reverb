@@ -2,9 +2,7 @@ package edu.washington.cs.knowitall.argumentidentifier;
 
 import java.util.List;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-
+import edu.washington.cs.knowitall.extractor.conf.classifier.DoubleFeatures;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedArgumentExtraction;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 
@@ -15,10 +13,10 @@ import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
  *
  */
 public class Arg1LocationFeatureGenerator {
-    PatternExtractor pattern_extractor;
+    PatternExtractor patternExtractor;
 
     public Arg1LocationFeatureGenerator() {
-        this.pattern_extractor = new PatternExtractor();
+        this.patternExtractor = new PatternExtractor();
     }
 
     public String getHeader() {
@@ -43,23 +41,26 @@ public class Arg1LocationFeatureGenerator {
 
     }
 
-    public String extractFeatures(ChunkedExtraction extr,
-            ChunkedArgumentExtraction arg1, int current, boolean train) {
-        StringBuilder features = new StringBuilder();
+    public double toDouble(boolean bool) {
+        if (bool) return 1.0;
+        else return 0.0;
+    }
 
-        boolean not_seen_yet = true;
+    public double toDouble(int num) {
+        return num + 0.0;
+    }
+
+    public double toDouble(double num) {
+        return num;
+    }
+
+    public DoubleFeatures extractFeatures(ChunkedExtraction extr,
+            ChunkedArgumentExtraction arg1, int current, boolean train) {
         List<String> words = extr.getSentence().getTokens();
         List<String> chunks = extr.getSentence().getChunkTags();
 
         int pred_start = extr.getRange().getStart();
 
-        int arg1_start = 0;
-        int arg1_end = 0;
-
-        if (train) {
-            arg1_start = arg1.getRange().getStart();
-            arg1_end = arg1.getRange().getEnd();
-        }
         int end = current - 1;
         if (current == -1) {
             current = pred_start - 1;
@@ -69,7 +70,7 @@ public class Arg1LocationFeatureGenerator {
             if (chunks.get(k).equals("B-NP")) {
 
                 boolean simple_subj = false;
-                boolean quotes_subj = pattern_extractor.quotesSubj(extr, k);
+                boolean quotes_subj = patternExtractor.quotesSubj(extr, k);
                 boolean relative_subj = false;
                 boolean verb_conj = false;
                 boolean app_clause = false;
@@ -79,53 +80,54 @@ public class Arg1LocationFeatureGenerator {
                 boolean intervening_and = false;
                 boolean word_after_vp = false;
                 boolean word_before_vp = false;
-                int np_count_before = pattern_extractor.getNPCountBefore(extr,
+                int np_count_before = patternExtractor.getNPCountBefore(extr,
                         k);
-                int intervening_np = pattern_extractor.getInterveningNPCount(
+                int intervening_np = patternExtractor.getInterveningNPCount(
                         extr, k);
-                int punctuation_count = pattern_extractor.getPunctuationCount(
+                int punctuation_count = patternExtractor.getPunctuationCount(
                         extr, k);
 
-                simple_subj = pattern_extractor.simpleSubj(extr, k);
-                relative_subj = pattern_extractor.relSubj(extr, k);
-                verb_conj = pattern_extractor.matchesVerbConjSimple(extr, k);
-                app_clause = pattern_extractor.matchesAppositiveClause(extr,
+                simple_subj = patternExtractor.simpleSubj(extr, k);
+                relative_subj = patternExtractor.relSubj(extr, k);
+                verb_conj = patternExtractor.matchesVerbConjSimple(extr, k);
+                app_clause = patternExtractor.matchesAppositiveClause(extr,
                         current);
 
                 which_who = (words.get(k).equals("which")
                         || words.get(k).equals("who") || words.get(k).equals(
                         "that"));
-                capitalized = pattern_extractor.getCapitalized(extr, k);
-                punctuation_count = pattern_extractor.getPunctuationCount(extr,
+                capitalized = patternExtractor.getCapitalized(extr, k);
+                punctuation_count = patternExtractor.getPunctuationCount(extr,
                         k);
-                word_before_pred_conj = pattern_extractor.wordBeforePredIsConj(
+                word_before_pred_conj = patternExtractor.wordBeforePredIsConj(
                         extr, k);
-                intervening_and = pattern_extractor.getInterveningConj(extr, k);
-                word_after_vp = pattern_extractor.wordAfterIsVP(extr, k);
-                np_count_before = pattern_extractor.getNPCountBefore(extr, k);
-                word_before_vp = pattern_extractor.wordBeforeIsVP(extr, k);
-                intervening_np = pattern_extractor.getInterveningNPCount(extr,
+                intervening_and = patternExtractor.getInterveningConj(extr, k);
+                word_after_vp = patternExtractor.wordAfterIsVP(extr, k);
+                np_count_before = patternExtractor.getNPCountBefore(extr, k);
+                word_before_vp = patternExtractor.wordBeforeIsVP(extr, k);
+                intervening_np = patternExtractor.getInterveningNPCount(extr,
                         k);
 
-                boolean correct_np = ((arg1_start <= k && arg1_end > k && not_seen_yet) || (not_seen_yet && k < arg1_start));
-                String classification = "not_closest_np";
+                DoubleFeatures featureMap = new DoubleFeatures();
+                featureMap.put("simple_subj", toDouble(simple_subj));
+                featureMap.put("quotes_subj", toDouble(quotes_subj));
+                featureMap.put("relative_subj", toDouble(relative_subj));
+                featureMap.put("verb_conj", toDouble(verb_conj));
+                featureMap.put("app", toDouble(app_clause));
+                featureMap.put("which_who", toDouble(which_who));
+                featureMap.put("capitalized", toDouble(capitalized));
+                featureMap.put("punct_count", toDouble(punctuation_count));
+                featureMap.put("intervening_np_count", toDouble(intervening_np));
+                featureMap.put("np_count_before", toDouble(np_count_before));
+                featureMap.put("word_before_pred_conj", toDouble(word_before_pred_conj));
+                featureMap.put("intervening_and", toDouble(intervening_and));
+                featureMap.put("word_after_vp", toDouble(word_after_vp));
+                featureMap.put("word_before_vp", toDouble(word_before_vp));
 
-                if (correct_np) {
-                    not_seen_yet = false;
-                    classification = "closest_np";
-                }
-
-                String delim = ",";
-                features.append(Joiner.on(delim).join(
-                        Lists.<Object>newArrayList(simple_subj, quotes_subj,
-                                relative_subj, verb_conj, app_clause,
-                                which_who, capitalized, punctuation_count,
-                                intervening_np, np_count_before,
-                                word_before_pred_conj, intervening_and,
-                                word_after_vp, word_before_vp, classification)) + "\n");
-
+                return featureMap;
             }
         }
-        return features.toString();
+
+        throw new IllegalStateException();
     }
 }
