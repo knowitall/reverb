@@ -1,43 +1,49 @@
 package edu.washington.cs.knowitall.argumentidentifier;
 
-import java.io.Reader;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import edu.washington.cs.knowitall.argumentidentifier.ArgLearner.Mode;
+import edu.washington.cs.knowitall.extractor.conf.classifier.DecisionTree;
+import edu.washington.cs.knowitall.extractor.conf.classifier.DoubleFeatures;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
-import edu.washington.cs.knowitall.commonlib.ResourceUtils;
-
-import weka.classifiers.trees.REPTree;
-import weka.core.Instances;
 
 /**
  * ArgLocationClassifier uses weka to classify the right bound for Arg1 and
  * heuristics (closest word) for Arg2
- * 
+ *
  * @author janara
- * 
+ *
  */
 public class ArgLocationClassifier {
-    private final String arg1_closest_file = "arg1location-training.arff";
+    private static URL modelUrl;
 
-    private REPTree classifier = new REPTree();
+    {
+        try {
+            modelUrl = new File("/homes/gws/schmmd/data/r2a2-arg1loc.tree").toURI().toURL();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DecisionTree classifier;
     private Arg1LocationFeatureGenerator featuregenerator;
 
     private Mode mode;
 
-    public ArgLocationClassifier(Mode mode) {
+    public ArgLocationClassifier(Mode mode) throws IOException {
         this.mode = mode;
         if (mode == ArgLearner.Mode.LEFT) {
             this.featuregenerator = new Arg1LocationFeatureGenerator();
-            setupClassifier(arg1_closest_file);
+            setupClassifier(modelUrl);
         }
     }
 
     public double[] getArgBound(ChunkedExtraction predicate) {
         if (mode == ArgLearner.Mode.LEFT) {
             double[] resultsclassifier = { -1, 1 };
-            String header = featuregenerator.getHeader();
             int classification = -1;
             int k = predicate.getStart() - 1;
             int rightbound = -1;
@@ -45,10 +51,10 @@ public class ArgLocationClassifier {
             // classify each np
             while (k > -1 && classification == -1) {
                 if (predicate.getSentence().getChunkTag(k).equals("B-NP")) {
-                    String features = featuregenerator.extractFeatures(
+                    DoubleFeatures features = featuregenerator.extractFeatures(
                             predicate, null, k, false);
-                    resultsclassifier = classifyData(header + features);
-                    classification = (int) resultsclassifier[0];
+                    String outcome = classifier.classify(features);
+                    classification = outcome.equals("closest_np") ? 0 : -1;
                     rightbound = k;
                 }
                 k--;
@@ -115,53 +121,7 @@ public class ArgLocationClassifier {
         }
     }
 
-    private double[] classifyData(String testingdata) {
-        StringReader testreader = new StringReader(testingdata);
-        int firstposPredicted = -1;
-        double confidence = -1;
-        try {
-            Instances testinginstances = new Instances(testreader);
-            testinginstances
-                    .setClassIndex(testinginstances.numAttributes() - 1);
-            testreader.close();
-
-            double clsLabelPredicted;
-            for (int i = 0; i < testinginstances.numInstances(); i++) {
-                clsLabelPredicted = classifier
-                        .classifyInstance(testinginstances.instance(i));
-                if (clsLabelPredicted == 0) {
-                    firstposPredicted = i;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        double[] toreturn = { firstposPredicted, confidence };
-        return toreturn;
+    private void setupClassifier(URL modelUrl) throws IOException {
+        this.classifier = DecisionTree.fromModel(modelUrl);
     }
-
-    private void setupClassifier(String trainingdata) {
-        Reader trainreader = null;
-        try {
-            trainreader = new InputStreamReader(ResourceUtils.loadResource(
-                    trainingdata, this.getClass()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        try {
-            Instances traininginstances = new Instances(trainreader);
-            traininginstances
-                    .setClassIndex(traininginstances.numAttributes() - 1);
-            trainreader.close();
-
-            classifier.buildClassifier(traininginstances);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-    }
-
 }

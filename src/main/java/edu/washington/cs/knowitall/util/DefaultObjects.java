@@ -16,8 +16,6 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
-import weka.classifiers.Classifier;
-import weka.core.SerializationHelper;
 import edu.washington.cs.knowitall.extractor.HtmlSentenceExtractor;
 import edu.washington.cs.knowitall.extractor.SentenceExtractor;
 import edu.washington.cs.knowitall.extractor.mapper.BracketsRemover;
@@ -32,7 +30,7 @@ public class DefaultObjects {
     public static final String taggerModelFile = "en-pos-maxent.bin";
     public static final String chunkerModelFile = "en-chunker.bin";
     public static final String sentDetectorModelFile = "en-sent.bin";
-    public static final String confFunctionModelFile = "conf.weka";
+    public static final String confFunctionModelFile = "reverb-conf-maxent.gz";
 
     /** Default singleton objects */
     private static BracketsRemover BRACKETS_REMOVER;
@@ -55,15 +53,6 @@ public class DefaultObjects {
         getDefaultTokenizer();
         getDefaultPosTagger();
         getDefaultChunker();
-    }
-
-    public static Classifier getDefaultConfClassifier() throws IOException {
-        try {
-            return (Classifier) SerializationHelper
-                    .read(getResourceAsStream(confFunctionModelFile));
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
     }
 
     public static Tokenizer getDefaultTokenizer() throws IOException {
@@ -116,7 +105,7 @@ public class DefaultObjects {
 
     /**
      * Return the default sentence reader.
-     * 
+     *
      * @param in
      * @param htmlSource
      *            - Are sentences from an html source?
