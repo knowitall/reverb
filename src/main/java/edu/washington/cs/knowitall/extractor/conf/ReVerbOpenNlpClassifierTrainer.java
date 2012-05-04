@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import opennlp.maxent.GIS;
+import opennlp.maxent.GISModel;
+import opennlp.maxent.io.GISModelWriter;
+import opennlp.maxent.io.SuffixSensitiveGISModelWriter;
+import opennlp.model.ListEventStream;
+
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
-import edu.washington.cs.knowitall.extractor.conf.weka.WekaDataSet;
+import edu.washington.cs.knowitall.extractor.conf.opennlp.OpenNlpDataSet;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
-import weka.classifiers.functions.Logistic;
-import weka.core.SerializationHelper;
-import weka.core.converters.ArffSaver;
 
 /***
  * Used to train the ReVerb confidence function using the features described by
@@ -24,13 +27,13 @@ import weka.core.converters.ArffSaver;
  * @author afader
  *
  */
-public class ReVerbClassifierTrainer {
+public class ReVerbOpenNlpClassifierTrainer {
 
     private BooleanFeatureSet<ChunkedBinaryExtraction> featureSet;
-    private Logistic classifier;
-    private WekaDataSet<ChunkedBinaryExtraction> dataSet;
+    private GISModel model;
+    private OpenNlpDataSet<ChunkedBinaryExtraction> dataSet;
 
-    private ReVerbClassifierTrainer() {
+    private ReVerbOpenNlpClassifierTrainer() {
 
         ReVerbFeatures feats = new ReVerbFeatures();
         featureSet = feats.getFeatureSet();
@@ -42,49 +45,23 @@ public class ReVerbClassifierTrainer {
      * @param examples
      * @throws Exception
      */
-    public ReVerbClassifierTrainer(Iterable<LabeledBinaryExtraction> examples)
-            throws Exception {
-
-        this();
-
-        dataSet = new WekaDataSet<ChunkedBinaryExtraction>("train", featureSet);
-        loadDataSet(examples);
-
-        train();
-    }
-
-    /**
-     * Constructs and trains a new Logistic classifier using a previously
-     * existing data set (e.g. from an existing confidence function), and
-     * additional given examples.
-     *
-     * @param examples
-     * @throws Exception
-     */
-    public ReVerbClassifierTrainer(
-            WekaDataSet<ChunkedBinaryExtraction> existingDataSet,
+    public ReVerbOpenNlpClassifierTrainer(
             Iterable<LabeledBinaryExtraction> examples) throws Exception {
 
         this();
 
-        dataSet = existingDataSet;
+        dataSet = new OpenNlpDataSet<ChunkedBinaryExtraction>("train",
+                featureSet);
         loadDataSet(examples);
 
         train();
-    }
-
-    /**
-     * @return the data set used to train the classifier
-     */
-    public WekaDataSet<ChunkedBinaryExtraction> getDataSet() {
-        return dataSet;
     }
 
     /**
      * @return the trained classifier.
      */
-    public Logistic getClassifier() {
-        return classifier;
+    public GISModel getModel() {
+        return model;
     }
 
     private void loadDataSet(Iterable<LabeledBinaryExtraction> examples) {
@@ -96,17 +73,14 @@ public class ReVerbClassifierTrainer {
     }
 
     private void train() throws Exception {
-        classifier = new Logistic();
-        classifier.buildClassifier(dataSet.getWekaInstances());
+        this.model = GIS.trainModel(new ListEventStream(this.dataSet
+                .getInstances()), 100, 0);
     }
 
     /**
      * Trains a logistic regression classifier using the examples in the given
      * file, and saves the model to disk. The examples must be in the format
      * described in <code>LabeledBinaryExtractionReader</code>.
-     *
-     * An optional third parameter can be passed that writes the training data
-     * in Weka's ARFF file format to disk.
      *
      * @param args
      * @throws Exception
@@ -126,16 +100,12 @@ public class ReVerbClassifierTrainer {
         InputStream in = new FileInputStream(args[0]);
         LabeledBinaryExtractionReader reader = new LabeledBinaryExtractionReader(
                 in);
-        ReVerbClassifierTrainer trainer = new ReVerbClassifierTrainer(
+        ReVerbOpenNlpClassifierTrainer trainer = new ReVerbOpenNlpClassifierTrainer(
                 reader.readExtractions());
-        Logistic classifier = trainer.getClassifier();
-        SerializationHelper.write(args[1], classifier);
+        GISModel model = trainer.getModel();
 
-        if (args.length > 2) {
-            ArffSaver saver = new ArffSaver();
-            saver.setInstances(trainer.getDataSet().getWekaInstances());
-            saver.setFile(new File(args[2]));
-            saver.writeBatch();
-        }
+        File outputFile = new File(args[1]);
+        GISModelWriter writer = new SuffixSensitiveGISModelWriter(model, outputFile);
+        writer.persist();
     }
 }

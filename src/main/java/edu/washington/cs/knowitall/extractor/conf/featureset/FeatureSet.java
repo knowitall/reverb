@@ -17,7 +17,17 @@ public abstract class FeatureSet<T> {
 
     public abstract double featurize(String featureName, T object);
 
-    public abstract double[] featurizeToDouble(T object);
+    public double[] featurizeToDouble(T object) {
+        double[] values = new double[this.featureNames.size()];
+
+        int i = 0;
+        for (String name : this.featureNames) {
+            values[i] = this.featurize(name, object);
+            i++;
+        }
+
+        return values;
+    }
 
     /**
      * @return the number of features in this feature set

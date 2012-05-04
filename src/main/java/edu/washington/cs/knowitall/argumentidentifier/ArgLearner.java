@@ -1,5 +1,6 @@
 package edu.washington.cs.knowitall.argumentidentifier;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,20 +37,23 @@ public class ArgLearner extends
         this.mode = mode;
         patternextractor = new PatternExtractor();
 
-        if (mode == Mode.LEFT) {
-            ArgSubstructureFeatureGenerator featuregeneratorsub = new ArgSubstructureFeatureGenerator(
-                    mode);
-            arg1rightboundclassifier = new ArgLocationClassifier(mode);
-            arg1leftboundclassifier = new ArgSubstructureClassifier(mode,
-                    featuregeneratorsub);
-        } else {
-            ArgSubstructureFeatureGenerator featuregeneratorsub = new ArgSubstructureFeatureGenerator(
-                    mode);
-            arg2leftboundclassifier = new ArgLocationClassifier(mode);
-            arg2rightboundclassifier = new ArgSubstructureClassifier(mode,
-                    featuregeneratorsub);
+        try {
+            if (mode == Mode.LEFT) {
+                ArgSubstructureFeatureGenerator featuregeneratorsub = new ArgSubstructureFeatureGenerator(
+                        mode);
+                arg1rightboundclassifier = new ArgLocationClassifier(mode);
+                arg1leftboundclassifier = new ArgSubstructureClassifier(mode,
+                        featuregeneratorsub);
+            } else {
+                ArgSubstructureFeatureGenerator featuregeneratorsub = new ArgSubstructureFeatureGenerator(
+                        mode);
+                arg2leftboundclassifier = new ArgLocationClassifier(mode);
+                arg2rightboundclassifier = new ArgSubstructureClassifier(mode,
+                        featuregeneratorsub);
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-
     }
 
     @Override
