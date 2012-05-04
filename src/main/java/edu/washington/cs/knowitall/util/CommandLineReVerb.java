@@ -26,7 +26,7 @@ import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
 import edu.washington.cs.knowitall.extractor.ReVerbRelationExtractor;
 import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunction;
 import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunctionException;
-import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
+import edu.washington.cs.knowitall.extractor.conf.ReVerbOpenNlpConfFunction;
 import edu.washington.cs.knowitall.extractor.mapper.PronounArgumentFilter;
 import edu.washington.cs.knowitall.io.BufferedReaderIterator;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
@@ -39,9 +39,9 @@ import edu.washington.cs.knowitall.normalization.NormalizedBinaryExtraction;
 /***
  * A command line wrapper for ReVerbExtractor. Run with -h to see the usage
  * information.
- * 
+ *
  * @author afader
- * 
+ *
  */
 public class CommandLineReVerb {
 
@@ -205,7 +205,7 @@ public class CommandLineReVerb {
                         mergeOverlapRels, allowUnary);
                 message("Done.");
                 messageInc("Initializing confidence function...");
-                confFunc = new ReVerbConfFunction();
+                confFunc = new ReVerbOpenNlpConfFunction();
                 message("Done.");
             }
 

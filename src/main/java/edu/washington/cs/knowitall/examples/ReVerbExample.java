@@ -12,7 +12,8 @@ import edu.washington.cs.knowitall.extractor.ReVerbExtractor;
 /* The class that is responsible for assigning a confidence score to an
  * extraction.
  */
-import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
+import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunction;
+import edu.washington.cs.knowitall.extractor.conf.ReVerbOpenNlpConfFunction;
 
 /* A class for holding a (arg1, rel, arg2) triple. */
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
@@ -38,7 +39,7 @@ public class ReVerbExample {
 
         // Prints out extractions from the sentence.
         ReVerbExtractor reverb = new ReVerbExtractor();
-        ReVerbConfFunction confFunc = new ReVerbConfFunction();
+        ConfidenceFunction confFunc = new ReVerbOpenNlpConfFunction();
         for (ChunkedBinaryExtraction extr : reverb.extract(sent)) {
             double conf = confFunc.getConf(extr);
             System.out.println("Arg1=" + extr.getArgument1());

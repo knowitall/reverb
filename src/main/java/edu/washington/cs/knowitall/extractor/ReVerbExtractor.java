@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 
 import com.google.common.base.Joiner;
 
-import edu.washington.cs.knowitall.extractor.conf.ReVerbConfFunction;
+import edu.washington.cs.knowitall.extractor.conf.ConfidenceFunction;
+import edu.washington.cs.knowitall.extractor.conf.ReVerbOpenNlpConfFunction;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument1Mappers;
 import edu.washington.cs.knowitall.extractor.mapper.ReVerbArgument2Mappers;
 import edu.washington.cs.knowitall.nlp.ChunkedSentence;
@@ -75,7 +76,7 @@ public class ReVerbExtractor extends ReVerbRelationExtractor {
         System.err.println("Done.");
 
         System.err.print("Initializing confidence function...");
-        ReVerbConfFunction scoreFunc = new ReVerbConfFunction();
+        ConfidenceFunction scoreFunc = new ReVerbOpenNlpConfFunction();
         System.err.println("Done.");
 
         System.err.print("Initializing NLP tools...");
