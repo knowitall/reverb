@@ -31,15 +31,6 @@ public class ReVerbExtractorTest  {
         if (relaxedReverb == null) {
         	relaxedReverb = new ReVerbExtractor(0, false, false, true);
         }
-        /**if(regReverb == null && noFilters == false) {
-        	regReverb = new ReVerbExtractor();
-        }
-        else if(noFilters == true){
-        	regReverb = null;
-        }
-        if (noFilters == true && relaxedReverb == null) {
-        	relaxedReverb = new ReVerbExtractor(0, false, false, true);
-        }*/
         expected = new HashSet<String>();
     }
 
@@ -600,6 +591,21 @@ public class ReVerbExtractorTest  {
         );
     	assertFalse(got.contains("(himself, invented, the phonograph)"));
         assertTrue(got.contains("(Edison, invented, the phonograph)"));
+    }
+
+    @Test
+    public void testUnaryCases() throws Exception{
+        reverb = relaxedReverb;
+        got = extractTriples("people on earth slow down",
+                "NNS IN NN VB RP",
+                "B-NP B-PP B-NP B-VP B-PP");
+        assertTrue(got.contains("(earth, slow down, )"));
+
+        got = extractTriples("It rained",
+                "PRP VBD",
+                "B-NP B-VP");
+        assertTrue(got.contains("(It, rained, )"));
+
     }
 
 }

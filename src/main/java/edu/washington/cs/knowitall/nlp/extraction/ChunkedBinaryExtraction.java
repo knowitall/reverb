@@ -154,7 +154,7 @@ public class ChunkedBinaryExtraction extends SpanExtraction {
         if (allowUnaryRelations && results.isEmpty()) {
             for (ChunkedArgumentExtraction arg1 : arg1s) {
                 Range dummyRange = new Range(rel.getRange().getStart()
-                        + rel.getRange().getLength() + 1, 0);
+                        + rel.getRange().getLength(), 0);
                 ChunkedArgumentExtraction arg2 = new ChunkedArgumentExtraction(
                         rel.getSentence(), dummyRange, rel);
                 ChunkedBinaryExtraction extr = new ChunkedBinaryExtraction(rel,
