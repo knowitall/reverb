@@ -8,7 +8,7 @@
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-models</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>ReVerb Models</name>
   <description>Model files for the ReVerb extractor.</description>
@@ -24,7 +24,7 @@
     <url>https://github.com/knowitall/reverb-core</url>
     <connection>scm:git://github.com/knowitall/reverb-core.git</connection>
     <developerConnection>scm:git:git@github.com:knowitall/reverb-core.git</developerConnection>
-    <tag>reverb-models-1.4.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <developers>
     <developer>
