@@ -16,11 +16,7 @@ import edu.washington.cs.knowitall.util.DefaultObjects;
  * It represents an extraction using the boolean features defined by the
  * <code>ReVerbFeatures</code> class. See that documentation for details.
  *
- * It uses the model returned by
- * <code>DefaultObjects.getDefaultConfClassifier</code>, which searches the
- * classpath for a file called "conf.weka".
- *
- * @author afader
+ * @author schmmd
  *
  */
 public class ReVerbIndependentConfFunction implements ConfidenceFunction {
