@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>edu.washington.cs.knowitall</groupId>
+    <artifactId>knowitall-oss</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <groupId>edu.washington.cs.knowitall</groupId>
+  <artifactId>reverb-models</artifactId>
+  <version>1.4.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>ReVerb Models</name>
+  <description>Model files for the ReVerb extractor.</description>
+  <inceptionYear>2010</inceptionYear>
+  <url>http://github.com/knowitall/reverb</url>
+  <licenses>
+    <license>
+      <name>ReVerb Software License Agreement</name>
+      <url>http://reverb.cs.washington.edu/LICENSE.txt</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/knowitall/reverb-core</url>
+    <connection>scm:git://github.com/knowitall/reverb-core.git</connection>
+    <developerConnection>scm:git:git@github.com:knowitall/reverb-core.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <name>Anthony Fader</name>
+    </developer>
+    <developer>
+      <name>Michael Schmitz</name>
+    </developer>
+    <developer>
+      <name>Janara Christensen</name>
+    </developer>
+    <developer>
+      <name>Robert Bart</name>
+    </developer>
+  </developers>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>

@@ -1,0 +1,125 @@
+root
+|   intervening_np_count < 0.5
+|   |   simple_subj = 1.0 : closest_np (4592/91) [2252/56]
+|   |   simple_subj = 0.0
+|   |   |   which_who = 1.0
+|   |   |   |   punct_count < 0.5 : not_closest_np (420/4) [178/4]
+|   |   |   |   punct_count >= 0.5 : closest_np (6/3) [4/1]
+|   |   |   which_who = 0.0
+|   |   |   |   word_before_pred_conj = 1.0
+|   |   |   |   |   word_after_vp = 1.0
+|   |   |   |   |   |   word_before_vp = 1.0 : not_closest_np (18/8) [8/3]
+|   |   |   |   |   |   word_before_vp = 0.0 : closest_np (18/2) [14/2]
+|   |   |   |   |   word_after_vp = 0.0 : not_closest_np (235/6) [98/1]
+|   |   |   |   word_before_pred_conj = 0.0
+|   |   |   |   |   relative_subj = 1.0 : closest_np (388/25) [172/8]
+|   |   |   |   |   relative_subj = 0.0
+|   |   |   |   |   |   quotes_subj = 1.0 : closest_np (105/4) [55/3]
+|   |   |   |   |   |   quotes_subj = 0.0
+|   |   |   |   |   |   |   word_before_vp = 1.0 : closest_np (292/132) [163/58]
+|   |   |   |   |   |   |   word_before_vp = 0.0
+|   |   |   |   |   |   |   |   np_count_before < 0.5 : closest_np (69/6) [32/2]
+|   |   |   |   |   |   |   |   np_count_before >= 0.5
+|   |   |   |   |   |   |   |   |   verb_conj = 1.0
+|   |   |   |   |   |   |   |   |   |   np_count_before < 1.5 : not_closest_np (8/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   np_count_before >= 1.5 : closest_np (11/3) [6/1]
+|   |   |   |   |   |   |   |   |   verb_conj = 0.0
+|   |   |   |   |   |   |   |   |   |   capitalized = 1.0 : closest_np (124/21) [54/5]
+|   |   |   |   |   |   |   |   |   |   capitalized = 0.0
+|   |   |   |   |   |   |   |   |   |   |   np_count_before < 6.5
+|   |   |   |   |   |   |   |   |   |   |   |   punct_count < 1.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   np_count_before < 1.5 : closest_np (63/22) [35/7]
+|   |   |   |   |   |   |   |   |   |   |   |   |   np_count_before >= 1.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   app = 1.0
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   np_count_before < 5.5 : closest_np (52/5) [31/7]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   np_count_before >= 5.5 : not_closest_np (2/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   app = 0.0 : closest_np (93/26) [41/9]
+|   |   |   |   |   |   |   |   |   |   |   |   punct_count >= 1.5 : closest_np (8/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   np_count_before >= 6.5 : closest_np (10/0) [6/6]
+|   intervening_np_count >= 0.5
+|   |   verb_conj = 1.0
+|   |   |   which_who = 1.0 : not_closest_np (72/0) [25/0]
+|   |   |   which_who = 0.0
+|   |   |   |   punct_count < 0.5 : closest_np (85/8) [40/3]
+|   |   |   |   punct_count >= 0.5
+|   |   |   |   |   np_count_before < 0.5 : closest_np (48/11) [27/3]
+|   |   |   |   |   np_count_before >= 0.5
+|   |   |   |   |   |   np_count_before < 2.5
+|   |   |   |   |   |   |   punct_count < 1.5
+|   |   |   |   |   |   |   |   intervening_np_count < 1.5
+|   |   |   |   |   |   |   |   |   capitalized = 1.0 : not_closest_np (6/2) [3/2]
+|   |   |   |   |   |   |   |   |   capitalized = 0.0 : closest_np (24/12) [7/3]
+|   |   |   |   |   |   |   |   intervening_np_count >= 1.5
+|   |   |   |   |   |   |   |   |   capitalized = 1.0
+|   |   |   |   |   |   |   |   |   |   word_before_vp = 1.0 : not_closest_np (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   word_before_vp = 0.0 : closest_np (4/1) [1/1]
+|   |   |   |   |   |   |   |   |   capitalized = 0.0
+|   |   |   |   |   |   |   |   |   |   word_before_pred_conj = 1.0 : closest_np (2/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   word_before_pred_conj = 0.0 : not_closest_np (6/0) [2/1]
+|   |   |   |   |   |   |   punct_count >= 1.5 : closest_np (4/1) [0/0]
+|   |   |   |   |   |   np_count_before >= 2.5 : not_closest_np (19/2) [9/4]
+|   |   verb_conj = 0.0
+|   |   |   word_before_pred_conj = 1.0
+|   |   |   |   word_after_vp = 1.0
+|   |   |   |   |   intervening_np_count < 3.5
+|   |   |   |   |   |   which_who = 1.0 : not_closest_np (14/1) [10/0]
+|   |   |   |   |   |   which_who = 0.0
+|   |   |   |   |   |   |   intervening_np_count < 2.5
+|   |   |   |   |   |   |   |   word_before_vp = 1.0 : not_closest_np (73/22) [38/9]
+|   |   |   |   |   |   |   |   word_before_vp = 0.0
+|   |   |   |   |   |   |   |   |   np_count_before < 0.5
+|   |   |   |   |   |   |   |   |   |   punct_count < 0.5
+|   |   |   |   |   |   |   |   |   |   |   intervening_np_count < 1.5 : closest_np (6/3) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   intervening_np_count >= 1.5 : not_closest_np (11/1) [7/3]
+|   |   |   |   |   |   |   |   |   |   punct_count >= 0.5 : not_closest_np (26/13) [12/5]
+|   |   |   |   |   |   |   |   |   np_count_before >= 0.5 : closest_np (40/15) [32/14]
+|   |   |   |   |   |   |   intervening_np_count >= 2.5
+|   |   |   |   |   |   |   |   np_count_before < 0.5 : not_closest_np (31/6) [21/9]
+|   |   |   |   |   |   |   |   np_count_before >= 0.5
+|   |   |   |   |   |   |   |   |   punct_count < 0.5 : not_closest_np (24/10) [9/3]
+|   |   |   |   |   |   |   |   |   punct_count >= 0.5
+|   |   |   |   |   |   |   |   |   |   np_count_before < 2.5
+|   |   |   |   |   |   |   |   |   |   |   capitalized = 1.0 : not_closest_np (2/0) [2/1]
+|   |   |   |   |   |   |   |   |   |   |   capitalized = 0.0
+|   |   |   |   |   |   |   |   |   |   |   |   np_count_before < 1.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   punct_count < 1.5 : not_closest_np (4/1) [5/2]
+|   |   |   |   |   |   |   |   |   |   |   |   |   punct_count >= 1.5 : closest_np (2/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   np_count_before >= 1.5 : not_closest_np (5/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   np_count_before >= 2.5 : not_closest_np (5/0) [8/0]
+|   |   |   |   |   intervening_np_count >= 3.5 : not_closest_np (104/10) [80/14]
+|   |   |   |   word_after_vp = 0.0
+|   |   |   |   |   punct_count < 0.5 : not_closest_np (86/2) [45/2]
+|   |   |   |   |   punct_count >= 0.5
+|   |   |   |   |   |   punct_count < 1.5
+|   |   |   |   |   |   |   word_before_vp = 1.0 : not_closest_np (94/10) [57/5]
+|   |   |   |   |   |   |   word_before_vp = 0.0
+|   |   |   |   |   |   |   |   intervening_np_count < 3.5
+|   |   |   |   |   |   |   |   |   np_count_before < 1.5
+|   |   |   |   |   |   |   |   |   |   intervening_np_count < 1.5
+|   |   |   |   |   |   |   |   |   |   |   capitalized = 1.0 : closest_np (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   capitalized = 0.0 : not_closest_np (7/2) [1/0]
+|   |   |   |   |   |   |   |   |   |   intervening_np_count >= 1.5 : not_closest_np (11/0) [11/3]
+|   |   |   |   |   |   |   |   |   np_count_before >= 1.5 : not_closest_np (23/11) [4/0]
+|   |   |   |   |   |   |   |   intervening_np_count >= 3.5 : not_closest_np (16/0) [1/0]
+|   |   |   |   |   |   punct_count >= 1.5 : not_closest_np (151/8) [77/6]
+|   |   |   word_before_pred_conj = 0.0
+|   |   |   |   intervening_np_count < 1.5 : not_closest_np (3997/160) [1992/78]
+|   |   |   |   intervening_np_count >= 1.5
+|   |   |   |   |   app = 1.0 : not_closest_np (282/18) [152/13]
+|   |   |   |   |   app = 0.0
+|   |   |   |   |   |   capitalized = 1.0
+|   |   |   |   |   |   |   intervening_and = 1.0 : not_closest_np (1088/8) [558/8]
+|   |   |   |   |   |   |   intervening_and = 0.0
+|   |   |   |   |   |   |   |   punct_count < 0.5 : not_closest_np (467/3) [222/2]
+|   |   |   |   |   |   |   |   punct_count >= 0.5
+|   |   |   |   |   |   |   |   |   intervening_np_count < 3.5 : not_closest_np (650/23) [351/8]
+|   |   |   |   |   |   |   |   |   intervening_np_count >= 3.5
+|   |   |   |   |   |   |   |   |   |   punct_count < 2.5 : not_closest_np (301/3) [143/2]
+|   |   |   |   |   |   |   |   |   |   punct_count >= 2.5
+|   |   |   |   |   |   |   |   |   |   |   intervening_np_count < 6.5
+|   |   |   |   |   |   |   |   |   |   |   |   np_count_before < 3.5 : not_closest_np (83/3) [44/1]
+|   |   |   |   |   |   |   |   |   |   |   |   np_count_before >= 3.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   np_count_before < 4.5 : closest_np (2/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   np_count_before >= 4.5 : not_closest_np (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   intervening_np_count >= 6.5 : not_closest_np (28/0) [25/0]
+|   |   |   |   |   |   capitalized = 0.0 : not_closest_np (4705/35) [2374/28]
