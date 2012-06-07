@@ -98,11 +98,6 @@
     <!-- OpenNLP Models -->
     <dependency>
       <groupId>edu.washington.cs.knowitall</groupId>
-      <artifactId>opennlp-capitalized-models</artifactId>
-      <version>1.5</version>
-    </dependency>
-    <dependency>
-      <groupId>edu.washington.cs.knowitall</groupId>
       <artifactId>opennlp-postag-models</artifactId>
       <version>1.5</version>
     </dependency>
