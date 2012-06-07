@@ -21,7 +21,7 @@ public class ArgLocationClassifier {
 
     {
         try {
-            modelUrl = new File("/homes/gws/schmmd/data/r2a2-arg1loc.tree").toURI().toURL();
+            modelUrl = ArgLocationClassifier.class.getResource("/r2a2-arg1loc.tree");
         }
         catch (Exception e) {
             throw new RuntimeException(e);
