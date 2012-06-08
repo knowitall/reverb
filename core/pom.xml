@@ -41,16 +41,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <repositories>
-    <repository>
-      <id>knowitall</id>
-      <url>http://knowitall.cs.washington.edu/maven2</url>
-    </repository>
-    <repository>
-      <id>knowitall-snapshot</id>
-      <url>http://knowitall.cs.washington.edu/maven2-snapshot</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>edu.washington.cs.knowitall</groupId>
@@ -91,9 +81,9 @@
       <version>1.5.2-incubating</version>
     </dependency>
     <dependency>
-      <groupId>uk.ac.susx.informatics</groupId>
+      <groupId>edu.washington.cs.knowitall</groupId>
       <artifactId>morpha-stemmer</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <!-- OpenNLP Models -->
     <dependency>
