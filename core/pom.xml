@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>edu.washington.cs.knowitall</groupId>
@@ -8,7 +8,7 @@
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-core</artifactId>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>1.4.0</version>
   <packaging>jar</packaging>
   <name>ReVerb</name>
   <description>A regular-expression based Open IE relation extractor.</description>
@@ -23,6 +23,7 @@
     <url>https://github.com/knowitall/reverb-core</url>
     <connection>scm:git://github.com/knowitall/reverb-core.git</connection>
     <developerConnection>scm:git:git@github.com:knowitall/reverb-core.git</developerConnection>
+    <tag>reverb-core-1.4.0</tag>
   </scm>
   <developers>
     <developer>
