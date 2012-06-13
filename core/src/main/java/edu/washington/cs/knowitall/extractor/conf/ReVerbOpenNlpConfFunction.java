@@ -74,7 +74,7 @@ public class ReVerbOpenNlpConfFunction implements ConfidenceFunction {
     }
 
     /***
-     * Load a model specified as a resource path.
+     * Load a model specified as a resource path from the root.
      * @param modelResourcePath
      * @throws IOException
      */
