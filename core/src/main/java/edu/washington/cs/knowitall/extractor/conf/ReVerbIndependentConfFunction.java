@@ -1,8 +1,10 @@
 package edu.washington.cs.knowitall.extractor.conf;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import edu.washington.cs.knowitall.commonlib.ResourceUtils;
 import edu.washington.cs.knowitall.extractor.conf.classifier.LogisticRegression;
 import edu.washington.cs.knowitall.extractor.conf.featureset.BooleanFeatureSet;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedBinaryExtraction;
@@ -35,17 +37,40 @@ public class ReVerbIndependentConfFunction implements ConfidenceFunction {
         this(DefaultObjects.confFunctionModelFile);
     }
 
-    public ReVerbIndependentConfFunction(String model) {
+    /**
+     * Loads the model from the specified url.
+     * 
+     * @param  model  an URL to the model
+     */
+    public ReVerbIndependentConfFunction(URL modelUrl) {
         try {
             reverbFeatures = new ReVerbFeatures();
             featureSet = reverbFeatures.getFeatureSet();
             logreg = new LogisticRegression<ChunkedBinaryExtraction>(
-                    featureSet, ResourceUtils.loadResource(model,
-                            this.getClass()));
+                    featureSet, modelUrl.openStream());
         } catch (IOException e) {
             throw new ConfidenceFunctionException("Unable to load classifier: "
-                    + model, e);
+                    + modelUrl, e);
         }
+    }
+
+    /**
+     * Loads the model from specified file.
+     * 
+     * @param  model  the model file to load
+     * @throws MalformedURLException 
+     */
+    public ReVerbIndependentConfFunction(File modelFile) throws MalformedURLException {
+    	this(modelFile.toURI().toURL());
+    }
+
+    /**
+     * Loads the model as a resource from the root.
+     * 
+     * @param  model  the model file to load
+     */
+    public ReVerbIndependentConfFunction(String modelResourceName) {
+    	this(ReVerbIndependentConfFunction.class.getClassLoader().getResource(modelResourceName));
     }
 
     /**
