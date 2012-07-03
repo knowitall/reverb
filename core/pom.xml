@@ -74,6 +74,12 @@
       <groupId>cc.mallet</groupId>
       <artifactId>mallet</artifactId>
       <version>2.0.7</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit</artifactId>
+          <groupId>org.junit</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- NLP -->
     <dependency>
@@ -106,6 +112,13 @@
       <groupId>edu.washington.cs.knowitall</groupId>
       <artifactId>opennlp-sent-models</artifactId>
       <version>1.5</version>
+    </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
