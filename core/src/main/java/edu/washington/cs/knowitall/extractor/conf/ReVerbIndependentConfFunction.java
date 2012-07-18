@@ -28,16 +28,6 @@ public class ReVerbIndependentConfFunction implements ConfidenceFunction {
     private final LogisticRegression<ChunkedBinaryExtraction> logreg;
 
     /**
-     * Constructs a new instance of the confidence function.
-     *
-     * @throws ConfidenceFunctionException
-     *             if unable to initialize
-     */
-    public ReVerbIndependentConfFunction() throws ConfidenceFunctionException {
-        this(DefaultObjects.confFunctionModelFile);
-    }
-
-    /**
      * Loads the model from the specified url.
      * 
      * @param  model  an URL to the model
