@@ -140,11 +140,13 @@ public class ArgLearner extends
         if (rightbound > 0) {
             double[] leftbound_conf = getArg1LeftBound(predicate, rightbound);
             int leftbound = (int) leftbound_conf[0];
-            double conf = leftbound_conf[1];
-            ChunkedArgumentExtraction arg1 = new ChunkedArgumentExtraction(
-                    predicate.getSentence(), new Range(leftbound, rightbound
-                            - leftbound), predicate, conf);
-            return arg1;
+            if (leftbound >= 0) {
+                double conf = leftbound_conf[1];
+                ChunkedArgumentExtraction arg1 = new ChunkedArgumentExtraction(
+                        predicate.getSentence(), new Range(leftbound, rightbound
+                                - leftbound), predicate, conf);
+                return arg1;
+            }
         }
         return null;
     }
