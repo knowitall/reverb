@@ -90,7 +90,7 @@
     <dependency>
       <groupId>edu.washington.cs.knowitall</groupId>
       <artifactId>morpha-stemmer</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.4</version>
     </dependency>
     <!-- OpenNLP Models -->
     <dependency>
@@ -117,7 +117,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
