@@ -8,7 +8,7 @@
   </parent>
   <groupId>edu.washington.cs.knowitall</groupId>
   <artifactId>reverb-core</artifactId>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
   <packaging>jar</packaging>
   <name>ReVerb</name>
   <description>A regular-expression based Open IE relation extractor.</description>
@@ -23,7 +23,7 @@
     <url>https://github.com/knowitall/reverb-core</url>
     <connection>scm:git://github.com/knowitall/reverb-core.git</connection>
     <developerConnection>scm:git:git@github.com:knowitall/reverb-core.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>reverb-core-1.4.1</tag>
   </scm>
   <developers>
     <developer>
