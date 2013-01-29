@@ -144,24 +144,14 @@ the details of your project name, etc.:
 
     mvn archetype:generate
 
-Next, add a new repository to the project `pom.xml` file. You can do this by
-adding the following XML under the `<project>` element:
-
-    <repositories>
-      <repository>
-        <id>knowitall</id>
-        <url>http://knowitall.cs.washington.edu/maven2</url>
-      </repository>
-    </repositories>
-
-Finally, add ReVerb as a dependency. Do this by adding the following XML under
-the `<project>` element:
+Next, add ReVerb as a dependency. To make sure you are using the latest version
+of ReVerb, [consult Maven Central](http://search.maven.org/#search%7Cga%7C1%7Creverb).  Do this by adding the following XML under the `<project>` element:
 
     <dependencies>
       <dependency>
         <groupId>edu.washington.cs.knowitall</groupId>
         <artifactId>reverb-core</artifactId>
-        <version>1.3.0</version>
+        <version>1.4.1</version>
       </dependency>
     </dependencies>
 
@@ -183,13 +173,6 @@ Your final `pom.xml` file should look something like this:
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       </properties>
     
-      <repositories>
-        <repository>
-          <id>knowitall</id>
-          <url>http://knowitall.cs.washington.edu/maven2</url>
-        </repository>
-      </repositories>
-    
       <dependencies>
         <dependency>
           <groupId>junit</groupId>
@@ -200,8 +183,8 @@ Your final `pom.xml` file should look something like this:
         <dependency>
           <groupId>edu.washington.cs.knowitall</groupId>
           <artifactId>reverb-core</artifactId>
-          <version>1.3.0</version>
-        </dependency>  
+          <version>1.4.1</version>
+        </dependency>
       </dependencies>
     </project>
 
