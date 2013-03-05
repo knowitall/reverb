@@ -224,6 +224,12 @@ read in the future with `LabeledBinaryExtractionReader`.
 For more information, please visit the ReVerb homepage at the University of 
 Washington: <http://reverb.cs.washingotn.edu>.
 
+## FAQ
+
+1.  How fast is ReVerb?
+
+You should really benchmark ReVerb yourself, but on my computer (a new computer in 2011) ReVerb processed 5000 high-quality web sentences in 21 s or 238 sentences per second.
+
 ## Contributors
 * Anthony Fader <http://www.cs.washington.edu/homes/afader>
 * Michael Schmitz <http://www.schmitztech.com/>
