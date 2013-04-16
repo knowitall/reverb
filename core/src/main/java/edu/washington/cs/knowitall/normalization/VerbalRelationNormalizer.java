@@ -1,13 +1,12 @@
 package edu.washington.cs.knowitall.normalization;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import uk.ac.susx.informatics.Morpha;
 
+import edu.washington.cs.knowitall.morpha.MorphaStemmer;
 import edu.washington.cs.knowitall.nlp.extraction.ChunkedExtraction;
 import edu.washington.cs.knowitall.sequence.SequenceException;
 
@@ -18,13 +17,12 @@ import edu.washington.cs.knowitall.sequence.SequenceException;
  * <li>Removes inflection in each token using the {@link Morpha} class.</li>
  * <li>Removes auxiliary verbs, determiners, adjectives, and adverbs.</li>
  * </ul>
- * 
+ *
  * @author afader
- * 
+ *
  */
 public class VerbalRelationNormalizer implements FieldNormalizer {
 
-    private Morpha lexer;
     private boolean stripBeAdj = false;
     private HashSet<String> ignorePosTags;
     private HashSet<String> auxVerbs;
@@ -33,8 +31,6 @@ public class VerbalRelationNormalizer implements FieldNormalizer {
      * Constructs a new instance.
      */
     public VerbalRelationNormalizer() {
-
-        lexer = new Morpha(new ByteArrayInputStream("".getBytes()));
 
         ignorePosTags = new HashSet<String>();
         ignorePosTags.add("MD"); // can, must, should
@@ -54,7 +50,7 @@ public class VerbalRelationNormalizer implements FieldNormalizer {
     /**
      * If set to true, then will not remove adjectives in phrases like
      * "is happy about".
-     * 
+     *
      * @param value
      */
     public void stripBeAdj(boolean value) {
@@ -94,12 +90,8 @@ public class VerbalRelationNormalizer implements FieldNormalizer {
 
     private String stem(String token, String posTag) {
         token = token.toLowerCase();
-        String wordTag = token + "_" + posTag;
         try {
-            lexer.yyreset(new StringReader(wordTag));
-            lexer.yybegin(Morpha.scan);
-            String tokenNorm = lexer.next();
-            return tokenNorm;
+            return MorphaStemmer.stemToken(token, posTag);
         } catch (Throwable e) {
             return token;
         }
