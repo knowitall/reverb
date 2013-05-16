@@ -76,10 +76,6 @@
       <version>2.0.7</version>
       <exclusions>
         <exclusion>
-          <artifactId>bsh</artifactId>
-          <groupId>org.beanshell</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jdom</artifactId>
           <groupId>org.jdom</groupId>
         </exclusion>
