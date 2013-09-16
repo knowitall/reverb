@@ -222,7 +222,7 @@ read in the future with `LabeledBinaryExtractionReader`.
 
 ## Help and Contact
 For more information, please visit the ReVerb homepage at the University of 
-Washington: <http://reverb.cs.washingotn.edu>.
+Washington: <http://reverb.cs.washington.edu>.
 
 ## FAQ
 
