@@ -129,7 +129,7 @@ is not large enough.
 
 ## Using Eclipse
 To modify the ReVerb source code in Eclipse, use Apache Maven to create the 
-appropraite project files:
+appropriate project files:
 
     mvn eclipse:eclipse
 
